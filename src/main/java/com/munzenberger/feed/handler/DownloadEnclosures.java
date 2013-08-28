@@ -18,14 +18,14 @@ public class DownloadEnclosures implements ItemHandler {
 
 	private String targetDir = ".";
 	
-	private boolean overwriteExisting = true;
+	private boolean overwriteExisting = false;
 	
 	public void setTargetDir(String targetDir) {
 		this.targetDir = targetDir;
 	}
 	
-	public void setOverwriteExisting(boolean overwrite) {
-		this.overwriteExisting = overwrite;
+	public void setOverwriteExisting(String overwrite) {
+		this.overwriteExisting = Boolean.valueOf(overwrite);
 	}
 	
 	public void process(Item item, MessageDispatcher dispatcher) throws ItemHandlerException {
