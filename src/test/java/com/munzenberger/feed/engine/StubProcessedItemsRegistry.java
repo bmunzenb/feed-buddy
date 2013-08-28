@@ -9,12 +9,10 @@ public class StubProcessedItemsRegistry implements ProcessedItemsRegistry {
 
 	private final Set<Object> items = new HashSet<Object>();
 	
-	@Override
 	public void add(Item item) throws ProcessedItemsRegistryException {
 		items.add(item.getGuid());
 	}
 
-	@Override
 	public boolean contains(Item item) {
 		return items.contains(item.getGuid());
 	}

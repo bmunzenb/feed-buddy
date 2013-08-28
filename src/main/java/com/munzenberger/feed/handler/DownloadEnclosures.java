@@ -28,7 +28,6 @@ public class DownloadEnclosures implements ItemHandler {
 		this.overwriteExisting = overwrite;
 	}
 	
-	@Override
 	public void process(Item item, MessageDispatcher dispatcher) throws ItemHandlerException {
 		for (Enclosure e : item.getEnclosures()) {
 			File file = process(e.getUrl(), dispatcher);

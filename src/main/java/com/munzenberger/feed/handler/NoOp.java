@@ -5,7 +5,6 @@ import com.munzenberger.feed.ui.MessageDispatcher;
 
 public class NoOp implements ItemHandler {
 
-	@Override
 	public void process(Item item, MessageDispatcher dispatcher) throws ItemHandlerException {
 	}
 }

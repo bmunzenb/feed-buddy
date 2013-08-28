@@ -71,7 +71,6 @@ public class FeedProcessor implements Runnable {
 		}
 	}
 	
-	@Override
 	public void run() {
 		try {
 			RSS rss = parser.parse(url);

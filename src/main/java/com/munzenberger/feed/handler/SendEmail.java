@@ -60,7 +60,6 @@ public class SendEmail implements ItemHandler {
 		this.password = password;
 	}
 	
-	@Override
 	public void process(Item item, MessageDispatcher dispatcher) throws ItemHandlerException {
 		
 		HtmlEmail email = new HtmlEmail();

@@ -15,17 +15,14 @@ public class MessageDispatcherImpl implements MessageDispatcher {
 		file = new File(feeds + ".log");
 	}
 	
-	@Override
 	public void debug(String message) {
 		log(message);
 	}
 	
-	@Override
 	public void info(String message) {
 		log(message);
 	}
 	
-	@Override
 	public void error(String message, Throwable t) {
 		log(message);
 		log(t);

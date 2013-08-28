@@ -44,7 +44,6 @@ class MockItemHandler implements ItemHandler {
 		Assert.assertEquals(value2, this.name2);
 	}
 	
-	@Override
 	public void process(Item item, MessageDispatcher dispatcher) throws ItemHandlerException {
 		throw new UnsupportedOperationException("Method not implemented");
 	}

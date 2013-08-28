@@ -92,7 +92,6 @@ public class AtomParser implements Parser {
 		return rss;
 	}
 	
-	@Override
 	public RSS parse(URL url) throws AtomParserException {
 		try {
 			Atom atom = (Atom) getDigester().parse(url);

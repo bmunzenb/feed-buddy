@@ -54,7 +54,6 @@ public class RSSParser implements Parser {
 		return digester;
 	}
 	
-	@Override
 	public RSS parse(URL url) throws RSSParserException {
 		try {
 			return (RSS) getDigester().parse(url);
