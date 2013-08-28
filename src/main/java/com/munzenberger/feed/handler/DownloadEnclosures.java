@@ -63,7 +63,7 @@ public class DownloadEnclosures implements ItemHandler {
 		return file;
 	}
 	
-	protected File getLocalFile(String url) throws ItemHandlerException {
+	public File getLocalFile(String url) throws ItemHandlerException {
 		String filePath = url;
 		filePath = filePath.substring( filePath.lastIndexOf("/") + 1 );
 		
@@ -84,6 +84,7 @@ public class DownloadEnclosures implements ItemHandler {
 			if (!newFileCreated && paramsHash != 0) {
 				int j = filePath.lastIndexOf('.');
 				filePath = filePath.substring(0, j) + "-" + String.valueOf(paramsHash) + filePath.substring(j);
+				file = new File(filePath);
 				newFileCreated = file.createNewFile();
 			}
 			
