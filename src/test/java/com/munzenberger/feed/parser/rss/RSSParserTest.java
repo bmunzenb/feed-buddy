@@ -13,7 +13,9 @@ public class RSSParserTest extends TestCase {
 	
 	public void testParseNamespace() throws Exception {
 		
-		RSS rss = RSSParser.getInstance().parse( new URL("http://www.davidbordwell.net/blog/?feed=rss2") );
+		URL rssXml = RSSParserTest.class.getResource("rss.xml");
+		
+		RSS rss = RSSParser.getInstance().parse(rssXml);
 		
 		for (Channel c : rss.getChannels()) {
 			for (Item i : c.getItems()) {
