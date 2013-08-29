@@ -1,8 +1,6 @@
 Feed Buddy
 ==========
 
-About
-------------
 _Feed Buddy_ is a simple RSS and Atom item processor.
 
 Configuration
@@ -99,6 +97,38 @@ Downloads all of the enclosures included in the feed item.
 	<!-- By default, check for content updates every 2 hours -->
 	<feeds period="120">
 	
+		<!-- Define a global handler for sending email -->
+		<handler name="email" class="com.munzenberger.feed.handler.SendEmail">
+			<property name="to" value="me@email.com"/>
+			<property name="smtpHost" value="smtp.mailserver.net"/>
+		</handler>
+	
+		<!-- Check this feed every 6 hours -->
+		<feed url="http://feeds.feedburner.com/codinghorror/" period="360">
+			<!-- Send an email using the globally defined handler -->
+			<handler ref="email"/>
+		</feed>
+		
+		<!-- This is an Atom feed -->
+		<feed url="http://mattgemmell.com/feed" type="atom">
+			<handler ref="email" />
+		</feed>	
+
+		<feed url="http://www.npr.org/rss/podcast.php?id=510289">
+			<!-- Download this podcast -->
+			<handler class="com.munzenberger.feed.handler.DownloadEnclosures">
+				<property name="targetDir" value="C:\Downloads\Planet Money Podcast"/>
+				<property name="overwriteExisting" value="false"/>
+			</handler>
+		</feed>
+		
+		<feed url="http://feeds.feedburner.com/filmcast">
+			<!-- Send an email and download any enclosures -->
+			<handler ref="email" />
+			<handler class="com.munzenberger.feed.handler.DownloadEnclosures">
+				<property name="targetDir" value="C:\Downloads\SlashFilmcast"/>
+			</handler>
+		</feed>
 	
 	</feeds>
 ```
