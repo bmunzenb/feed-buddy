@@ -1,0 +1,20 @@
+<html>
+	<head></head>
+	<body>
+		#if ( $item.description )
+			$item.description
+		#end
+		<br>
+		<hr>
+		<br>
+		<em>
+			#if ( $item.link )
+				Article: <a href="$item.link">$item.link</a>
+			#end
+
+			#foreach ( $enclosure in $item.enclosures )
+				<br><br>Download: <a href="$enclosure.url">$enclosure.url</a>
+			#end
+		</em>
+	</body>
+</html>
