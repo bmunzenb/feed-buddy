@@ -69,6 +69,7 @@ public class SendEmail implements ItemHandler {
 			setFrom(email, item);
 			setSentDate(email, item, dispatcher);
 			email.setSubject(item.getTitle());
+			email.setCharset("UTF-16");
 			email.setHtmlMsg(getHtmlMsg(item));
 			email.setMailSession(getMailSession());
 			email.send();
