@@ -15,7 +15,7 @@ public class FeedProcessorTest extends TestCase {
 		feed.setUrl("http://groups.google.com/group/craftsman-guild/feed/rss_v2_0_msgs.xml");
 		
 		@SuppressWarnings("unused")
-		FeedProcessor processor = new FeedProcessor(feed, new StandardOutMessageDispatcher(), new StubProcessedItemsRegistry());
+		FeedProcessor processor = new FeedProcessor(feed, new StandardOutMessageDispatcher(), false, new StubProcessedItemsRegistry());
 		//processor.run();
 	}
 }
