@@ -51,7 +51,7 @@ Root element to define a feed item handler.  These elements can be under the `fe
 | `name` | No | Defines a name for this handler. |
 | `ref` | No* | Specifies the name of the shared handler to use. |
 
-*A `handler` element **must** have either a `class` or `ref` property.
+A `handler` element **must** have either a `class` or `ref` property.
 
 #### property
 
