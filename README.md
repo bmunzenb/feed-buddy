@@ -134,3 +134,21 @@ Downloads all of the enclosures included in the feed item.
 	
 </feeds>
 ```
+
+Running
+-------
+Run _Feed Buddy_ using the following command:
+
+`java -jar feed-buddy.jar`
+
+By default, it will look for a `feeds.xml` configuration file in the same directory as execution.
+
+The following parameters are supported:
+
+| Parameter | Description |
+| --------- | ----------- |
+| `-feeds <config>` | Specifies the location of the configuration file. |
+| `-noop` | Executes in no-op mode.  This means all of the feed items are marked as processed, but none of the handlers are executed. |
+
+The output is both printed to the console and written to a log file.
+
