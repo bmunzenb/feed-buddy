@@ -18,7 +18,7 @@ _Feed Buddy_ is configured using an XML file:
 </feeds>
 ```
 
-In this configuration file, you define the feeds you want to process.  For each feed, you can define any number of `handler`s to execute for each item in the feed.
+In this configuration file, you define the feeds you want to process.  For each feed, you can define any number of handlers to execute for each item in the feed.
 
 ### Elements
 
@@ -28,7 +28,7 @@ All configuration files must have a `feeds` root element.  You can specify any n
 
 | Property | Required | Description |
 | -------- | -------- | ----------- |
-| `period` | No | Defines the default time (in minutes) to poll a feed for content. Defaults to 60 minutes. |
+| `period` | No | Specifies the default time (in minutes) to poll a feed for content. Defaults to 60 minutes. |
 
 #### feed
 
@@ -36,8 +36,8 @@ Root element for an RSS or Atom feed.  These elements must be under the `feeds` 
 
 | Property | Required | Description |
 | -------- | -------- | ----------- |
-| `url` | Yes | The URL to the RSS or Atom feed |
-| `period` | No | The time (in minutes) to poll this feed for content.  If no value is specified, then the default period from the `feeds` property is used. |
+| `url` | Yes | The URL to the RSS or Atom feed. |
+| `period` | No | The time (in minutes) to poll this feed for content.  If no value is specified, then the default period from the `feeds` element is used. |
 | `type` | No | Specifies the type of feed.  Use `rss` for RSS feeds or `atom` for Atom feeds.  Defaults to `rss`.|
 
 
@@ -47,9 +47,11 @@ Root element to define a feed item handler.  These elements can be under the `fe
 
 | Property | Required | Description |
 | -------- | -------- | ----------- |
-| `class` | No | Defines the Java class for this handler. Required if no `ref` property is specified. |
+| `class` | No* | Specifies the Java class for this handler. |
 | `name` | No | Defines a name for this handler. |
-| `ref` | No | Specifies the name of handler to use. Required if no `class` property is specified. |
+| `ref` | No* | Specifies the name of the shared handler to use. |
+
+* A `handler` element **must** have either a `class` or `ref` property.
 
 #### property
 
