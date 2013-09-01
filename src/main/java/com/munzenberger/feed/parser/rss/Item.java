@@ -60,6 +60,10 @@ public class Item {
 	public String getDescription() {
 		return description;
 	}
+	
+	public String getDescriptionHtmlEncoded() {
+		return description;
+	}
 
 	public void setDescription(String description) {
 		this.description = description;
