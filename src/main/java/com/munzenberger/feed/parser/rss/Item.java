@@ -1,7 +1,10 @@
 package com.munzenberger.feed.parser.rss;
 
+import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.commons.lang3.text.translate.NumericEntityEscaper;
 
 public class Item {
 
@@ -61,8 +64,19 @@ public class Item {
 		return description;
 	}
 	
-	public String getDescriptionHtmlEncoded() {
-		return description;
+	public String getDescriptionEntityEncoded() {
+		StringBuilder encoded = new StringBuilder();
+		DecimalFormat format = new DecimalFormat("0000");
+		for (int i = 0; i < this.getDescription().length(); i++) {
+			char c = this.getDescription().charAt(i);
+			if (c >= 0x7f) {
+				encoded.append("&#" + format.format(c) + ";");
+			}
+			else {
+				encoded.append(c);
+			}
+		}
+		return encoded.toString();
 	}
 
 	public void setDescription(String description) {

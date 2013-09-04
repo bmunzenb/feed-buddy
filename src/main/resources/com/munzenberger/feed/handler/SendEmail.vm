@@ -2,7 +2,7 @@
 	<head></head>
 	<body>
 		#if ( $item.description )
-			$item.descriptionHtmlEncoded
+			$item.descriptionEntityEncoded
 		#end
 		<br>
 		<hr>
