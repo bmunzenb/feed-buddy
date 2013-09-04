@@ -4,8 +4,6 @@ import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang3.text.translate.NumericEntityEscaper;
-
 public class Item {
 
 	private String title;
