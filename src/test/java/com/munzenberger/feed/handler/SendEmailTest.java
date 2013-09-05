@@ -4,6 +4,7 @@ import org.apache.commons.mail.HtmlEmail;
 
 import junit.framework.TestCase;
 
+import com.munzenberger.feed.handler.SendEmail.MailItem;
 import com.munzenberger.feed.parser.rss.Channel;
 import com.munzenberger.feed.parser.rss.Enclosure;
 import com.munzenberger.feed.parser.rss.Item;
@@ -27,10 +28,9 @@ public class SendEmailTest extends TestCase {
 		item.addEnclosure(e);
 		
 		String message = handler.getHtmlMsg(item);
-		
-		System.out.println(message);
+		assertNotNull(message);
 	}
-	
+
 	public void testSetFrom() throws Exception {
 		
 		HtmlEmail email = new HtmlEmail();
@@ -56,5 +56,20 @@ public class SendEmailTest extends TestCase {
 		handler.setFrom(email, item);
 		assertEquals("test@email.com", email.getFromAddress().getAddress());
 		assertEquals("Title", email.getFromAddress().getPersonal());		
+	}
+
+	public void testDescriptionEntityEncoded() {
+		
+		Item item = new Item();
+		item.setDescription("Hello");
+		
+		MailItem mailItem = new MailItem(item);
+		
+		String encoded = mailItem.getDescription();
+		assertEquals("Hello", encoded);
+		
+		item.setDescription("\u00ae");
+		encoded = mailItem.getDescription();
+		assertEquals("&#0174;", encoded);
 	}
 }

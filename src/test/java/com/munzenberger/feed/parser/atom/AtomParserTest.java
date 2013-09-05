@@ -10,7 +10,8 @@ import junit.framework.TestCase;
 public class AtomParserTest extends TestCase {
 
 	public void testParse() throws Exception {
-		RSS rss = AtomParser.getInstance().parse( new URL("http://blogs.suntimes.com/ebert/atom.xml") );
+		URL atomXml = AtomParserTest.class.getResource("atom.xml");
+		RSS rss = AtomParser.getInstance().parse(atomXml);
 		assertNotNull(rss);
 	}
 }

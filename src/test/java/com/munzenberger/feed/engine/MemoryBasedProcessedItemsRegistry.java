@@ -5,7 +5,7 @@ import java.util.Set;
 
 import com.munzenberger.feed.parser.rss.Item;
 
-public class StubProcessedItemsRegistry implements ProcessedItemsRegistry {
+public class MemoryBasedProcessedItemsRegistry implements ProcessedItemsRegistry {
 
 	private final Set<Object> items = new HashSet<Object>();
 	
