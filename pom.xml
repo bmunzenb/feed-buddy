@@ -8,6 +8,16 @@
   <packaging>jar</packaging>
 
   <name>feed-buddy</name>
+  <url>https://github.com/bmunzenb/feed-buddy</url>
+  <description>Client for processing RSS and Atom feeds</description>
+  
+  <scm>
+  	<url>https://github.com/bmunzenb/feed-buddy</url>
+  </scm>
+  
+  <issueManagement>
+  	<system>https://github.com/bmunzenb/feed-buddy/issues</system>
+  </issueManagement>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -61,7 +71,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>1.4</version>
+        <version>2.1</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -80,4 +90,5 @@
       </plugin>
     </plugins>
   </build>
+
 </project>
