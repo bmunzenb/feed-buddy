@@ -81,7 +81,9 @@
             <configuration>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>com.munzenberger.feed.App</mainClass>
+                  <manifestEntries>
+                    <Main-Class>com.munzenberger.feed.App</Main-Class>
+                  </manifestEntries>
                 </transformer>
               </transformers>
             </configuration>
