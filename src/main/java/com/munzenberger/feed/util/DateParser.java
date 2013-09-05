@@ -1,4 +1,4 @@
-package com.munzenberger.feed.handler;
+package com.munzenberger.feed.util;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -44,7 +44,7 @@ public class DateParser {
 		}
 		
 		if (logger != null) {
-			logger.info("Unparsable pubDate: " + source);
+			logger.info("Unparsable date: " + source);
 		}
 		
 		return null;

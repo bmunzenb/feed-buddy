@@ -7,12 +7,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.Date;
 
 import com.munzenberger.feed.log.Logger;
 import com.munzenberger.feed.parser.rss.Enclosure;
 import com.munzenberger.feed.parser.rss.Item;
+import com.munzenberger.feed.util.DateParser;
+import com.munzenberger.feed.util.Formatter;
 
 public class DownloadEnclosures implements ItemHandler {
 
@@ -119,49 +120,6 @@ public class DownloadEnclosures implements ItemHandler {
 		out.close();
 		
 		time = System.currentTimeMillis() - time;
-		logger.info(url + " -> " + file + " (" + formatBytes(bytes) + " in " + formatTime(time) + ")");
-	}
-	
-	private String formatBytes(long bytes) {
-		double b = Long.valueOf(bytes).doubleValue();
-		String d = "bytes";
-		
-		if (b > 1024d) {
-			b = b / 1024d;
-			d = "KB";
-		}
-		
-		if (b > 1024d) {
-			b = b / 1024d;
-			d = "MB";
-		}
-		
-		DecimalFormat format = new DecimalFormat("#,###.##");
-		
-		return format.format(b) + " " + d;
-	}
-	
-	private String formatTime(long millis) {
-		double t = Long.valueOf(millis).doubleValue();
-		String d = "ms";
-		
-		if (t > 1000d) {
-			t = t / 1000d;
-			d = "sec";
-		}
-		
-		if (t > 60d) {
-			t = t / 60d;
-			d = "min";
-		}
-		
-		if (t > 60d) {
-			t = t / 60d;
-			d = "hr";
-		}
-		
-		DecimalFormat format = new DecimalFormat("#,###.##");
-		
-		return format.format(t) + " " + d;
+		logger.info(url + " -> " + file + " (" + Formatter.fileSize(bytes) + " in " + Formatter.elapsedTime(time) + ")");
 	}
 }

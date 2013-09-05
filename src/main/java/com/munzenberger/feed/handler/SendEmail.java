@@ -18,6 +18,7 @@ import org.apache.velocity.app.Velocity;
 import com.munzenberger.feed.log.Logger;
 import com.munzenberger.feed.parser.rss.Enclosure;
 import com.munzenberger.feed.parser.rss.Item;
+import com.munzenberger.feed.util.DateParser;
 
 public class SendEmail implements ItemHandler {
 

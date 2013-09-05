@@ -1,6 +1,8 @@
-package com.munzenberger.feed.handler;
+package com.munzenberger.feed.util;
 
 import java.util.Date;
+
+import com.munzenberger.feed.util.DateParser;
 
 import junit.framework.TestCase;
 
