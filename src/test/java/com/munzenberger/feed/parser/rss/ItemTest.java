@@ -1,5 +1,7 @@
 package com.munzenberger.feed.parser.rss;
 
+import com.munzenberger.feed.handler.SendEmail.MailItem;
+
 import junit.framework.TestCase;
 
 public class ItemTest extends TestCase {
@@ -9,11 +11,13 @@ public class ItemTest extends TestCase {
 		Item item = new Item();
 		item.setDescription("Hello");
 		
-		String encoded = item.getDescriptionEntityEncoded();
+		MailItem mailItem = new MailItem(item);
+		
+		String encoded = mailItem.getDescription();
 		assertEquals("Hello", encoded);
 		
 		item.setDescription("\u00ae");
-		encoded = item.getDescriptionEntityEncoded();
+		encoded = mailItem.getDescription();
 		assertEquals("&#0174;", encoded);
 	}
 }

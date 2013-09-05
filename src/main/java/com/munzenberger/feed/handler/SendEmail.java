@@ -3,8 +3,10 @@ package com.munzenberger.feed.handler;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.List;
 
 import javax.mail.Session;
 
@@ -14,13 +16,18 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
 import com.munzenberger.feed.log.Logger;
+import com.munzenberger.feed.parser.rss.Enclosure;
 import com.munzenberger.feed.parser.rss.Item;
 
 public class SendEmail implements ItemHandler {
 
 	private String to;
-	
 	private String from;
+	private String smtpHost;
+	private String smtpPort;
+	private String auth = "";
+	private String username = "";
+	private String password = "";
 	
 	public void setTo(String to) {
 		this.to = to;
@@ -29,16 +36,6 @@ public class SendEmail implements ItemHandler {
 	public void setFrom(String from) {
 		this.from = from;
 	}
-	
-	private String smtpHost;
-	
-	private String smtpPort;
-	
-	private String auth = "";
-	
-	private String username = "";
-	
-	private String password = "";
 	
 	public void setSmtpHost(String smtpHost) {
 		this.smtpHost = smtpHost;
@@ -110,9 +107,10 @@ public class SendEmail implements ItemHandler {
 	}
 	
 	protected String getHtmlMsg(Item item) {
+		MailItem mailItem = new MailItem(item);		
 		Reader reader = new InputStreamReader( getClass().getResourceAsStream("SendEmail.vm") );
 		VelocityContext context = new VelocityContext();
-		context.put("item", item);
+		context.put("item", mailItem);
 		StringWriter writer = new StringWriter();
 		Velocity.evaluate(context, writer, "", reader);
 		return writer.toString();
@@ -133,5 +131,37 @@ public class SendEmail implements ItemHandler {
 			mailSession = Session.getInstance(props);
 		}
 		return mailSession;
+	}
+	
+	public static class MailItem {
+		
+		private final Item item;
+				
+		public MailItem(Item item) {
+			this.item = item;
+		}
+		
+		public String getDescription() {
+			StringBuilder encoded = new StringBuilder();
+			DecimalFormat format = new DecimalFormat("0000");
+			for (int i = 0; i < item.getDescription().length(); i++) {
+				char c = item.getDescription().charAt(i);
+				if (c >= 0x7f) {
+					encoded.append("&#" + format.format(c) + ";");
+				}
+				else {
+					encoded.append(c);
+				}
+			}
+			return encoded.toString();
+		}
+		
+		public String getLink() {
+			return item.getLink();
+		}
+		
+		public List<Enclosure> getEnclosures() {
+			return item.getEnclosures();
+		}
 	}
 }

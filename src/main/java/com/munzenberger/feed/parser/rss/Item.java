@@ -1,25 +1,17 @@
 package com.munzenberger.feed.parser.rss;
 
-import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Item {
 
 	private String title;
-	
 	private String link;
-	
 	private String guid;
-	
 	private String description;
-	
 	private String author;
-	
 	private String pubDate;
-	
 	private Channel channel;
-
 	private final List<Enclosure> enclosures = new LinkedList<Enclosure>();
 	
 	public String getTitle() {
@@ -60,21 +52,6 @@ public class Item {
 
 	public String getDescription() {
 		return description;
-	}
-	
-	public String getDescriptionEntityEncoded() {
-		StringBuilder encoded = new StringBuilder();
-		DecimalFormat format = new DecimalFormat("0000");
-		for (int i = 0; i < this.getDescription().length(); i++) {
-			char c = this.getDescription().charAt(i);
-			if (c >= 0x7f) {
-				encoded.append("&#" + format.format(c) + ";");
-			}
-			else {
-				encoded.append(c);
-			}
-		}
-		return encoded.toString();
 	}
 
 	public void setDescription(String description) {
