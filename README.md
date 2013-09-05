@@ -1,18 +1,15 @@
-Feed Buddy
-==========
+# Feed Buddy
 _Feed Buddy_ is a simple RSS and Atom item processor written in Java.
 
 
-Building
---------
+## Building
 This project uses [Maven](http://maven.apache.org/).  To build, execute the following command:
 
 `mvn package`
 
 This will create a target directory containing the `feed-buddy.jar` file.  This file contains all of the dependecies baked in. 
 
-Configuration
--------------
+## Configuration
 _Feed Buddy_ is configured using an XML file:
 
 ```xml
@@ -142,8 +139,7 @@ Downloads all of the enclosures included in the feed item.
 </feeds>
 ```
 
-Running
--------
+## Running
 Run _Feed Buddy_ using the following command:
 
 `java -jar feed-buddy.jar`
@@ -159,6 +155,5 @@ The following parameters are supported:
 
 The output is both printed to the console and written to a log file.
 
-Creating Your Own Handlers
---------------------------
+## Creating Your Own Handlers
 To create your own handler, you just have to implement the `com.munzenberger.feed.handler.ItemHandler` interface.  Use your class in the handler definition in the configuration file and make sure your class is in the classpath when you run _Feed Buddy_.
