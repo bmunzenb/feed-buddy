@@ -1,7 +1,15 @@
 Feed Buddy
 ==========
+_Feed Buddy_ is a simple RSS and Atom item processor written in Java.
 
-_Feed Buddy_ is a simple RSS and Atom item processor.
+
+Building
+--------
+This project uses [Maven](http://maven.apache.org/).  To build, execute the following command:
+
+`mvn package`
+
+This will create a target directory containing the `feed-buddy.jar` file.  This file contains all of the dependecies baked in. 
 
 Configuration
 -------------
@@ -37,7 +45,7 @@ Root element for an RSS or Atom feed.  These elements must be under the `feeds` 
 | Property | Required | Description |
 | -------- | -------- | ----------- |
 | `url` | Yes | The URL to the RSS or Atom feed. |
-| `period` | No | The time (in minutes) to poll this feed for content.  If no value is specified, then the default period from the `feeds` element is used. |
+| `period` | No | The time (in minutes) to poll this feed for content.  If no value is specified, then the period from the `feeds` element is used. |
 | `type` | No | Specifies the type of feed.  Use `rss` for RSS feeds or `atom` for Atom feeds.  Defaults to `rss`.|
 
 
@@ -120,7 +128,6 @@ Downloads all of the enclosures included in the feed item.
 		<!-- Download this podcast -->
 		<handler class="com.munzenberger.feed.handler.DownloadEnclosures">
 			<property name="targetDir" value="C:\Downloads\Planet Money Podcast"/>
-			<property name="overwriteExisting" value="false"/>
 		</handler>
 	</feed>
 		
@@ -128,7 +135,7 @@ Downloads all of the enclosures included in the feed item.
 		<!-- Send an email and download any enclosures -->
 		<handler ref="email" />
 		<handler class="com.munzenberger.feed.handler.DownloadEnclosures">
-			<property name="targetDir" value="C:\Downloads\SlashFilmcast"/>
+			<property name="targetDir" value="C:\Downloads\Filmcast"/>
 		</handler>
 	</feed>
 	
@@ -152,3 +159,6 @@ The following parameters are supported:
 
 The output is both printed to the console and written to a log file.
 
+Creating Your Own Handlers
+--------------------------
+To create your own handler, you just have to implement the `com.munzenberger.feed.handler.ItemHandler` interface.  Use your class in the handler definition in the configuration file and make sure your class is in the classpath when you run _Feed Buddy_.
