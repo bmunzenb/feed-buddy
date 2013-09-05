@@ -47,10 +47,6 @@ public class App {
 		});
 		
 		poller.start();
-		
-		if (!noop) {
-			Thread.sleep(5000);
-		}
 	}
 	
 	private static void parseCommandLine(String[] args) throws ParseException {

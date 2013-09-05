@@ -38,16 +38,20 @@ public class FeedPoller {
 		
 		stop();
 		
-		timer = new Timer();
+		prepareTimer();
 		
 		Feeds config = ConfigParser.parse(file);
-		scheduleFeeds(config);		
+		scheduleFeeds(config);
 	}
 	
 	public void stop() {
 		if (this.timer != null) {
 			this.timer.cancel();
 		}
+	}
+	
+	protected void prepareTimer() {
+		timer = new Timer();
 	}
 	
 	protected void scheduleFeeds(Feeds config) throws FeedProcessorException {

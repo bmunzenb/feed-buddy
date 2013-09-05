@@ -18,6 +18,10 @@ public class NoopFeedPoller extends FeedPoller {
 	}
 
 	@Override
+	protected void prepareTimer() {
+	}
+
+	@Override
 	protected List<ItemHandler> getHandlers(Feed feed) throws ItemHandlerFactoryException {
 		List<ItemHandler> handlers = new ArrayList<ItemHandler>(1);
 		Handler h = new Handler();
