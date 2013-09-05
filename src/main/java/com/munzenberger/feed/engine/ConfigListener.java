@@ -1,9 +1,8 @@
-package com.munzenberger.feed;
+package com.munzenberger.feed.engine;
 
 import java.io.File;
 import java.util.TimerTask;
 
-import com.munzenberger.feed.engine.FeedPoller;
 import com.munzenberger.feed.log.Logger;
 
 public class ConfigListener extends TimerTask {

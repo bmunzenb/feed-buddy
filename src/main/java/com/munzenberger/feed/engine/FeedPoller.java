@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 
-import com.munzenberger.feed.ConfigListener;
 import com.munzenberger.feed.config.ConfigParser;
 import com.munzenberger.feed.config.ConfigParserException;
 import com.munzenberger.feed.config.Feed;
@@ -21,7 +20,7 @@ import com.munzenberger.feed.parser.ParserFactory;
 
 public class FeedPoller {
 
-	private static final int FIVE_SECONDS_IN_MILLIS = 1000 * 5;
+	private static final int FIVE_SECONDS_IN_MILLIS = 5 * 1000;
 	private static final int ONE_MINUTE_IN_MILLIS = 60 * 1000;
 	
 	private final File file;
