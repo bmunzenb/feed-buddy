@@ -68,11 +68,10 @@ public class FeedPoller {
 			
 			period = period * ONE_MINUTE_IN_MILLIS; // convert to millis
 			
-			timer.schedule(processor.getTimerTask(), 0, period);
+			scheduleProcessor(processor, period);
 		}
 		
-		ConfigListener configListener = new ConfigListener(file, this, logger);
-		timer.schedule(configListener, FIVE_SECONDS_IN_MILLIS, FIVE_SECONDS_IN_MILLIS);
+		scheduleConfigurationListener();
 	}
 	
 	protected FeedProcessor getFeedProcessor(Feed feed) throws FeedProcessorException {
@@ -96,5 +95,14 @@ public class FeedPoller {
 			handlers.add(handler);
 		}
 		return handlers;
+	}
+	
+	protected void scheduleProcessor(FeedProcessor processor, long period) {
+		timer.schedule(processor.getTimerTask(), 0, period);
+	}
+	
+	protected void scheduleConfigurationListener() {
+		ConfigListener configListener = new ConfigListener(file, this, logger);
+		timer.schedule(configListener, FIVE_SECONDS_IN_MILLIS, FIVE_SECONDS_IN_MILLIS);
 	}
 }

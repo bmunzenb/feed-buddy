@@ -26,4 +26,13 @@ public class NoopFeedPoller extends FeedPoller {
 		handlers.add(handler);
 		return handlers;
 	}
+
+	@Override
+	protected void scheduleProcessor(FeedProcessor processor, long period) {
+		processor.run();
+	}
+
+	@Override
+	protected void scheduleConfigurationListener() {
+	}
 }

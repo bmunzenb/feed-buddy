@@ -48,7 +48,7 @@ public class App {
 		
 		poller.start();
 		
-		while (!noop) {
+		if (!noop) {
 			Thread.sleep(5000);
 		}
 	}
