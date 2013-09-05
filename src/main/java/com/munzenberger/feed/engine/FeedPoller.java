@@ -79,7 +79,7 @@ public class FeedPoller {
 		try {
 			URL url = new URL(feed.getUrl());
 			List<ItemHandler> handlers = getHandlers(feed);
-			ProcessedItemsRegistry registry = new ProcessedItemsRegistryImpl(feed);
+			ProcessedItemsRegistry registry = new FileBasedProcessedItemsRegistry(feed);
 			Parser parser = ParserFactory.getParser(feed.getType());
 			
 			return new FeedProcessor(url, handlers, registry, parser, logger);

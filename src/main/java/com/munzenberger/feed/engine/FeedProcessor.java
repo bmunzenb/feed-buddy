@@ -16,14 +16,14 @@ public class FeedProcessor implements Runnable {
 
 	private final URL url;
 	private final List<ItemHandler> handlers;
-	private final ProcessedItemsRegistry processed;
+	private final ProcessedItemsRegistry registry;
 	private final Parser parser;
 	private final Logger logger;
 
 	public FeedProcessor(URL url, List<ItemHandler> handlers, ProcessedItemsRegistry registry, Parser parser, Logger logger) {
 		this.url = url;
 		this.handlers = handlers;
-		this.processed = registry;
+		this.registry = registry;
 		this.parser = parser;
 		this.logger = logger;
 	}
@@ -52,7 +52,7 @@ public class FeedProcessor implements Runnable {
 	}
 	
 	protected void process(Item item) throws FeedProcessorException {
-		if (!processed.contains(item)) {
+		if (!registry.contains(item)) {
 			logger.info("Processing " + item.getTitle() + "...");
 			
 			boolean success = false;
@@ -69,7 +69,7 @@ public class FeedProcessor implements Runnable {
 
 			if (success) {
 				try {
-					processed.add(item);
+					registry.add(item);
 				}
 				catch (ProcessedItemsRegistryException e) {
 					throw new FeedProcessorException("Failed to mark item as processed: " + item.getGuid(), e);

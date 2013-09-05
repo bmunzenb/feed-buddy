@@ -14,13 +14,13 @@ import java.util.HashSet;
 import com.munzenberger.feed.config.Feed;
 import com.munzenberger.feed.parser.rss.Item;
 
-public class ProcessedItemsRegistryImpl implements ProcessedItemsRegistry {
+public class FileBasedProcessedItemsRegistry implements ProcessedItemsRegistry {
 
 	private final Collection<String> processed = new HashSet<String>();
 	
 	private final File file;
 	
-	public ProcessedItemsRegistryImpl(Feed config) throws ProcessedItemsRegistryException {
+	public FileBasedProcessedItemsRegistry(Feed config) throws ProcessedItemsRegistryException {
 		file = getFile(config);
 		
 		try {
