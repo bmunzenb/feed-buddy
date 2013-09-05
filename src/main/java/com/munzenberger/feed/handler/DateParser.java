@@ -7,7 +7,7 @@ import java.util.Date;
 
 import org.joda.time.format.ISODateTimeFormat;
 
-import com.munzenberger.feed.ui.MessageDispatcher;
+import com.munzenberger.feed.log.Logger;
 
 public class DateParser {
 
@@ -15,7 +15,7 @@ public class DateParser {
 		return parse(source, null);
 	}
 	
-	public static Date parse(String source, MessageDispatcher dispatcher) {
+	public static Date parse(String source, Logger logger) {
 		if (source == null) {
 			return null;
 		}
@@ -43,8 +43,8 @@ public class DateParser {
 		catch (Exception e) {
 		}
 		
-		if (dispatcher != null) {
-			dispatcher.info("Unparsable pubDate: " + source);
+		if (logger != null) {
+			logger.info("Unparsable pubDate: " + source);
 		}
 		
 		return null;

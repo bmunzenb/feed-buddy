@@ -1,4 +1,4 @@
-package com.munzenberger.feed.ui;
+package com.munzenberger.feed.log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -7,11 +7,11 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MessageDispatcherImpl implements MessageDispatcher {
+public class FileAndConsoleLogger implements Logger {
 
 	private final File file;
 	
-	public MessageDispatcherImpl(String feeds) {
+	public FileAndConsoleLogger(String feeds) {
 		file = new File(feeds + ".log");
 	}
 	

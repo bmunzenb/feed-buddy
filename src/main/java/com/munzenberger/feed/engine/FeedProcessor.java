@@ -6,11 +6,11 @@ import java.util.TimerTask;
 
 import com.munzenberger.feed.handler.ItemHandler;
 import com.munzenberger.feed.handler.ItemHandlerException;
+import com.munzenberger.feed.log.Logger;
 import com.munzenberger.feed.parser.Parser;
 import com.munzenberger.feed.parser.rss.Channel;
 import com.munzenberger.feed.parser.rss.Item;
 import com.munzenberger.feed.parser.rss.RSS;
-import com.munzenberger.feed.ui.MessageDispatcher;
 
 public class FeedProcessor implements Runnable {
 
@@ -18,14 +18,14 @@ public class FeedProcessor implements Runnable {
 	private final List<ItemHandler> handlers;
 	private final ProcessedItemsRegistry processed;
 	private final Parser parser;
-	private final MessageDispatcher dispatcher;
+	private final Logger logger;
 
-	public FeedProcessor(URL url, List<ItemHandler> handlers, ProcessedItemsRegistry registry, Parser parser, MessageDispatcher dispatcher) {
+	public FeedProcessor(URL url, List<ItemHandler> handlers, ProcessedItemsRegistry registry, Parser parser, Logger logger) {
 		this.url = url;
 		this.handlers = handlers;
 		this.processed = registry;
 		this.parser = parser;
-		this.dispatcher = dispatcher;
+		this.logger = logger;
 	}
 	
 	public void run() {
@@ -34,7 +34,7 @@ public class FeedProcessor implements Runnable {
 			process(rss);
 		} 
 		catch (Exception e) {
-			dispatcher.error("Exception while processing feed " + url, e);
+			logger.error("Exception while processing feed " + url, e);
 		}
 	}
 	
@@ -45,7 +45,7 @@ public class FeedProcessor implements Runnable {
 	}
 	
 	protected void process(Channel channel) throws FeedProcessorException {
-		dispatcher.info("Scanning " + channel.getTitle() + "...");
+		logger.info("Scanning " + channel.getTitle() + "...");
 		for (Item i : channel.getItems()) {
 			process(i);
 		}
@@ -53,17 +53,17 @@ public class FeedProcessor implements Runnable {
 	
 	protected void process(Item item) throws FeedProcessorException {
 		if (!processed.contains(item)) {
-			dispatcher.info("Processing " + item.getTitle() + "...");
+			logger.info("Processing " + item.getTitle() + "...");
 			
 			boolean success = false;
 
 			for (ItemHandler h : handlers) {
 				try {
-					h.process(item, dispatcher);
+					h.process(item, logger);
 					success = true;
 				}
 				catch (ItemHandlerException e) {
-					dispatcher.error("Failed to process item: " + item.getGuid(), e);
+					logger.error("Failed to process item: " + item.getGuid(), e);
 				}
 			}
 

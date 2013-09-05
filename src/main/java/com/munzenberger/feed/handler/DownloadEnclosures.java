@@ -10,9 +10,9 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Date;
 
+import com.munzenberger.feed.log.Logger;
 import com.munzenberger.feed.parser.rss.Enclosure;
 import com.munzenberger.feed.parser.rss.Item;
-import com.munzenberger.feed.ui.MessageDispatcher;
 
 public class DownloadEnclosures implements ItemHandler {
 
@@ -28,18 +28,18 @@ public class DownloadEnclosures implements ItemHandler {
 		this.overwriteExisting = Boolean.valueOf(overwrite);
 	}
 	
-	public void process(Item item, MessageDispatcher dispatcher) throws ItemHandlerException {
+	public void process(Item item, Logger logger) throws ItemHandlerException {
 		for (Enclosure e : item.getEnclosures()) {
-			File file = process(e.getUrl(), dispatcher);
+			File file = process(e.getUrl(), logger);
 			
-			Date date = DateParser.parse(item.getPubDate(), dispatcher);
+			Date date = DateParser.parse(item.getPubDate(), logger);
 			if (date != null) {
 				file.setLastModified(date.getTime());
 			}
 		}
 	}
 	
-	protected File process(String downloadURL, MessageDispatcher dispatcher) throws ItemHandlerException {
+	protected File process(String downloadURL, Logger logger) throws ItemHandlerException {
 		File file = getLocalFile( downloadURL );
 		
 		URL url;
@@ -51,11 +51,11 @@ public class DownloadEnclosures implements ItemHandler {
 		}
 		
 		try {
-			download(url, file, dispatcher);
+			download(url, file, logger);
 		}
 		catch (IOException ex) {
 			if (!file.delete()) {
-				dispatcher.info("Could not delete file: " + file);
+				logger.info("Could not delete file: " + file);
 			}
 			throw new ItemHandlerException(ex);
 		}
@@ -99,7 +99,7 @@ public class DownloadEnclosures implements ItemHandler {
 		return file;
 	}
 	
-	protected void download(URL url, File file, MessageDispatcher dispatcher) throws IOException {
+	protected void download(URL url, File file, Logger logger) throws IOException {
 		long time = System.currentTimeMillis();		
 		long bytes = 0;
 		
@@ -119,7 +119,7 @@ public class DownloadEnclosures implements ItemHandler {
 		out.close();
 		
 		time = System.currentTimeMillis() - time;
-		dispatcher.info(url + " -> " + file + " (" + formatBytes(bytes) + " in " + formatTime(time) + ")");
+		logger.info(url + " -> " + file + " (" + formatBytes(bytes) + " in " + formatTime(time) + ")");
 	}
 	
 	private String formatBytes(long bytes) {

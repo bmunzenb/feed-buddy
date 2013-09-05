@@ -15,9 +15,9 @@ import com.munzenberger.feed.config.Handler;
 import com.munzenberger.feed.handler.ItemHandler;
 import com.munzenberger.feed.handler.ItemHandlerFactory;
 import com.munzenberger.feed.handler.ItemHandlerFactoryException;
+import com.munzenberger.feed.log.Logger;
 import com.munzenberger.feed.parser.Parser;
 import com.munzenberger.feed.parser.ParserFactory;
-import com.munzenberger.feed.ui.MessageDispatcher;
 
 public class FeedPoller {
 
@@ -25,13 +25,13 @@ public class FeedPoller {
 	private static final int ONE_MINUTE_IN_MILLIS = 60 * 1000;
 	
 	private final File file;
-	private final MessageDispatcher dispatcher;
+	private final Logger logger;
 
 	private Timer timer;
 	
-	public FeedPoller(File file, MessageDispatcher dispatcher) {
+	public FeedPoller(File file, Logger logger) {
 		this.file = file;
-		this.dispatcher = dispatcher;
+		this.logger = logger;
 	}
 	
 	public void start() throws ConfigParserException, FeedProcessorException {
@@ -52,7 +52,7 @@ public class FeedPoller {
 	
 	protected void scheduleFeeds(Feeds config) throws FeedProcessorException {
 		
-		dispatcher.info("Scheduling " + config.getFeeds().size() + " feed" + (config.getFeeds().size() != 1 ? "s" : "") + "...");
+		logger.info("Scheduling " + config.getFeeds().size() + " feed" + (config.getFeeds().size() != 1 ? "s" : "") + "...");
 		
 		for (Feed feed : config.getFeeds()) {
 			FeedProcessor processor = getFeedProcessor(feed);
@@ -71,7 +71,7 @@ public class FeedPoller {
 			timer.schedule(processor.getTimerTask(), 0, period);
 		}
 		
-		ConfigListener configListener = new ConfigListener(file, this, dispatcher);
+		ConfigListener configListener = new ConfigListener(file, this, logger);
 		timer.schedule(configListener, FIVE_SECONDS_IN_MILLIS, FIVE_SECONDS_IN_MILLIS);
 	}
 	
@@ -82,7 +82,7 @@ public class FeedPoller {
 			ProcessedItemsRegistry registry = new ProcessedItemsRegistryImpl(feed);
 			Parser parser = ParserFactory.getParser(feed.getType());
 			
-			return new FeedProcessor(url, handlers, registry, parser, dispatcher);
+			return new FeedProcessor(url, handlers, registry, parser, logger);
 		}
 		catch (Exception e) {
 			throw new FeedProcessorException("Could not initialize feed processor", e);

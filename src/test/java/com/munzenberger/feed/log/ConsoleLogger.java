@@ -1,6 +1,8 @@
-package com.munzenberger.feed.ui;
+package com.munzenberger.feed.log;
 
-public class StandardOutMessageDispatcher implements MessageDispatcher {
+import com.munzenberger.feed.log.Logger;
+
+public class ConsoleLogger implements Logger {
 
 	public void debug(String message) {
 		println("DEBUG: " + message);

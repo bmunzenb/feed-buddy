@@ -9,12 +9,12 @@ import com.munzenberger.feed.config.Handler;
 import com.munzenberger.feed.handler.ItemHandler;
 import com.munzenberger.feed.handler.ItemHandlerFactory;
 import com.munzenberger.feed.handler.ItemHandlerFactoryException;
-import com.munzenberger.feed.ui.MessageDispatcher;
+import com.munzenberger.feed.log.Logger;
 
 public class NoopFeedPoller extends FeedPoller {
 
-	public NoopFeedPoller(File file, MessageDispatcher dispatcher) {
-		super(file, dispatcher);
+	public NoopFeedPoller(File file, Logger logger) {
+		super(file, logger);
 	}
 
 	@Override

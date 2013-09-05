@@ -4,20 +4,20 @@ import java.io.File;
 import java.util.TimerTask;
 
 import com.munzenberger.feed.engine.FeedPoller;
-import com.munzenberger.feed.ui.MessageDispatcher;
+import com.munzenberger.feed.log.Logger;
 
 public class ConfigListener extends TimerTask {
 
 	private final File file;
 	private final long lastModified;
 	private final FeedPoller poller;
-	private final MessageDispatcher dispatcher;
+	private final Logger logger;
 	
-	public ConfigListener(File file, FeedPoller poller, MessageDispatcher dispatcher) {
+	public ConfigListener(File file, FeedPoller poller, Logger logger) {
 		this.file = file;
 		this.lastModified = file.lastModified();
 		this.poller = poller;
-		this.dispatcher = dispatcher;
+		this.logger = logger;
 	}
 	
 	@Override
@@ -27,7 +27,7 @@ public class ConfigListener extends TimerTask {
 				poller.start();
 			}
 			catch (Exception e) {
-				dispatcher.error("Failed to schedule feeds", e);
+				logger.error("Failed to schedule feeds", e);
 			}
 		}
 	}

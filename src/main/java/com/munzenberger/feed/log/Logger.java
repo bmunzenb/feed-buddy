@@ -1,6 +1,6 @@
-package com.munzenberger.feed.ui;
+package com.munzenberger.feed.log;
 
-public interface MessageDispatcher {
+public interface Logger {
 
 	public void info(String message);
 	

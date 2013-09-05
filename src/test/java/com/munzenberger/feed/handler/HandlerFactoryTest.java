@@ -8,8 +8,8 @@ import com.munzenberger.feed.config.Property;
 import com.munzenberger.feed.handler.ItemHandler;
 import com.munzenberger.feed.handler.ItemHandlerException;
 import com.munzenberger.feed.handler.ItemHandlerFactory;
+import com.munzenberger.feed.log.Logger;
 import com.munzenberger.feed.parser.rss.Item;
-import com.munzenberger.feed.ui.MessageDispatcher;
 
 public class HandlerFactoryTest extends TestCase {
 
@@ -44,7 +44,7 @@ class MockItemHandler implements ItemHandler {
 		Assert.assertEquals(value2, this.name2);
 	}
 	
-	public void process(Item item, MessageDispatcher dispatcher) throws ItemHandlerException {
+	public void process(Item item, Logger logger) throws ItemHandlerException {
 		throw new UnsupportedOperationException("Method not implemented");
 	}
 }

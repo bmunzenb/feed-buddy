@@ -13,8 +13,8 @@ import org.apache.commons.mail.HtmlEmail;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
+import com.munzenberger.feed.log.Logger;
 import com.munzenberger.feed.parser.rss.Item;
-import com.munzenberger.feed.ui.MessageDispatcher;
 
 public class SendEmail implements ItemHandler {
 
@@ -60,14 +60,14 @@ public class SendEmail implements ItemHandler {
 		this.password = password;
 	}
 	
-	public void process(Item item, MessageDispatcher dispatcher) throws ItemHandlerException {
+	public void process(Item item, Logger logger) throws ItemHandlerException {
 		
 		HtmlEmail email = new HtmlEmail();
 		
 		try {
 			email.addTo(to);
 			setFrom(email, item);
-			setSentDate(email, item, dispatcher);
+			setSentDate(email, item, logger);
 			email.setSubject(item.getTitle());
 			email.setHtmlMsg(getHtmlMsg(item));
 			email.setMailSession(getMailSession());
@@ -77,7 +77,7 @@ public class SendEmail implements ItemHandler {
 			throw new ItemHandlerException("Could not send email", e);
 		}
 		
-		dispatcher.info("Sent item email to " + to);
+		logger.info("Sent item email to " + to);
 	}
 	
 	protected void setFrom(HtmlEmail email, Item item) throws EmailException {
@@ -100,9 +100,9 @@ public class SendEmail implements ItemHandler {
 		email.setFrom("no@reply.com", item.getChannel().getTitle());
 	}
 	
-	protected void setSentDate(HtmlEmail email, Item item, MessageDispatcher dispatcher) {
+	protected void setSentDate(HtmlEmail email, Item item, Logger logger) {
 		if (item.getPubDate() != null) {
-			Date d = DateParser.parse(item.getPubDate(), dispatcher);
+			Date d = DateParser.parse(item.getPubDate(), logger);
 			if (d != null) {
 				email.setSentDate(d);
 			}
