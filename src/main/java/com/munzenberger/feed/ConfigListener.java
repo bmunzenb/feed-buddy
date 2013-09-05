@@ -24,7 +24,7 @@ public class ConfigListener extends TimerTask {
 	public void run() {
 		if (lastModified != file.lastModified()) {
 			try {
-				poller.scheduleFeeds(file);
+				poller.start();
 			}
 			catch (Exception e) {
 				dispatcher.error("Failed to schedule feeds", e);

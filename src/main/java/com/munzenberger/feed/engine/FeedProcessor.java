@@ -1,17 +1,12 @@
 package com.munzenberger.feed.engine;
 
 import java.net.URL;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.TimerTask;
 
-import com.munzenberger.feed.config.Feed;
-import com.munzenberger.feed.config.Handler;
 import com.munzenberger.feed.handler.ItemHandler;
 import com.munzenberger.feed.handler.ItemHandlerException;
-import com.munzenberger.feed.handler.ItemHandlerFactory;
 import com.munzenberger.feed.parser.Parser;
-import com.munzenberger.feed.parser.ParserFactory;
 import com.munzenberger.feed.parser.rss.Channel;
 import com.munzenberger.feed.parser.rss.Item;
 import com.munzenberger.feed.parser.rss.RSS;
@@ -19,48 +14,18 @@ import com.munzenberger.feed.ui.MessageDispatcher;
 
 public class FeedProcessor implements Runnable {
 
-	private URL url;
-	private List<ItemHandler> handlers = new LinkedList<ItemHandler>();
-	private ProcessedItemsRegistry processed;
-	private MessageDispatcher dispatcher;
-	private Parser parser;
-	
-	public FeedProcessor(Feed config, MessageDispatcher dispatcher, boolean noop) throws FeedProcessorException {
-		try {
-			init(config, dispatcher, noop, new ProcessedItemsRegistryImpl(config));
-		}
-		catch (ProcessedItemsRegistryException e) {
-			throw new FeedProcessorException("Could not initialize feed processor", e);
-		}
-	}
-	
-	public FeedProcessor(Feed config, MessageDispatcher dispatcher, boolean noop, ProcessedItemsRegistry registry) throws FeedProcessorException {
-		init(config, dispatcher, noop, registry);
-	}
-	
-	private final void init(Feed config, MessageDispatcher dispatcher, boolean noop, ProcessedItemsRegistry registry) throws FeedProcessorException {
-		try {
-			this.dispatcher = dispatcher;
-			this.url = new URL(config.getUrl());
-			this.processed = registry;
-			this.parser = ParserFactory.getParser(config.getType());
-			
-			if (noop) {
-				Handler h = new Handler();
-				h.setClazz("com.munzenberger.feed.handler.NoOp");
-				ItemHandler handler = ItemHandlerFactory.getInstance(h);
-				handlers.add(handler);
-			}
-			else {
-				for (Handler h : config.getHandlers()) {
-					ItemHandler handler = ItemHandlerFactory.getInstance(h);
-					handlers.add(handler);
-				}
-			}
-		}
-		catch (Exception e) {
-			throw new FeedProcessorException("Could not initialize feed processor", e);
-		}
+	private final URL url;
+	private final List<ItemHandler> handlers;
+	private final ProcessedItemsRegistry processed;
+	private final Parser parser;
+	private final MessageDispatcher dispatcher;
+
+	public FeedProcessor(URL url, List<ItemHandler> handlers, ProcessedItemsRegistry registry, Parser parser, MessageDispatcher dispatcher) {
+		this.url = url;
+		this.handlers = handlers;
+		this.processed = registry;
+		this.parser = parser;
+		this.dispatcher = dispatcher;
 	}
 	
 	public void run() {

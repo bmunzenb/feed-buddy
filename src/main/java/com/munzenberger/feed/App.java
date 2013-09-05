@@ -11,6 +11,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import com.munzenberger.feed.engine.FeedPoller;
+import com.munzenberger.feed.engine.NoopFeedPoller;
 import com.munzenberger.feed.ui.MessageDispatcher;
 import com.munzenberger.feed.ui.MessageDispatcherImpl;
 
@@ -26,16 +27,17 @@ public class App {
 		parseCommandLine(args);
 		
 		final MessageDispatcher dispatcher = new MessageDispatcherImpl(feeds);
+		final File file = new File(feeds);
+		final FeedPoller poller;
 		
 		if (noop) {
 			dispatcher.info("Executing in NOOP mode.");
+			poller = new NoopFeedPoller(file, dispatcher);
 		}
-		
-		File configFile = new File(feeds);
-		
-		final FeedPoller poller = new FeedPoller(dispatcher, noop);
-		poller.scheduleFeeds(configFile);
-		
+		else {
+			poller = new FeedPoller(file, dispatcher);
+		}
+
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
@@ -43,6 +45,8 @@ public class App {
 				poller.stop();
 			}
 		});
+		
+		poller.start();
 		
 		while (!noop) {
 			Thread.sleep(5000);
