@@ -68,10 +68,10 @@ public class DownloadEnclosures implements ItemHandler {
 		String filePath = url;
 		filePath = filePath.substring( filePath.lastIndexOf("/") + 1 );
 		
+		int urlHash = url.hashCode();
+		
 		int i = filePath.indexOf('?');
-		int paramsHash = 0;
 		if (i > 0) {
-			paramsHash = filePath.substring(i).hashCode();
 			filePath = filePath.substring(0, i);
 		}
 		
@@ -82,9 +82,9 @@ public class DownloadEnclosures implements ItemHandler {
 			
 			boolean newFileCreated = file.createNewFile();
 			
-			if (!newFileCreated && paramsHash != 0) {
+			if (!newFileCreated) {
 				int j = filePath.lastIndexOf('.');
-				filePath = filePath.substring(0, j) + "-" + String.valueOf(paramsHash) + filePath.substring(j);
+				filePath = filePath.substring(0, j) + "-" + String.valueOf(urlHash) + filePath.substring(j);
 				file = new File(filePath);
 				newFileCreated = file.createNewFile();
 			}
