@@ -28,6 +28,6 @@ public class DownloadEnclosuresTest extends TestCase {
 		assertNotNull(f2);
 		f2.deleteOnExit();
 		
-		assertEquals("." + separator + "download-61407919.mp3", f2.getPath());
+		assertEquals("." + separator + "download-1594842180.mp3", f2.getPath());
 	}
 }
