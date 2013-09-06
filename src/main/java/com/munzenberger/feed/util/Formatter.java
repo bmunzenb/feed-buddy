@@ -36,7 +36,7 @@ public class Formatter {
 			sb.append(minutes).append(" min ").append(seconds).append(" sec");
 		}
 		else if (seconds > 0) {
-			sb.append(seconds).append(" sec ").append(millis).append(" ms");
+			sb.append(seconds).append(" sec");
 		}
 		else {
 			sb.append(millis).append(" ms");
