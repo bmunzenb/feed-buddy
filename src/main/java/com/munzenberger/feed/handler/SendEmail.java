@@ -143,17 +143,22 @@ public class SendEmail implements ItemHandler {
 		}
 		
 		public String getDescription() {
+			
 			StringBuilder encoded = new StringBuilder();
-			DecimalFormat format = new DecimalFormat("0000");
-			for (int i = 0; i < item.getDescription().length(); i++) {
-				char c = item.getDescription().charAt(i);
-				if (c >= 0x7f) {
-					encoded.append("&#" + format.format(c) + ";");
-				}
-				else {
-					encoded.append(c);
+			
+			if (item.getDescription() != null) {
+				DecimalFormat format = new DecimalFormat("0000");
+				for (int i = 0; i < item.getDescription().length(); i++) {
+					char c = item.getDescription().charAt(i);
+					if (c >= 0x7f) {
+						encoded.append("&#" + format.format(c) + ";");
+					}
+					else {
+						encoded.append(c);
+					}
 				}
 			}
+
 			return encoded.toString();
 		}
 		
