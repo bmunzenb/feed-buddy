@@ -12,7 +12,7 @@ public class Feeds {
 	
 	private long period = 60;  // default period of 60 minutes
 	
-	private String agent = "feed-buddy";
+	private String agent = "feed-buddy/1.1";
 
 	public List<Feed> getFeeds() {
 		return feeds;
