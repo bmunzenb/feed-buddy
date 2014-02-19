@@ -12,6 +12,8 @@ public class Feeds {
 	
 	private long period = 60;  // default period of 60 minutes
 	
+	private String agent = "feed-buddy";
+
 	public List<Feed> getFeeds() {
 		return feeds;
 	}
@@ -30,5 +32,13 @@ public class Feeds {
 	
 	public long getPeriod() {
 		return period;
+	}
+
+	public void setAgent(String agent) {
+		this.agent = agent;
+	}
+
+	public String getAgent() {
+		return agent;
 	}
 }

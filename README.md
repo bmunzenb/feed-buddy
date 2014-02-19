@@ -34,6 +34,7 @@ All configuration files must have a `feeds` root element.  You can specify any n
 | Property | Required | Description |
 | -------- | -------- | ----------- |
 | `period` | No | Specifies the default time (in minutes) to poll a feed for content. Defaults to 60 minutes. |
+| `agent` | No | Specifies the user agent to send in the request. |
 
 #### feed
 

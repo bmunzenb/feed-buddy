@@ -22,8 +22,6 @@ public class App {
 	
 	public static void main( String[] args ) throws Exception {
 		
-		System.setProperty("http.agent", "feed-buddy");
-				
 		parseCommandLine(args);
 		
 		final Logger logger = new FileAndConsoleLogger(feeds);

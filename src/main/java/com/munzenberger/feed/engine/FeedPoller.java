@@ -40,6 +40,9 @@ public class FeedPoller {
 		prepareTimer();
 		
 		Feeds config = ConfigParser.parse(file);
+
+		System.setProperty("http.agent", config.getAgent());
+
 		scheduleFeeds(config);
 	}
 	
