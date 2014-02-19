@@ -11,7 +11,7 @@ public class AtomParserTest extends TestCase {
 
 	public void testParse() throws Exception {
 		URL atomXml = AtomParserTest.class.getResource("atom.xml");
-		RSS rss = AtomParser.getInstance().parse(atomXml);
+		RSS rss = AtomParser.getInstance().parse(atomXml.openStream());
 		assertNotNull(rss);
 	}
 }

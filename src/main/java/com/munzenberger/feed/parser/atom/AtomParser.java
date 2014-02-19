@@ -1,6 +1,6 @@
 package com.munzenberger.feed.parser.atom;
 
-import java.net.URL;
+import java.io.InputStream;
 
 import org.apache.commons.digester.Digester;
 
@@ -92,13 +92,13 @@ public class AtomParser implements Parser {
 		return rss;
 	}
 	
-	public RSS parse(URL url) throws AtomParserException {
+	public RSS parse(InputStream in) throws AtomParserException {
 		try {
-			Atom atom = (Atom) getDigester().parse(url);
+			Atom atom = (Atom) getDigester().parse(in);
 			return toRSS(atom);
 		}
 		catch (Exception e) {
-			throw new AtomParserException("Failed to parse Atom at " + url, e);
+			throw new AtomParserException("Failed to parse Atom", e);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 package com.munzenberger.feed.parser.rss;
 
-import java.net.URL;
+import java.io.InputStream;
 
 import org.apache.commons.digester.Digester;
 
@@ -54,12 +54,12 @@ public class RSSParser implements Parser {
 		return digester;
 	}
 	
-	public RSS parse(URL url) throws RSSParserException {
+	public RSS parse(InputStream in) throws RSSParserException {
 		try {
-			return (RSS) getDigester().parse(url);
+			return (RSS) getDigester().parse(in);
 		}
 		catch (Exception e) {
-			throw new RSSParserException("Failed to parse RSS at " + url, e);
+			throw new RSSParserException("Failed to parse RSS", e);
 		}
 	}
 }

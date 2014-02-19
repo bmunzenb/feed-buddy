@@ -1,8 +1,11 @@
 package com.munzenberger.feed.engine;
 
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.TimerTask;
+import java.util.zip.GZIPInputStream;
 
 import com.munzenberger.feed.handler.ItemHandler;
 import com.munzenberger.feed.handler.ItemHandlerException;
@@ -30,7 +33,15 @@ public class FeedProcessor implements Runnable {
 	
 	public void run() {
 		try {
-			RSS rss = parser.parse(url);
+			URLConnection conn = url.openConnection();
+			String contentEncoding = conn.getHeaderField("Content-Encoding");
+
+			InputStream in = conn.getInputStream();
+			if ("gzip".equalsIgnoreCase(contentEncoding)) {
+				in = new GZIPInputStream(in);
+			}
+
+			RSS rss = parser.parse(in);
 			process(rss);
 		} 
 		catch (Exception e) {
