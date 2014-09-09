@@ -152,6 +152,7 @@ The following parameters are supported:
 | Parameter | Description |
 | --------- | ----------- |
 | `-feeds <config>` | Specifies the location of the configuration file. |
+| `-log <file>` | Writes the log to the specified file. |
 | `-noop` | Executes in no-op mode.  This means all of the feed items are marked as processed, but none of the handlers are executed. |
 
 The output is both printed to the console and written to a log file.

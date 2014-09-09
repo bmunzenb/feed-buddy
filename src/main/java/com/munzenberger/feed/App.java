@@ -12,6 +12,7 @@ import org.apache.commons.cli.ParseException;
 
 import com.munzenberger.feed.engine.FeedPoller;
 import com.munzenberger.feed.engine.NoopFeedPoller;
+import com.munzenberger.feed.log.ConsoleLogger;
 import com.munzenberger.feed.log.Logger;
 import com.munzenberger.feed.log.FileAndConsoleLogger;
 
@@ -19,12 +20,21 @@ public class App {
 	
 	private static String feeds = "feeds.xml";
 	private static boolean noop = false;
+	private static String logFile = null;
 	
 	public static void main( String[] args ) throws Exception {
 		
 		parseCommandLine(args);
 		
-		final Logger logger = new FileAndConsoleLogger(feeds);
+		final Logger logger;
+		
+		if (logFile != null) {
+			logger = new FileAndConsoleLogger(logFile);
+		}
+		else {
+			logger = new ConsoleLogger();
+		}
+		
 		final File file = new File(feeds);
 		final FeedPoller poller;
 		
@@ -47,15 +57,17 @@ public class App {
 		poller.start();
 	}
 	
+	@SuppressWarnings("static-access")
 	private static void parseCommandLine(String[] args) throws ParseException {
 		
-		@SuppressWarnings("static-access")
 		Option feedsOption = OptionBuilder.withArgName("file").hasArg().withDescription("the feeds configuration file").create("feeds");
+		Option logOption = OptionBuilder.withArgName("file").hasArg().withDescription("file to write log to").create("log");
 		
 		Option noopOption = new Option("noop", "marks all feeds as processed");
 		
 		Options options = new Options();
 		options.addOption(feedsOption);
+		options.addOption(logOption);
 		options.addOption(noopOption);
 		
 		CommandLineParser cmdParser = new BasicParser();
@@ -63,6 +75,10 @@ public class App {
 		
 		if (line.hasOption("feeds")) {
 			feeds = line.getOptionValue("feeds");
+		}
+		
+		if (line.hasOption("log")) {
+			logFile = line.getOptionValue("log");
 		}
 		
 		noop = line.hasOption("noop");
