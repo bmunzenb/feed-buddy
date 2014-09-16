@@ -29,7 +29,9 @@ public class SendEmail implements ItemHandler {
 	private String auth = "";
 	private String username = "";
 	private String password = "";
-	
+	private String startTLSEnable = "false";
+	private String startTLSRequired = "false";
+
 	public void setTo(String to) {
 		this.to = to;
 	}
@@ -58,6 +60,14 @@ public class SendEmail implements ItemHandler {
 		this.password = password;
 	}
 	
+	public void setStartTLSEnable(String startTLSEnable) {
+		this.startTLSEnable = startTLSEnable;
+	}
+
+	public void setStartTLSRequired(String startTLSRequired) {
+		this.startTLSRequired = startTLSRequired;
+	}
+
 	public void process(Item item, Logger logger) throws ItemHandlerException {
 		
 		HtmlEmail email = new HtmlEmail();
@@ -128,6 +138,8 @@ public class SendEmail implements ItemHandler {
 			props.put("mail.smtp.auth", this.auth);
 			props.put("mail.smtp.user", this.username);
 			props.put("mail.smtp.password", this.password);
+			props.put("mail.smtp.starttls.enable", this.startTLSEnable);
+			props.put("mail.smtp.starttls.required", this.startTLSRequired);
 			
 			mailSession = Session.getInstance(props);
 		}

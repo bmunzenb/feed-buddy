@@ -85,6 +85,8 @@ Sends an email containing the content of the feed item.
 | `smtpHost` | SMTP server host address. |
 | `smtpPort` | SMTP server port number. |
 | `auth` | Set to `true` if your SMTP server requires authentication. |
+| `startTLSEnable` | Set to `true` to enable the STARTTLS command. |
+| `startTLSRequired` | Set to `true` if your SMTP server requires use of the STARTTLS command. |
 | `username` | Username to use for SMTP authentication. |
 | `password` | Password to use for SMTP authentication. |
 
@@ -154,8 +156,6 @@ The following parameters are supported:
 | `-feeds <config>` | Specifies the location of the configuration file. |
 | `-log <file>` | Writes the log to the specified file. |
 | `-noop` | Executes in no-op mode.  This means all of the feed items are marked as processed, but none of the handlers are executed. |
-
-The output is both printed to the console and written to a log file.
 
 ## Creating Your Own Handlers
 To create your own handler, you just have to implement the `com.munzenberger.feed.handler.ItemHandler` interface.  Use your class in the handler definition in the configuration file and make sure your class is in the classpath when you run _Feed Buddy_.
