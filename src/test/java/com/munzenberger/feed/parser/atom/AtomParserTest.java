@@ -2,10 +2,9 @@ package com.munzenberger.feed.parser.atom;
 
 import java.net.URL;
 
-import com.munzenberger.feed.parser.atom.AtomParser;
-import com.munzenberger.feed.parser.rss.RSS;
-
 import junit.framework.TestCase;
+
+import com.munzenberger.feed.parser.rss.RSS;
 
 public class AtomParserTest extends TestCase {
 

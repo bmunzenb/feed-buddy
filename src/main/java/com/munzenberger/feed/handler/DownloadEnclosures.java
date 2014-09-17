@@ -12,6 +12,7 @@ import java.util.Date;
 import com.munzenberger.feed.log.Logger;
 import com.munzenberger.feed.parser.rss.Enclosure;
 import com.munzenberger.feed.parser.rss.Item;
+import com.munzenberger.feed.util.DataTransfer;
 import com.munzenberger.feed.util.DateParser;
 import com.munzenberger.feed.util.Formatter;
 
@@ -107,13 +108,7 @@ public class DownloadEnclosures implements ItemHandler {
 		InputStream in = url.openStream();
 		OutputStream out = new FileOutputStream(file);
 		
-		byte[] buffer = new byte[1024 * 16];  // 16 KB buffer
-		int read = in.read(buffer);
-		while (read > 0) {
-			bytes += read;
-			out.write(buffer, 0, read);
-			read = in.read(buffer);
-		}
+		bytes = DataTransfer.transfer(in, out);
 		
 		in.close();
 		out.flush();
