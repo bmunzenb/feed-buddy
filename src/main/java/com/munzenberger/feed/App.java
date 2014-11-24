@@ -12,11 +12,13 @@ import org.apache.commons.cli.ParseException;
 
 import com.munzenberger.feed.engine.FeedPoller;
 import com.munzenberger.feed.engine.NoopFeedPoller;
-import com.munzenberger.feed.log.ConsoleLogger;
+import com.munzenberger.feed.log.ConsoleAppender;
+import com.munzenberger.feed.log.FileAppender;
 import com.munzenberger.feed.log.Logger;
-import com.munzenberger.feed.log.FileAndConsoleLogger;
 
 public class App {
+	
+	private static final Logger logger = new Logger();
 	
 	private static String feeds = "feeds.xml";
 	private static boolean noop = false;
@@ -26,13 +28,10 @@ public class App {
 		
 		parseCommandLine(args);
 		
-		final Logger logger;
+		logger.addAppender(new ConsoleAppender());
 		
 		if (logFile != null) {
-			logger = new FileAndConsoleLogger(logFile);
-		}
-		else {
-			logger = new ConsoleLogger();
+			logger.addAppender(new FileAppender(logFile));
 		}
 		
 		final File file = new File(feeds);

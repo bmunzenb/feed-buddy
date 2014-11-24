@@ -5,18 +5,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class FileAndConsoleLogger extends ConsoleLogger {
+public class FileAppender implements Appender {
 
 	private final File file;
 	
-	public FileAndConsoleLogger(String logFile) {
-		file = new File(logFile);
+	public FileAppender(String path) {
+		this(new File(path));
 	}
-
+	
+	public FileAppender(File file) {
+		this.file = file;
+	}
+	
 	@Override
-	protected void log(String message) {
-		super.log(message);
-		
+	public void append(String message) {
 		try {
 			PrintWriter out = new PrintWriter(new FileOutputStream(file, true), true);
 			out.println(message);
