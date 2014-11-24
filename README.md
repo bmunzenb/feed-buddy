@@ -165,8 +165,8 @@ For example:
 <feeds>
 	<feed url="http://example.com/feed">
 		<handler class="com.package.MyItemHandler">
-			<!-- Will call 'setProperty(String value)' in your item handler -->
-			<property name="property" value="value"/>
+			<!-- Will call 'setFoo("bar")' in your item handler -->
+			<property name="foo" value="bar"/>
 		</handler>
 	</feed>
 </feeds>
