@@ -9,6 +9,8 @@ import java.util.List;
 
 public class Logger {
 	
+	private static final String separator = System.getProperty("line.separator");
+	
 	private final List<Appender> appenders = new LinkedList<Appender>();
 	
 	public void addAppender(Appender appender) {
@@ -49,7 +51,7 @@ public class Logger {
 			cause.printStackTrace(pw);
 			pw.flush();
 			pw.close();
-			sb.append("\n").append(sw.toString());
+			sb.append(separator).append(sw.toString());
 		}
 		
 		return sb.toString();
