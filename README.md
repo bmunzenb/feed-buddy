@@ -27,44 +27,43 @@ In this configuration file, you define the feeds you want to process.  For each 
 
 ### Elements
 
-#### feeds
+#### `feeds`
 
 All configuration files must have a `feeds` root element.  You can specify any number of `feed` and `handler` sub-elements.
 
 | Property | Required | Description |
-| -------- | -------- | ----------- |
+| :------- | :------- | :---------- |
 | `period` | No | Specifies the default time (in minutes) to poll a feed for content. Defaults to 60 minutes. |
 | `agent` | No | Specifies the user agent to send in the request. |
 
-#### feed
+#### `feed`
 
 Root element for an RSS or Atom feed.  These elements must be under the `feeds` element.  You can specify any number of `handler` sub-elements.
 
 | Property | Required | Description |
-| -------- | -------- | ----------- |
+| :------- | :------- | :---------- |
 | `url` | Yes | The URL to the RSS or Atom feed. |
 | `period` | No | The time (in minutes) to poll this feed for content.  If no value is specified, then the period from the `feeds` element is used. |
 | `type` | No | Specifies the type of feed.  Use `rss` for RSS feeds or `atom` for Atom feeds.  Defaults to `rss`.|
 
-
-#### handler
+#### `handler`
 
 Root element to define a feed item handler.  These elements can be under the `feeds` element for shared handlers, or under an individual `feed` element.  You can specify any number of `property` sub-elements.
 
 | Property | Required | Description |
-| -------- | -------- | ----------- |
+| :------- | :------- | :---------- |
 | `class` | No* | Specifies the Java class for this handler. |
 | `name` | No | Defines a name for this handler. |
 | `ref` | No* | Specifies the name of the shared handler to use. |
 
 A `handler` element **must** have either a `class` or `ref` property.
 
-#### property
+#### `property`
 
 Specifies a name-value pair to use as configuration for a `handler`.  This element can only be nested under a `handler` element.
 
 | Property | Required | Description |
-| -------- | -------- | ----------- |
+| :------- | :------- | :---------- |
 | `name` | Yes | Name of the property. |
 | `value` | Yes | Value of the property. |
 
@@ -79,7 +78,7 @@ Sends an email containing the content of the feed item.
 **Class:** `com.munzenberger.feed.handler.SendEmail`
 
 | Property Name | Property Value Description |
-| ------------- | -------------------------- |
+| :------------ | :------------------------- |
 | `to`| Recipient email address. |
 | `from` | Sender email address, if not specified or valid in the feed item. |
 | `smtpHost` | SMTP server host address. |
@@ -97,7 +96,7 @@ Downloads all of the enclosures included in the feed item.
 **Class:** `com.munzenberger.feed.handler.DownloadEnclosures`
 
 | Property Name | Property Value Description |
-| ------------- | -------------------------- |
+| :------------ | :------------------------- |
 | `targetDir` | The target directory to download enclosures to. Defaults to current directory. |
 | `overwriteExisting` | If set to `true`, the handler will overwrite any files in the target directory that already exist.  Defaults to `false`. |
 
@@ -142,8 +141,8 @@ Downloads all of the enclosures included in the feed item.
 </feeds>
 ```
 
-## Running
-Run _Feed Buddy_ using the following command:
+## Executing
+Execute _Feed Buddy_ using the following command:
 
 `java -jar feed-buddy.jar`
 
@@ -152,10 +151,23 @@ By default, it will look for a `feeds.xml` configuration file in the same direct
 The following parameters are supported:
 
 | Parameter | Description |
-| --------- | ----------- |
+| :-------- | :---------- |
 | `-feeds <config>` | Specifies the location of the configuration file. |
 | `-log <file>` | Writes the log to the specified file. |
 | `-noop` | Executes in no-op mode.  This means all of the feed items are marked as processed, but none of the handlers are executed. |
 
 ## Creating Your Own Handlers
-To create your own handler, you just have to implement the `com.munzenberger.feed.handler.ItemHandler` interface.  Use your class in the handler definition in the configuration file and make sure your class is in the classpath when you run _Feed Buddy_.
+To create your own handler, implement the `com.munzenberger.feed.handler.ItemHandler` interface.  Use your class in the handler definition in the configuration file and make sure your class is in the classpath when you run _Feed Buddy_.  Create bean style setters for any properties that you need.
+
+For example:
+
+```xml
+<feeds>
+	<feed url="http://example.com/feed">
+		<handler class="com.package.MyItemHandler">
+			<!-- Will call 'setFoo("bar")' in your item handler -->
+			<property name="foo" value="bar"/>
+		</handler>
+	</feed>
+</feeds>
+```
