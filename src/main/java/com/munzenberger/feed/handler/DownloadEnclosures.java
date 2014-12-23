@@ -16,7 +16,7 @@ import com.munzenberger.feed.util.DataTransfer;
 import com.munzenberger.feed.util.DateParser;
 import com.munzenberger.feed.util.Formatter;
 
-public class DownloadEnclosures implements ItemHandler {
+public class DownloadEnclosures extends FilterableItemHandler {
 
 	private String targetDir = ".";
 	
@@ -30,7 +30,8 @@ public class DownloadEnclosures implements ItemHandler {
 		this.overwriteExisting = Boolean.valueOf(overwrite);
 	}
 	
-	public void process(Item item, Logger logger) throws ItemHandlerException {
+	@Override
+	protected void processMatchedItem(Item item, Logger logger) throws ItemHandlerException {
 		for (Enclosure e : item.getEnclosures()) {
 			File file = process(e.getUrl(), logger);
 			

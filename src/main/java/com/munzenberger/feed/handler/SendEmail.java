@@ -20,7 +20,7 @@ import com.munzenberger.feed.parser.rss.Enclosure;
 import com.munzenberger.feed.parser.rss.Item;
 import com.munzenberger.feed.util.DateParser;
 
-public class SendEmail implements ItemHandler {
+public class SendEmail extends FilterableItemHandler {
 
 	private String to;
 	private String from;
@@ -68,7 +68,8 @@ public class SendEmail implements ItemHandler {
 		this.startTLSRequired = startTLSRequired;
 	}
 
-	public void process(Item item, Logger logger) throws ItemHandlerException {
+	@Override
+	protected void processMatchedItem(Item item, Logger logger) throws ItemHandlerException {
 		
 		HtmlEmail email = new HtmlEmail();
 		
