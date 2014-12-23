@@ -16,7 +16,7 @@ import com.munzenberger.feed.util.DataTransfer;
 import com.munzenberger.feed.util.DateParser;
 import com.munzenberger.feed.util.Formatter;
 
-public class DownloadEnclosures extends FilterableItemHandler {
+public class DownloadEnclosures implements ItemHandler {
 
 	private String targetDir = ".";
 	
@@ -31,7 +31,7 @@ public class DownloadEnclosures extends FilterableItemHandler {
 	}
 	
 	@Override
-	protected void processMatchedItem(Item item, Logger logger) throws ItemHandlerException {
+	public void process(Item item, Logger logger) throws ItemHandlerException {
 		for (Enclosure e : item.getEnclosures()) {
 			File file = process(e.getUrl(), logger);
 			

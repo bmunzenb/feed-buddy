@@ -10,7 +10,11 @@ import com.munzenberger.feed.config.ConfigParser;
 import com.munzenberger.feed.config.ConfigParserException;
 import com.munzenberger.feed.config.Feed;
 import com.munzenberger.feed.config.Feeds;
+import com.munzenberger.feed.config.Filter;
 import com.munzenberger.feed.config.Handler;
+import com.munzenberger.feed.filter.ItemFilter;
+import com.munzenberger.feed.filter.ItemFilterFactory;
+import com.munzenberger.feed.filter.ItemFilterFactoryException;
 import com.munzenberger.feed.handler.ItemHandler;
 import com.munzenberger.feed.handler.ItemHandlerFactory;
 import com.munzenberger.feed.handler.ItemHandlerFactoryException;
@@ -83,15 +87,25 @@ public class FeedPoller {
 	protected FeedProcessor getFeedProcessor(Feed feed) throws FeedProcessorException {
 		try {
 			URL url = new URL(feed.getUrl());
+			List<ItemFilter> filters = getFilters(feed);
 			List<ItemHandler> handlers = getHandlers(feed);
 			ProcessedItemsRegistry registry = new FileBasedProcessedItemsRegistry(feed);
 			Parser parser = ParserFactory.getParser(feed.getType());
 			
-			return new FeedProcessor(url, handlers, registry, parser, logger);
+			return new FeedProcessor(url, filters, handlers, registry, parser, logger);
 		}
 		catch (Exception e) {
 			throw new FeedProcessorException("Could not initialize feed processor", e);
 		}
+	}
+	
+	protected List<ItemFilter> getFilters(Feed feed) throws ItemFilterFactoryException {
+		List<ItemFilter> filters = new LinkedList<ItemFilter>();
+		for (Filter f : feed.getFilters()) {
+			ItemFilter filter = ItemFilterFactory.getInstance(f);
+			filters.add(filter);
+		}
+		return filters;
 	}
 	
 	protected List<ItemHandler> getHandlers(Feed feed) throws ItemHandlerFactoryException {

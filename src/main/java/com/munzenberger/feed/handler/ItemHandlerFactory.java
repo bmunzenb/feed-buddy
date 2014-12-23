@@ -1,10 +1,10 @@
 package com.munzenberger.feed.handler;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.munzenberger.feed.config.Handler;
+import com.munzenberger.feed.util.PropertySetter;
 
 public class ItemHandlerFactory {
 
@@ -29,16 +29,8 @@ public class ItemHandlerFactory {
 	protected static ItemHandler newHandler(Handler h) throws ItemHandlerFactoryException {
 		try {
 			Class<ItemHandler> clazz = (Class<ItemHandler>) Class.forName(h.getClazz());
-			
 			ItemHandler handler = clazz.newInstance();
-			
-			for (Map.Entry<String,String> e : h.getProperties().entrySet()) {
-				String name = e.getKey();
-				name = "set" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
-				
-				Method setter = clazz.getMethod(name, String.class);
-				setter.invoke(handler, e.getValue());
-			}
+			PropertySetter.setProperties(clazz, handler, h);
 			
 			return handler;
 		}

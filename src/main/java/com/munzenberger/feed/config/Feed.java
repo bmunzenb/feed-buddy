@@ -13,6 +13,8 @@ public class Feed {
 
 	private final List<Handler> handlers = new LinkedList<Handler>();
 	
+	private final List<Filter> filters = new LinkedList<Filter>();
+	
 	public String getUrl() {
 		return url;
 	}
@@ -27,6 +29,14 @@ public class Feed {
 	
 	public void addHandler(Handler h) {
 		handlers.add(h);
+	}
+	
+	public List<Filter> getFilters() {
+		return filters;
+	}
+	
+	public void addFilter(Filter f) {
+		filters.add(f);
 	}
 
 	public long getPeriod() {

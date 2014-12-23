@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.TimerTask;
 import java.util.zip.GZIPInputStream;
 
+import com.munzenberger.feed.filter.ItemFilter;
+import com.munzenberger.feed.filter.ItemFilterException;
 import com.munzenberger.feed.handler.ItemHandler;
 import com.munzenberger.feed.handler.ItemHandlerException;
 import com.munzenberger.feed.log.Logger;
@@ -18,13 +20,15 @@ import com.munzenberger.feed.parser.rss.RSS;
 public class FeedProcessor implements Runnable {
 
 	private final URL url;
+	private final List<ItemFilter> filters;
 	private final List<ItemHandler> handlers;
 	private final ProcessedItemsRegistry registry;
 	private final Parser parser;
 	private final Logger logger;
 
-	public FeedProcessor(URL url, List<ItemHandler> handlers, ProcessedItemsRegistry registry, Parser parser, Logger logger) {
+	public FeedProcessor(URL url, List<ItemFilter> filters, List<ItemHandler> handlers, ProcessedItemsRegistry registry, Parser parser, Logger logger) {
 		this.url = url;
+		this.filters = filters;
 		this.handlers = handlers;
 		this.registry = registry;
 		this.parser = parser;
@@ -63,30 +67,65 @@ public class FeedProcessor implements Runnable {
 	}
 	
 	protected void process(Item item) throws FeedProcessorException {
+		
 		if (!registry.contains(item)) {
 			logger.info("Processing " + item.getTitle() + "...");
 			
-			boolean success = false;
-
-			for (ItemHandler h : handlers) {
-				try {
-					h.process(item, logger);
-					success = true;
-				}
-				catch (ItemHandlerException e) {
-					logger.error("Failed to process item: " + item.getGuid(), e);
-				}
-			}
-
-			if (success) {
-				try {
-					registry.add(item);
-				}
-				catch (ProcessedItemsRegistryException e) {
-					throw new FeedProcessorException("Failed to mark item as processed: " + item.getGuid(), e);
+			boolean shouldProcess = executeFilters(item);
+			
+			if (shouldProcess) {
+				
+				boolean success = executeHandlers(item);
+	
+				if (success) {
+					try {
+						registry.add(item);
+					}
+					catch (ProcessedItemsRegistryException e) {
+						throw new FeedProcessorException("Failed to mark item as processed: " + item.getGuid(), e);
+					}
 				}
 			}
 		}
+	}
+	
+	protected boolean executeFilters(Item item) {
+		
+		boolean shouldProcess = true;
+		
+		for (ItemFilter f : filters) {
+			try {
+				shouldProcess = f.filter(item);
+			}
+			catch (ItemFilterException e) {
+				logger.error("Failed to filter item: " + item.getGuid(), e);
+				shouldProcess = false;
+			}
+			
+			if (!shouldProcess) {
+				break;
+			}
+		}
+		
+		return shouldProcess;
+	}
+	
+	protected boolean executeHandlers(Item item) {
+		
+		boolean success = true;
+		
+		for (ItemHandler h : handlers) {
+			try {
+				h.process(item, logger);
+			}
+			catch (ItemHandlerException e) {
+				logger.error("Failed to process item: " + item.getGuid(), e);
+				success = false;
+				break;
+			}
+		}
+		
+		return success;
 	}
 	
 	public TimerTask getTimerTask() {

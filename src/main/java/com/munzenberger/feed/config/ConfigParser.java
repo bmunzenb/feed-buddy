@@ -29,6 +29,11 @@ public class ConfigParser {
 		digester.addSetProperties("feeds/feed");
 		digester.addSetNext("feeds/feed", "addFeed");
 		
+		digester.addObjectCreate("feeds/feed/filter", Filter.class);
+		digester.addSetProperties("feeds/feed/filter");
+		digester.addRule("feeds/feed/filter", new SetPropertiesRule(new String[] {"class"}, new String[] {"clazz"}));
+		digester.addSetNext("feeds/feed/filter", "addFilter");
+		
 		digester.addObjectCreate("feeds/feed/handler", Handler.class);
 		digester.addSetProperties("feeds/feed/handler");
 		digester.addRule("feeds/feed/handler", new SetPropertiesRule(new String[] {"class"}, new String[] {"clazz"}));
