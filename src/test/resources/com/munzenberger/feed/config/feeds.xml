@@ -1,0 +1,10 @@
+<feeds>
+	<feed url="feedURL">
+		<filter class="filterClass">
+			<property name="foo" value="bar"/>
+		</filter>
+		<handler class="handlerClass">
+			<property name="command" value="conquer"/>
+		</handler>
+	</feed>
+</feeds>
