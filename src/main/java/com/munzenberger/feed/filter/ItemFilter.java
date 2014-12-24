@@ -4,5 +4,5 @@ import com.munzenberger.feed.parser.rss.Item;
 
 public interface ItemFilter {
 
-	public boolean filter(Item item) throws ItemFilterException;
+	public boolean evaluate(Item item) throws ItemFilterException;
 }

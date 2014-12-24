@@ -60,54 +60,58 @@ public class FeedProcessor implements Runnable {
 	}
 	
 	protected void process(Channel channel) throws FeedProcessorException {
+		
 		logger.info("Scanning " + channel.getTitle() + "...");
+		
 		for (Item i : channel.getItems()) {
-			process(i);
+			
+			boolean shouldProcess = evaluateFilters(i);
+			
+			if (shouldProcess) {
+				process(i);
+			}
 		}
 	}
 	
 	protected void process(Item item) throws FeedProcessorException {
 		
 		if (!registry.contains(item)) {
+			
 			logger.info("Processing " + item.getTitle() + "...");
-			
-			boolean shouldProcess = executeFilters(item);
-			
-			if (shouldProcess) {
 				
-				boolean success = executeHandlers(item);
-	
-				if (success) {
-					try {
-						registry.add(item);
-					}
-					catch (ProcessedItemsRegistryException e) {
-						throw new FeedProcessorException("Failed to mark item as processed: " + item.getGuid(), e);
-					}
+			boolean success = executeHandlers(item);
+
+			if (success) {
+				try {
+					registry.add(item);
+				}
+				catch (ProcessedItemsRegistryException e) {
+					throw new FeedProcessorException("Failed to mark item as processed: " + item.getGuid(), e);
 				}
 			}
 		}
 	}
 	
-	protected boolean executeFilters(Item item) {
+	protected boolean evaluateFilters(Item item) {
 		
-		boolean shouldProcess = true;
+		boolean result = true;
 		
 		for (ItemFilter f : filters) {
+			
 			try {
-				shouldProcess = f.filter(item);
+				result = f.evaluate(item);
 			}
 			catch (ItemFilterException e) {
-				logger.error("Failed to filter item: " + item.getGuid(), e);
-				shouldProcess = false;
+				logger.error("Filter failed to evaluate item: " + item.getGuid(), e);
+				result = false;
 			}
 			
-			if (!shouldProcess) {
+			if (!result) {
 				break;
 			}
 		}
 		
-		return shouldProcess;
+		return result;
 	}
 	
 	protected boolean executeHandlers(Item item) {
@@ -115,13 +119,13 @@ public class FeedProcessor implements Runnable {
 		boolean success = true;
 		
 		for (ItemHandler h : handlers) {
+			
 			try {
 				h.process(item, logger);
 			}
 			catch (ItemHandlerException e) {
-				logger.error("Failed to process item: " + item.getGuid(), e);
+				logger.error("Handler failed to process item: " + item.getGuid(), e);
 				success = false;
-				break;
 			}
 		}
 		

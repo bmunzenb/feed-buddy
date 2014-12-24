@@ -7,7 +7,7 @@ This project uses [Maven](http://maven.apache.org/).  To build, execute the foll
 
 `mvn package`
 
-This will create a target directory containing the `feed-buddy.jar` file.  This file contains all of the dependecies baked in. 
+This will create a target directory containing the `feed-buddy-{version}.jar` file.  This file contains all of the dependencies baked in. 
 
 ## Configuration
 _Feed Buddy_ is configured using an XML file:
@@ -38,13 +38,21 @@ All configuration files must have a `feeds` root element.  You can specify any n
 
 #### `feed`
 
-Root element for an RSS or Atom feed.  These elements must be under the `feeds` element.  You can specify any number of `handler` sub-elements.
+Root element for an RSS or Atom feed.  These elements must be under the `feeds` element.  You can specify any number of `handler` and `filter` sub-elements.
 
 | Property | Required | Description |
 | :------- | :------- | :---------- |
 | `url` | Yes | The URL to the RSS or Atom feed. |
 | `period` | No | The time (in minutes) to poll this feed for content.  If no value is specified, then the period from the `feeds` element is used. |
 | `type` | No | Specifies the type of feed.  Use `rss` for RSS feeds or `atom` for Atom feeds.  Defaults to `rss`.|
+
+#### `filter`
+
+Root element to define a feed item filter.  These elements must be under the `feed` element.  You can specify any number of `property` sub-elements.
+
+| Property | Required | Description |
+| :------- | :------- | :---------- |
+| `class` | Yes | Specifies the Java class for this filter. |
 
 #### `handler`
 
@@ -66,6 +74,21 @@ Specifies a name-value pair to use as configuration for a `handler`.  This eleme
 | :------- | :------- | :---------- |
 | `name` | Yes | Name of the property. |
 | `value` | Yes | Value of the property. |
+
+### Filters
+
+Filters can be used to selectively process items from a feed.  Items that do not match filter criteria are not processed by any handlers.  If multiple filters are defined for a feed, then the item must match all filters to be included for processing.
+
+The following filters have been implemented:
+
+#### Regular Expression Evaluator
+
+**Class:** `com.munzenberger.feed.filter.RegexItemFilter`
+
+| Property Name | Property Value Description |
+| :------------ | :------------------------- |
+| `title`| (Optional) Regular expression pattern to filter item titles on. |
+| `description` | (Optional) Regular expression pattern to filter item descriptions on. |
 
 ### Handlers
 
@@ -138,13 +161,21 @@ Downloads all of the enclosures included in the feed item.
 		</handler>
 	</feed>
 	
+	<feed url="http://whats-on-netflix.com/feed/">
+		<!-- Send an email only if "Matrix" is found in the item description -->
+		<filter class="com.munzenberger.feed.filter.RegexItemFilter">
+			<property name="description" value=".*Matrix.*"/>
+		</filter>
+		<handler ref="email" />
+	</feed>
+	
 </feeds>
 ```
 
 ## Executing
 Execute _Feed Buddy_ using the following command:
 
-`java -jar feed-buddy.jar`
+`java -jar feed-buddy-{version}.jar`
 
 By default, it will look for a `feeds.xml` configuration file in the same directory as execution.
 
@@ -156,7 +187,10 @@ The following parameters are supported:
 | `-log <file>` | Writes the log to the specified file. |
 | `-noop` | Executes in no-op mode.  This means all of the feed items are marked as processed, but none of the handlers are executed. |
 
-## Creating Your Own Handlers
+## Creating Your Own Filters and Handlers
+
+To create your own filter, implement the `com.munzenberger.feed.filter.ItemFilter` interface.  Use your class in the filter definition in the configuration file and make sure your class is in the classpath when you run _Feed Buddy_.  Create bean style setters for any properties that you need.
+
 To create your own handler, implement the `com.munzenberger.feed.handler.ItemHandler` interface.  Use your class in the handler definition in the configuration file and make sure your class is in the classpath when you run _Feed Buddy_.  Create bean style setters for any properties that you need.
 
 For example:
@@ -164,10 +198,17 @@ For example:
 ```xml
 <feeds>
 	<feed url="http://example.com/feed">
+		
+		<filter class="com.package.MyItemFilter">
+			<!-- Will call setWithEnclosure("true") in your item filter -->
+			<property name="withEnclosure" value="true"/>
+		</filter>
+		
 		<handler class="com.package.MyItemHandler">
-			<!-- Will call 'setFoo("bar")' in your item handler -->
+			<!-- Will call setFoo("bar") in your item handler -->
 			<property name="foo" value="bar"/>
 		</handler>
+		
 	</feed>
 </feeds>
 ```

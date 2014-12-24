@@ -16,7 +16,7 @@ public class RegexItemFilter implements ItemFilter {
 	}
 
 	@Override
-	public boolean filter(Item item) throws ItemFilterException {
+	public boolean evaluate(Item item) throws ItemFilterException {
 		
 		return matches(title, item.getTitle()) && matches(description, item.getDescription());
 	}

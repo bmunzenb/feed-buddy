@@ -13,7 +13,7 @@ public class RegexItemFilterTest extends TestCase {
 		Item item = new Item();
 		item.setTitle("foo");
 		
-		assertTrue(filter.filter(item));
+		assertTrue(filter.evaluate(item));
 	}
 	
 	public void textTitleWithMatchingPattern() throws Exception {
@@ -24,7 +24,7 @@ public class RegexItemFilterTest extends TestCase {
 		Item item = new Item();
 		item.setTitle("foo");
 		
-		assertTrue(filter.filter(item));		
+		assertTrue(filter.evaluate(item));		
 	}
 	
 	public void testTitleWithNonMatchingPattern() throws Exception {
@@ -35,6 +35,6 @@ public class RegexItemFilterTest extends TestCase {
 		Item item = new Item();
 		item.setTitle("foo");
 		
-		assertFalse(filter.filter(item));
+		assertFalse(filter.evaluate(item));
 	}
 }
