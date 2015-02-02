@@ -48,6 +48,8 @@ public class FeedPoller {
 		System.setProperty("http.agent", config.getAgent());
 
 		scheduleFeeds(config);
+
+		scheduleConfigurationListener();
 	}
 	
 	public void stop() {
@@ -80,8 +82,6 @@ public class FeedPoller {
 			
 			scheduleProcessor(processor, period);
 		}
-		
-		scheduleConfigurationListener();
 	}
 	
 	protected FeedProcessor getFeedProcessor(Feed feed) throws FeedProcessorException {

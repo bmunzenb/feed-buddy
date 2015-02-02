@@ -34,7 +34,7 @@ public class FileBasedProcessedItemsRegistry implements ProcessedItemsRegistry {
 			}
 		}
 		catch (Exception e) {
-			throw new ProcessedItemsRegistryException("Could not initialize processed items registry", e);
+			throw new ProcessedItemsRegistryException("Could not initialize processed items registry: " + file, e);
 		}
 	}
 	
@@ -54,24 +54,24 @@ public class FileBasedProcessedItemsRegistry implements ProcessedItemsRegistry {
 	}
 	
 	private static File getFile(Feed config) {
+		
 		String file = config.getUrl();
 		
-		file = file.replace("://", "-");
+		file = file.replace("://", "-")
+				.replace("/", "-")
+				.replace("|", "-")
+				.replace("\\", "-")
+				.replace("*", "-")
+				.replace("\"", "-")
+				.replace("<", "-")
+				.replace(">", "-")
+				.replace("=", "-")
+				.replace("%", "-")
+				.replace(":", "-")
+				.replace("?", "_")
+				.replace("&", "_");
 		
-		file = file.replace("/", "-");
-		file = file.replace("|", "-");
-		file = file.replace("\\", "-");
-		file = file.replace("*", "-");
-		file = file.replace("\"", "-");
-		file = file.replace("<", "-");
-		file = file.replace(">", "-");
-		file = file.replace("=", "-");
-		file = file.replace("%", "-");
-		
-		file = file.replace("?", "_");
-		file = file.replace("&", "_");
-		
-		file = file + ".processed";
+		file += ".processed";
 		
 		return new File(file);
 	}
