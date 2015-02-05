@@ -92,6 +92,8 @@ The following filters have been implemented:
 
 ### Handlers
 
+Handlers are used to process invdidual feed items.
+
 The following handlers have been implemented:
 
 #### Send Mail
@@ -114,7 +116,7 @@ Sends an email containing the content of the feed item.
 
 #### Download Enclosures
 
-Downloads all of the enclosures included in the feed item.
+Downloads enclosures included in the feed item.
 
 **Class:** `com.munzenberger.feed.handler.DownloadEnclosures`
 
@@ -122,6 +124,7 @@ Downloads all of the enclosures included in the feed item.
 | :------------ | :------------------------- |
 | `targetDir` | The target directory to download enclosures to. Defaults to current directory. |
 | `overwriteExisting` | If set to `true`, the handler will overwrite any files in the target directory that already exist.  Defaults to `false`. |
+| `filter` | (Optional) A regular expression that the URL of the enclosure must match in order for it to be downloaded.  If omitted, then all enclosures are downloaded. |
 
 ### Example
 

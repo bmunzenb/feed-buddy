@@ -20,12 +20,18 @@ public class DownloadEnclosures implements ItemHandler {
 
 	private String targetDir = ".";
 	
+	private String filter = null;
+
 	private boolean overwriteExisting = false;
 	
 	public void setTargetDir(String targetDir) {
 		this.targetDir = targetDir;
 	}
 	
+	public void setFilter(String filter) {
+		this.filter = filter;
+	}
+
 	public void setOverwriteExisting(String overwrite) {
 		this.overwriteExisting = Boolean.valueOf(overwrite);
 	}
@@ -33,15 +39,23 @@ public class DownloadEnclosures implements ItemHandler {
 	@Override
 	public void process(Item item, Logger logger) throws ItemHandlerException {
 		for (Enclosure e : item.getEnclosures()) {
+			process(e, item.getPubDate(), logger);
+		}
+	}
+
+	protected void process(Enclosure e, String pubDate, Logger logger) throws ItemHandlerException {
+
+		if (evaluate(filter, e)) {
+
 			File file = process(e.getUrl(), logger);
-			
-			Date date = DateParser.parse(item.getPubDate(), logger);
+
+			Date date = DateParser.parse(pubDate, logger);
 			if (date != null) {
 				file.setLastModified(date.getTime());
 			}
 		}
 	}
-	
+
 	protected File process(String downloadURL, Logger logger) throws ItemHandlerException {
 		File file = getLocalFile( downloadURL );
 		
@@ -117,5 +131,16 @@ public class DownloadEnclosures implements ItemHandler {
 		
 		time = System.currentTimeMillis() - time;
 		logger.info(url + " -> " + file + " (" + Formatter.fileSize(bytes) + " in " + Formatter.elapsedTime(time) + ")");
+	}
+
+	protected boolean evaluate(String filter, Enclosure enclosure) {
+
+		boolean eval = true;
+
+		if (filter != null) {
+			eval = enclosure.getUrl().matches(filter);
+		}
+
+		return eval;
 	}
 }
