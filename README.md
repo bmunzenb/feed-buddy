@@ -92,7 +92,7 @@ The following filters have been implemented:
 
 ### Handlers
 
-Handlers are used to process invdidual feed items.
+Handlers are used to process individual feed items.
 
 The following handlers have been implemented:
 
