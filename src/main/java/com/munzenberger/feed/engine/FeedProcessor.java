@@ -2,6 +2,7 @@ package com.munzenberger.feed.engine;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TimerTask;
 
@@ -89,7 +90,11 @@ public class FeedProcessor implements Runnable {
 		
 		boolean result = true;
 		
-		for (ItemFilter f : filters) {
+		Iterator<ItemFilter> i = filters.iterator();
+		
+		while (result && i.hasNext()) {
+			
+			ItemFilter f = i.next();
 			
 			try {
 				result = f.evaluate(item);
@@ -97,10 +102,6 @@ public class FeedProcessor implements Runnable {
 			catch (ItemFilterException e) {
 				logger.error("Filter failed to evaluate item: " + item.getGuid(), e);
 				result = false;
-			}
-			
-			if (!result) {
-				break;
 			}
 		}
 		
