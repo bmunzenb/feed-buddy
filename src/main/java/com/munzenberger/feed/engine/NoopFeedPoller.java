@@ -7,7 +7,6 @@ import java.util.List;
 import com.munzenberger.feed.config.Feed;
 import com.munzenberger.feed.handler.ItemHandler;
 import com.munzenberger.feed.handler.ItemHandlerFactoryException;
-import com.munzenberger.feed.handler.NoOp;
 import com.munzenberger.feed.log.Logger;
 
 public class NoopFeedPoller extends FeedPoller {
@@ -22,9 +21,7 @@ public class NoopFeedPoller extends FeedPoller {
 
 	@Override
 	protected List<ItemHandler> getHandlers(Feed feed) throws ItemHandlerFactoryException {
-		List<ItemHandler> handlers = new ArrayList<ItemHandler>(1);
-		handlers.add(new NoOp());
-		return handlers;
+		return new ArrayList<ItemHandler>(0);
 	}
 
 	@Override

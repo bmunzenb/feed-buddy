@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.munzenberger.feed.filter.ItemFilter;
 import com.munzenberger.feed.filter.ItemFilterException;
+import com.munzenberger.feed.handler.ItemHandler;
 import com.munzenberger.feed.parser.rss.Item;
 
 import junit.framework.TestCase;
@@ -56,5 +57,14 @@ public class FeedProcessorTest extends TestCase {
 		FeedProcessor processor = new FeedProcessor(null, filters, null, null, null, null);
 		
 		assertFalse(processor.evaluateFilters(null));
+	}
+	
+	public void testExecuteHandlersWithNoHandlers() throws Exception {
+		
+		List<ItemHandler> handlers = new LinkedList<ItemHandler>();
+		
+		FeedProcessor processor = new FeedProcessor(null, null, handlers, null, null, null);
+		
+		assertTrue(processor.executeHandlers(null));
 	}
 }
