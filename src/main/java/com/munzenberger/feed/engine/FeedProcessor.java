@@ -16,6 +16,7 @@ import com.munzenberger.feed.parser.Parser;
 import com.munzenberger.feed.parser.rss.Channel;
 import com.munzenberger.feed.parser.rss.Item;
 import com.munzenberger.feed.parser.rss.RSS;
+import com.munzenberger.feed.util.URLProcessor;
 
 public class FeedProcessor implements Runnable {
 
@@ -37,13 +38,7 @@ public class FeedProcessor implements Runnable {
 	
 	public void run() {
 		try {
-			URLConnection conn = url.openConnection();
-			String contentEncoding = conn.getHeaderField("Content-Encoding");
-
-			InputStream in = conn.getInputStream();
-			if ("gzip".equalsIgnoreCase(contentEncoding)) {
-				in = new GZIPInputStream(in);
-			}
+			InputStream in = URLProcessor.getInputStream(url);
 
 			RSS rss = parser.parse(in);
 			process(rss);
