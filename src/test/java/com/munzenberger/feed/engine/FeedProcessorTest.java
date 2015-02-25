@@ -25,6 +25,15 @@ public class FeedProcessorTest extends TestCase {
 		}		
 	};
 	
+	public void testProcessFilters() throws Exception {
+		
+		List<ItemFilter> filters = new LinkedList<ItemFilter>();
+		
+		FeedProcessor processor = new FeedProcessor(null, filters, null, null, null, null);
+		
+		assertTrue(processor.evaluateFilters(null));
+	}
+	
 	public void testProcessFiltersTrue() throws Exception {
 		
 		List<ItemFilter> filters = new LinkedList<ItemFilter>();
