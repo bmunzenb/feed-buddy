@@ -2,10 +2,8 @@ package com.munzenberger.feed.engine;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 import java.util.TimerTask;
-import java.util.zip.GZIPInputStream;
 
 import com.munzenberger.feed.filter.ItemFilter;
 import com.munzenberger.feed.filter.ItemFilterException;

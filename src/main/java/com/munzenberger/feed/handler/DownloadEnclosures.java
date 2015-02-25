@@ -15,6 +15,7 @@ import com.munzenberger.feed.parser.rss.Item;
 import com.munzenberger.feed.util.DataTransfer;
 import com.munzenberger.feed.util.DateParser;
 import com.munzenberger.feed.util.Formatter;
+import com.munzenberger.feed.util.URLProcessor;
 
 public class DownloadEnclosures implements ItemHandler {
 
@@ -120,7 +121,7 @@ public class DownloadEnclosures implements ItemHandler {
 		long time = System.currentTimeMillis();		
 		long bytes = 0;
 		
-		InputStream in = url.openStream();
+		InputStream in = URLProcessor.getInputStream(url);
 		OutputStream out = new FileOutputStream(file);
 		
 		bytes = DataTransfer.transfer(in, out);
