@@ -31,10 +31,14 @@ public class Item {
 	}
 
 	public String getGuid() {
-		if (guid == null || guid.trim().length() == 0) {
-			return link;
-		} else {
+		if (!isEmpty(guid)) {
 			return guid;
+		}
+		else if (!isEmpty(link)) {
+			return link;
+		}
+		else {
+			return Integer.toString((title + pubDate).hashCode());
 		}
 	}
 
@@ -80,5 +84,9 @@ public class Item {
 
 	public void setChannel(Channel channel) {
 		this.channel = channel;
+	}
+	
+	private static boolean isEmpty(String str) {
+		return str == null || str.trim().isEmpty();
 	}
 }
