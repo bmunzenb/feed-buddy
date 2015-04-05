@@ -5,8 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Date;
 
 import com.munzenberger.feed.log.Logger;
@@ -90,6 +92,13 @@ public class DownloadEnclosures implements ItemHandler {
 		int i = filePath.indexOf('?');
 		if (i > 0) {
 			filePath = filePath.substring(0, i);
+		}
+		
+		try {
+			filePath = URLDecoder.decode(filePath, "UTF-8");
+		}
+		catch (UnsupportedEncodingException e) {
+			throw new ItemHandlerException(e);
 		}
 		
 		filePath = targetDir + System.getProperty("file.separator") + filePath;
