@@ -101,6 +101,8 @@ public class DownloadEnclosures implements ItemHandler {
 			throw new ItemHandlerException(e);
 		}
 		
+		filePath = Formatter.fileName(filePath);
+
 		filePath = targetDir + System.getProperty("file.separator") + filePath;
 	
 		File file = new File(filePath);

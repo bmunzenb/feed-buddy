@@ -13,6 +13,7 @@ import java.util.HashSet;
 
 import com.munzenberger.feed.config.Feed;
 import com.munzenberger.feed.parser.rss.Item;
+import com.munzenberger.feed.util.Formatter;
 
 public class FileBasedProcessedItemsRegistry implements ProcessedItemsRegistry {
 
@@ -57,20 +58,8 @@ public class FileBasedProcessedItemsRegistry implements ProcessedItemsRegistry {
 		
 		String file = config.getUrl();
 		
-		file = file.replace("://", "-")
-				.replace("/", "-")
-				.replace("|", "-")
-				.replace("\\", "-")
-				.replace("*", "-")
-				.replace("\"", "-")
-				.replace("<", "-")
-				.replace(">", "-")
-				.replace("=", "-")
-				.replace("%", "-")
-				.replace(":", "-")
-				.replace("?", "_")
-				.replace("&", "_");
-		
+		file = Formatter.fileName(file);
+
 		file += ".processed";
 		
 		return new File(file);

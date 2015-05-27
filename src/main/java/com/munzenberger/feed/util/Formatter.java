@@ -63,4 +63,20 @@ public class Formatter {
 		
 		return format.format(b) + " " + d;
 	}
+
+	public static String fileName(String str) {
+		return str.replace("://", "-")
+				.replace("/", "-")
+				.replace("|", "-")
+				.replace("\\", "-")
+				.replace("*", "-")
+				.replace("\"", "-")
+				.replace("<", "-")
+				.replace(">", "-")
+				.replace("=", "-")
+				.replace("%", "-")
+				.replace(":", "-")
+				.replace("?", "_")
+				.replace("&", "_");
+	}
 }
