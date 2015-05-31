@@ -27,7 +27,10 @@ public class Item {
 	}
 
 	public void setLink(String link) {
-		this.link = link;
+		// prevent RSS feeds with Atom elements from overwriting this property
+		if (isEmpty(this.link)) {
+			this.link = link;
+		}
 	}
 
 	public String getGuid() {
