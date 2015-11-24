@@ -182,5 +182,9 @@ public class SendEmail implements ItemHandler {
 		public List<Enclosure> getEnclosures() {
 			return item.getEnclosures();
 		}
+		
+		public String getId() {
+			return item.getGuid();
+		}
 	}
 }
