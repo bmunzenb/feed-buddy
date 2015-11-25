@@ -41,7 +41,7 @@ public class Item {
 			return link;
 		}
 		else {
-			return Integer.toString((title + pubDate).hashCode());
+			return title + ":" + pubDate;
 		}
 	}
 
