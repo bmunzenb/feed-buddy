@@ -71,7 +71,7 @@ public class FeedProcessor implements Runnable {
 		
 		if (!registry.contains(item)) {
 			
-			logger.info("Processing " + item.getTitle() + "...");
+			logger.info("Processing " + item.getTitle() + " <Item-ID:" + item.getGuid() + ">...");
 				
 			boolean success = executeHandlers(item);
 

@@ -15,8 +15,7 @@
 			#foreach ( $enclosure in $item.enclosures )
 				<br><br>Download: <a href="$enclosure.url">$enclosure.url</a>
 			#end
-			
-			<br><br><span style="font-size: 0.8em; color: #888;">Item ID: ${item.id}</span>
 		</em>
+		<br><br><div style="font-size:0.75em;color:#aaa;text-align:right;">&lt;Item-ID:${item.id}&gt;</div>
 	</body>
 </html>
