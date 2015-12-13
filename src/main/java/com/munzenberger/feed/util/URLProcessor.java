@@ -7,25 +7,23 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.zip.GZIPInputStream;
 
-import com.munzenberger.feed.log.Logger;
-
 public final class URLProcessor {
 
 	private URLProcessor() {}
 
-	public static InputStream getInputStream(Logger logger, URL url) throws IOException {
+	public static InputStream getInputStream(URL url) throws IOException {
 		
 		URLConnection conn = url.openConnection();
 		
 		if (conn instanceof HttpURLConnection) {
-			return getHttpInputStream(logger, (HttpURLConnection)conn);
+			return getHttpInputStream((HttpURLConnection)conn);
 		}
 		else {
 			return getInputStream(conn);
 		}
 	}
 	
-	private static InputStream getHttpInputStream(Logger logger, HttpURLConnection conn) throws IOException {
+	private static InputStream getHttpInputStream(HttpURLConnection conn) throws IOException {
 		
 		int responseCode = conn.getResponseCode();
 		
@@ -33,9 +31,8 @@ public final class URLProcessor {
 		if (responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_MOVED_TEMP) {
 			String location = conn.getHeaderField("Location");
 			if (location != null) {
-				logger.info(responseCode + " redirect to " + location);
 				URL redirect = new URL(location);
-				return getInputStream(logger, redirect);
+				return getInputStream(redirect);
 			}
 		}
 		

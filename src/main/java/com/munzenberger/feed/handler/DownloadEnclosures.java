@@ -132,9 +132,9 @@ public class DownloadEnclosures implements ItemHandler {
 		long time = System.currentTimeMillis();		
 		long bytes = 0;
 		
-		logger.info("transferring " + url + " -> " + file);
+		logger.info("Transferring " + url + " -> " + file);
 		
-		InputStream in = URLProcessor.getInputStream(logger, url);
+		InputStream in = URLProcessor.getInputStream(url);
 		OutputStream out = new FileOutputStream(file);
 		
 		bytes = DataTransfer.transfer(in, out);
