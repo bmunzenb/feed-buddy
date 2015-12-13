@@ -37,7 +37,7 @@ public class FeedProcessor implements Runnable {
 	
 	public void run() {
 		try {
-			InputStream in = URLProcessor.getInputStream(url);
+			InputStream in = URLProcessor.getInputStream(logger, url);
 
 			RSS rss = parser.parse(in);
 			process(rss);
