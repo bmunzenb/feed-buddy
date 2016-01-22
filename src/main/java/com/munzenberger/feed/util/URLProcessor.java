@@ -13,28 +13,9 @@ public final class URLProcessor {
 
 	public static InputStream getInputStream(URL url) throws IOException {
 		
+		HttpURLConnection.setFollowRedirects(true);
+		
 		URLConnection conn = url.openConnection();
-		
-		if (conn instanceof HttpURLConnection) {
-			return getHttpInputStream((HttpURLConnection)conn);
-		}
-		else {
-			return getInputStream(conn);
-		}
-	}
-	
-	private static InputStream getHttpInputStream(HttpURLConnection conn) throws IOException {
-		
-		int responseCode = conn.getResponseCode();
-		
-		// follow redirects
-		if (responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_MOVED_TEMP) {
-			String location = conn.getHeaderField("Location");
-			if (location != null) {
-				URL redirect = new URL(location);
-				return getInputStream(redirect);
-			}
-		}
 		
 		return getInputStream(conn);
 	}
