@@ -105,7 +105,7 @@ Sends an email containing the content of the feed item.
 | Property Name | Property Value Description |
 | :------------ | :------------------------- |
 | `to`| Recipient email address. |
-| `from` | Sender email address, if not specified or valid in the feed item. |
+| `from` | Sender email address.  If not specified, the address of the feed item's author is used. |
 | `smtpHost` | SMTP server host address. |
 | `smtpPort` | SMTP server port number. |
 | `auth` | Set to `true` if your SMTP server requires authentication. |
