@@ -3,11 +3,11 @@ _Feed Buddy_ is a simple RSS and Atom item processor written in Java.
 
 
 ## Building
-This project uses [Maven](http://maven.apache.org/).  To build, execute the following command:
+This project uses [Gradle](https://gradle.org/) with the [Application Plugin](https://docs.gradle.org/current/userguide/application_plugin.html).  To build a distributable archive, execute the following command:
 
-`mvn package`
+`gradlew distZip`
 
-This will create a target directory containing the `feed-buddy-{version}.jar` file.  This file contains all of the dependencies baked in. 
+This will produce a `feed-buddy.zip` file in the `build\distributions` directory.
 
 ## Configuration
 _Feed Buddy_ is configured using an XML file:
