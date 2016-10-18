@@ -176,11 +176,9 @@ Downloads enclosures included in the feed item.
 ```
 
 ## Executing
-Execute _Feed Buddy_ using the following command:
+The distribution zip file contains batch scripts in the `bin` directory.  Execute the one that is appropriate for your platform.
 
-`java -jar feed-buddy-{version}.jar`
-
-By default, it will look for a `feeds.xml` configuration file in the same directory as execution.
+By default, _Feed Buddy_ will look for a `feeds.xml` configuration file in the currect working directory.
 
 The following parameters are supported:
 
