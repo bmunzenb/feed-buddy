@@ -4,4 +4,4 @@
 build/
 gradle/
 settings.gradle
-.gradle/
+/target/
