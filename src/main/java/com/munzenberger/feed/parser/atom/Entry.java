@@ -6,16 +6,17 @@ import java.util.List;
 public class Entry {
 
 	private String title;
-	
+
 	private String published;
-	
+
 	private String id;
-	
+
 	private Author author;
-	
+
 	private Content content;
-	
-	private final List<Link> links = new LinkedList<Link>();
+
+	private final List<Link> links = new LinkedList<>();
+	private final List<String> categories = new LinkedList<>();
 
 	public String getTitle() {
 		return title;
@@ -28,7 +29,7 @@ public class Entry {
 	public String getPublished() {
 		return published;
 	}
-	
+
 	public void setPublished(String published) {
 		this.published = published;
 	}
@@ -52,7 +53,7 @@ public class Entry {
 	public List<Link> getLinks() {
 		return links;
 	}
-	
+
 	public void addLink(Link l) {
 		links.add(l);
 	}
@@ -63,5 +64,13 @@ public class Entry {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public void addCategory(String category) {
+		this.categories.add(category);
+	}
+
+	public List<String> getCategories() {
+		return categories;
 	}
 }

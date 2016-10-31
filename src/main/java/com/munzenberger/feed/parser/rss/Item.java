@@ -12,8 +12,9 @@ public class Item {
 	private String author;
 	private String pubDate;
 	private Channel channel;
-	private final List<Enclosure> enclosures = new LinkedList<Enclosure>();
-	
+	private final List<Enclosure> enclosures = new LinkedList<>();
+	private final List<String> categories = new LinkedList<>();
+
 	public String getTitle() {
 		return title;
 	}
@@ -48,11 +49,11 @@ public class Item {
 	public void setGuid(String guid) {
 		this.guid = guid;
 	}
-	
+
 	public List<Enclosure> getEnclosures() {
 		return enclosures;
 	}
-	
+
 	public void addEnclosure(Enclosure e) {
 		enclosures.add(e);
 	}
@@ -88,7 +89,15 @@ public class Item {
 	public void setChannel(Channel channel) {
 		this.channel = channel;
 	}
-	
+
+	public void addCategory(String category) {
+		this.categories.add(category);
+	}
+
+	public List<String> getCategories() {
+		return categories;
+	}
+
 	private static boolean isEmpty(String str) {
 		return str == null || str.trim().isEmpty();
 	}
