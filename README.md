@@ -89,6 +89,7 @@ The following filters have been implemented:
 | :------------ | :------------------------- |
 | `title`| (Optional) Regular expression pattern to filter item titles on. |
 | `description` | (Optional) Regular expression pattern to filter item descriptions on. |
+| `category` | (Optional) Regular expression pattern to filter item categories on. At least one category needs to match the filter to be processed. If no categories are present, then the item is not processed. |
 
 ### Handlers
 
@@ -178,7 +179,7 @@ Downloads enclosures included in the feed item.
 ## Executing
 The distribution zip file contains batch scripts in the `bin` directory.  Execute the one that is appropriate for your platform.
 
-By default, _Feed Buddy_ will look for a `feeds.xml` configuration file in the currect working directory.
+By default, _Feed Buddy_ will look for a `feeds.xml` configuration file in the current working directory.
 
 The following parameters are supported:
 
