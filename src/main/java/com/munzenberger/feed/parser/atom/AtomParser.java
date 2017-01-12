@@ -1,6 +1,6 @@
 package com.munzenberger.feed.parser.atom;
 
-import java.io.InputStream;
+import java.io.Reader;
 
 import org.apache.commons.digester.Digester;
 
@@ -8,6 +8,7 @@ import com.munzenberger.feed.parser.Parser;
 import com.munzenberger.feed.parser.rss.Channel;
 import com.munzenberger.feed.parser.rss.Item;
 import com.munzenberger.feed.parser.rss.RSS;
+import com.munzenberger.feed.parser.rss.RSSParserException;
 
 public class AtomParser implements Parser {
 
@@ -99,7 +100,7 @@ public class AtomParser implements Parser {
 	}
 
 	@Override
-	public RSS parse(InputStream in) throws AtomParserException {
+	public RSS parse(Reader in) throws RSSParserException {
 		try {
 			Atom atom = (Atom) getDigester().parse(in);
 			return toRSS(atom);

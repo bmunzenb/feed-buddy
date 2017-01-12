@@ -23,13 +23,13 @@ public final class URLProcessor {
 
 	private URLProcessor() {}
 
-	public static URLResponse getResponse(URL url) throws IOException {
+	public static InputStream getInputStream(URL url) throws IOException {
 
 		URLConnection conn = url.openConnection();
-		return getResponse(conn);
+		return getInputStream(conn);
 	}
 
-	private static URLResponse getResponse(URLConnection conn) throws IOException {
+	private static InputStream getInputStream(URLConnection conn) throws IOException {
 
 		// handle redirects
 		if (conn instanceof HttpURLConnection) {
@@ -37,13 +37,12 @@ public final class URLProcessor {
 			if (redirectCodes.contains(response)) {
 				String location = conn.getHeaderField("Location");
 				if (location != null) {
-					return getResponse(new URL(location));
+					return getInputStream(new URL(location));
 				}
 			}
 		}
 
 		String contentEncoding = conn.getHeaderField("Content-Encoding");
-		String contentType = conn.getHeaderField("Content-Type");
 
 		InputStream in = conn.getInputStream();
 
@@ -52,6 +51,6 @@ public final class URLProcessor {
 			in = new GZIPInputStream(in);
 		}
 
-		return new URLResponse(contentType, in);
+		return in;
 	}
 }

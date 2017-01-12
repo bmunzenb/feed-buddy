@@ -1,6 +1,6 @@
 package com.munzenberger.feed.parser.rss;
 
-import java.io.InputStream;
+import java.io.Reader;
 
 import org.apache.commons.digester.Digester;
 
@@ -57,7 +57,7 @@ public class RSSParser implements Parser {
 	}
 
 	@Override
-	public RSS parse(InputStream in) throws RSSParserException {
+	public RSS parse(Reader in) throws RSSParserException {
 		try {
 			return (RSS) getDigester().parse(in);
 		}

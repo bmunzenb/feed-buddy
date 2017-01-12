@@ -134,7 +134,7 @@ public class DownloadEnclosures implements ItemHandler {
 		
 		logger.info("Transferring " + url + " -> " + file);
 		
-		InputStream in = URLProcessor.getResponse(url).getInputStream();
+		InputStream in = URLProcessor.getInputStream(url);
 		OutputStream out = new FileOutputStream(file);
 		
 		bytes = DataTransfer.transfer(in, out);
