@@ -18,6 +18,8 @@ import com.munzenberger.feed.parser.rss.Channel;
 import com.munzenberger.feed.parser.rss.Item;
 import com.munzenberger.feed.parser.rss.RSS;
 import com.munzenberger.feed.util.URLProcessor;
+import com.munzenberger.feed.util.URLResponse;
+import com.munzenberger.feed.util.URLResponseDecoder;
 import com.munzenberger.feed.util.XMLFilterReader;
 
 public class FeedProcessor implements Runnable {
@@ -40,9 +42,9 @@ public class FeedProcessor implements Runnable {
 	
 	public void run() {
 		try {
-			InputStream in = URLProcessor.getInputStream(url);
-			
-			Reader reader = new XMLFilterReader(new InputStreamReader(in));
+
+			URLResponse response = URLProcessor.getResponse(url);
+			Reader reader = URLResponseDecoder.decodeForXML(response);
 
 			RSS rss = parser.parse(reader);
 			process(rss);
