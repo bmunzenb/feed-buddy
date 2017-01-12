@@ -1,6 +1,5 @@
 package com.munzenberger.feed.engine;
 
-import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +15,7 @@ import com.munzenberger.feed.parser.rss.Channel;
 import com.munzenberger.feed.parser.rss.Item;
 import com.munzenberger.feed.parser.rss.RSS;
 import com.munzenberger.feed.util.URLProcessor;
+import com.munzenberger.feed.util.URLResponse;
 
 public class FeedProcessor implements Runnable {
 
@@ -37,9 +37,9 @@ public class FeedProcessor implements Runnable {
 	
 	public void run() {
 		try {
-			InputStream in = URLProcessor.getInputStream(url);
+			URLResponse response = URLProcessor.getResponse(url);
 
-			RSS rss = parser.parse(in);
+			RSS rss = parser.parse(response.getInputStream());
 			process(rss);
 		} 
 		catch (Exception e) {
