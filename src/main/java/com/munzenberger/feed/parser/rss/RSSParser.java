@@ -4,9 +4,9 @@ import java.io.Reader;
 
 import org.apache.commons.digester.Digester;
 
-import com.munzenberger.feed.parser.Parser;
+import com.munzenberger.feed.parser.AbstractParser;
 
-public class RSSParser implements Parser {
+public class RSSParser extends AbstractParser {
 
 	private static final RSSParser instance = new RSSParser();
 
@@ -57,12 +57,7 @@ public class RSSParser implements Parser {
 	}
 
 	@Override
-	public RSS parse(Reader in) throws RSSParserException {
-		try {
-			return (RSS) getDigester().parse(in);
-		}
-		catch (Exception e) {
-			throw new RSSParserException("Failed to parse RSS", e);
-		}
+	protected RSS parse(Reader in) throws Exception {
+		return (RSS) getDigester().parse(in);
 	}
 }

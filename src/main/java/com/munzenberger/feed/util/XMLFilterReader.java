@@ -6,26 +6,47 @@ import java.io.Reader;
 
 public class XMLFilterReader extends FilterReader {
 	
-	public XMLFilterReader(Reader in) {
+	private final String encoding;
+	private boolean first = true;
+	
+	public XMLFilterReader(Reader in, String encoding) {
 		super(in);
+		this.encoding = encoding;
 	}
 
 	@Override
 	public int read() throws IOException {
-		return super.read();
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public int read(char[] cbuf, int off, int len) throws IOException {
 		int read = super.read(cbuf, off, len);
 		
-		for (int i = off; i < off+len; i++) {
-			if (!isValidXMLChar(cbuf[i])) {
-				cbuf[i] = ' ';
+		if (read < 0) {
+			return read;
+		}
+		
+		int ptr = off;
+		int ctr = 0;
+		
+		for (int i = off; i < off+read; i++) {
+			
+			if (first) {
+				first = false;
+				// strip the UTF-8 byte order mark, if present
+				if ("UTF-8".equals(encoding) && cbuf[i] == '\uFEFF') {
+					continue;
+				}
+			}
+			
+			if (isValidXMLChar(cbuf[i])) {
+				cbuf[ptr++] = cbuf[i];
+				ctr++;
 			}
 		}
 		
-		return read;
+		return ctr;
 	}
 	
 	private static boolean isValidXMLChar(char c) {

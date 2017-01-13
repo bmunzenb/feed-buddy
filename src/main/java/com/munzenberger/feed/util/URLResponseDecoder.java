@@ -14,7 +14,7 @@ public class URLResponseDecoder {
 		String encoding = "UTF-8";
 		
 		// TODO: this is too primitive, better to parse the charset from the content-type
-		if (response.getContentType() != null && response.getContentType().contains("UTF-16")) {
+		if (response.getContentType() != null && response.getContentType().toUpperCase().contains("UTF-16")) {
 			encoding = "UTF-16";
 		}
 		
@@ -24,6 +24,6 @@ public class URLResponseDecoder {
 	public static Reader decodeForXML(String encoding, InputStream in) throws UnsupportedEncodingException {
 		
 		Reader reader = new InputStreamReader(in, encoding);
-		return new XMLFilterReader(reader);
+		return new XMLFilterReader(reader, encoding);
 	}
 }
