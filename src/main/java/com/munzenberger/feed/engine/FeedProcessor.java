@@ -15,7 +15,7 @@ import com.munzenberger.feed.parser.rss.Channel;
 import com.munzenberger.feed.parser.rss.Item;
 import com.munzenberger.feed.parser.rss.RSS;
 
-public class FeedProcessor implements Runnable {
+public class FeedProcessor extends TimerTask {
 
 	private final URL url;
 	private final List<ItemFilter> filters;
@@ -33,6 +33,7 @@ public class FeedProcessor implements Runnable {
 		this.logger = logger;
 	}
 	
+	@Override
 	public void run() {
 		try {
 
@@ -121,15 +122,5 @@ public class FeedProcessor implements Runnable {
 		}
 		
 		return success;
-	}
-	
-	public TimerTask getTimerTask() {
-		final FeedProcessor f = this;
-		return new TimerTask() {
-			@Override
-			public void run() {
-				f.run();
-			}
-		};
 	}
 }

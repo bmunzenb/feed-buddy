@@ -26,23 +26,23 @@ public class FeedPoller {
 
 	private static final int FIVE_SECONDS_IN_MILLIS = 5 * 1000;
 	private static final int ONE_MINUTE_IN_MILLIS = 60 * 1000;
-	
+
 	private final File file;
 	private final Logger logger;
 
 	private Timer timer;
-	
+
 	public FeedPoller(File file, Logger logger) {
 		this.file = file;
 		this.logger = logger;
 	}
-	
+
 	public void start() throws ConfigParserException, FeedProcessorException {
-		
+
 		stop();
-		
+
 		prepareTimer();
-		
+
 		Feeds config = ConfigParser.parse(file);
 
 		System.setProperty("http.agent", config.getAgent());
@@ -51,39 +51,36 @@ public class FeedPoller {
 
 		scheduleConfigurationListener();
 	}
-	
+
 	public void stop() {
-		if (this.timer != null) {
-			this.timer.cancel();
+		if (timer != null) {
+			timer.cancel();
 		}
 	}
-	
+
 	protected void prepareTimer() {
 		timer = new Timer();
 	}
-	
+
 	protected void scheduleFeeds(Feeds config) throws FeedProcessorException {
-		
+
 		logger.info("Scheduling " + config.getFeeds().size() + " feed" + (config.getFeeds().size() != 1 ? "s" : "") + "...");
-		
+
 		for (Feed feed : config.getFeeds()) {
 			FeedProcessor processor = getFeedProcessor(feed);
-			
-			long period;
-			
+
 			// period is configured in minutes
+			long period = config.getPeriod();
 			if (feed.getPeriod() > 0) {
 				period = feed.getPeriod();
-			} else {
-				period = config.getPeriod();
 			}
-			
+
 			period = period * ONE_MINUTE_IN_MILLIS; // convert to millis
-			
+
 			scheduleProcessor(processor, period);
 		}
 	}
-	
+
 	protected FeedProcessor getFeedProcessor(Feed feed) throws FeedProcessorException {
 		try {
 			URL url = new URL(feed.getUrl());
@@ -91,14 +88,14 @@ public class FeedPoller {
 			List<ItemHandler> handlers = getHandlers(feed);
 			ProcessedItemsRegistry registry = new FileBasedProcessedItemsRegistry(feed);
 			Parser parser = ParserFactory.getParser(feed.getType());
-			
+
 			return new FeedProcessor(url, filters, handlers, registry, parser, logger);
 		}
 		catch (Exception e) {
 			throw new FeedProcessorException("Could not initialize feed processor", e);
 		}
 	}
-	
+
 	protected List<ItemFilter> getFilters(Feed feed) throws ItemFilterFactoryException {
 		List<ItemFilter> filters = new LinkedList<ItemFilter>();
 		for (Filter f : feed.getFilters()) {
@@ -107,7 +104,7 @@ public class FeedPoller {
 		}
 		return filters;
 	}
-	
+
 	protected List<ItemHandler> getHandlers(Feed feed) throws ItemHandlerFactoryException {
 		List<ItemHandler> handlers = new LinkedList<ItemHandler>();
 		for (Handler h : feed.getHandlers()) {
@@ -116,11 +113,11 @@ public class FeedPoller {
 		}
 		return handlers;
 	}
-	
+
 	protected void scheduleProcessor(FeedProcessor processor, long period) {
-		timer.schedule(processor.getTimerTask(), 0, period);
+		timer.schedule(processor, 0, period);
 	}
-	
+
 	protected void scheduleConfigurationListener() {
 		ConfigListener configListener = new ConfigListener(file, this, logger);
 		timer.schedule(configListener, FIVE_SECONDS_IN_MILLIS, FIVE_SECONDS_IN_MILLIS);

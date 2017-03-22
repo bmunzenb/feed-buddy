@@ -36,9 +36,10 @@ public final class URLProcessor {
 			int response = ((HttpURLConnection)conn).getResponseCode();
 			if (redirectCodes.contains(response)) {
 				String location = conn.getHeaderField("Location");
-				if (location != null) {
-					return getResponse(new URL(location));
+				if (location == null) {
+					throw new IOException(String.format("Redirect response (%d) with no 'location' in header: %s", response, String.valueOf(conn.getHeaderFields())));
 				}
+				return getResponse(new URL(location));
 			}
 		}
 

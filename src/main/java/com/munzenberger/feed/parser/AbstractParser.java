@@ -4,7 +4,6 @@ import java.io.Reader;
 import java.net.URL;
 
 import com.munzenberger.feed.parser.rss.RSS;
-import com.munzenberger.feed.parser.rss.RSSParserException;
 import com.munzenberger.feed.util.URLProcessor;
 import com.munzenberger.feed.util.URLResponse;
 import com.munzenberger.feed.util.URLResponseDecoder;
@@ -12,7 +11,7 @@ import com.munzenberger.feed.util.URLResponseDecoder;
 public abstract class AbstractParser implements Parser {
 
 	@Override
-	public RSS parse(URL url) throws RSSParserException {
+	public RSS parse(URL url) throws ParserException {
 		
 		try {
 			
@@ -22,7 +21,7 @@ public abstract class AbstractParser implements Parser {
 		}
 		catch (Exception e) {
 			
-			throw new RSSParserException("Failed to parse RSS", e);
+			throw new ParserException("Failed to parse RSS", e);
 		}
 	}
 	
