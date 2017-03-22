@@ -28,7 +28,9 @@ public class DownloadEnclosuresTest extends TestCase {
 		assertNotNull(f2);
 		f2.deleteOnExit();
 		
-		assertEquals("." + separator + "download-1594842180.mp3", f2.getPath());
+		int hashcode = url.hashCode();
+		
+		assertEquals("." + separator + "download-" + hashcode + ".mp3", f2.getPath());
 	}
 
 	public void testGetLocalFileWithEscapes() throws Exception {
