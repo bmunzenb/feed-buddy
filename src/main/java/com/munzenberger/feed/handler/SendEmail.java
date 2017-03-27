@@ -147,7 +147,7 @@ public class SendEmail implements ItemHandler {
 		return mailSession;
 	}
 
-	protected static class MailItem {
+	public static class MailItem {
 
 		private final String description;
 		private final String link;

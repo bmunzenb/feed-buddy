@@ -29,6 +29,10 @@ public class SendEmailTest extends TestCase {
 
 		String message = handler.getHtmlMsg(item);
 		assertNotNull(message);
+		assertTrue(message.contains("Hello world!"));
+		assertTrue(message.contains("http://www.google.com"));
+		assertTrue(message.contains("http://download_one.com"));
+		assertTrue(message.contains("http://download_two.com"));
 	}
 
 	public void testSetFrom() throws Exception {
