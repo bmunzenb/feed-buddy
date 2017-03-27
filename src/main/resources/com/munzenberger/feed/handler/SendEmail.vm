@@ -3,6 +3,8 @@
 	<body>
 		#if ( $item.description )
 			$item.description
+		#else
+			<em>No content</em>
 		#end
 		<br>
 		<hr>

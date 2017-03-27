@@ -35,31 +35,31 @@ public class SendEmail implements ItemHandler {
 	public void setTo(String to) {
 		this.to = to;
 	}
-	
+
 	public void setFrom(String from) {
 		this.from = from;
 	}
-	
+
 	public void setSmtpHost(String smtpHost) {
 		this.smtpHost = smtpHost;
 	}
-	
+
 	public void setSmtpPort(String smtpPort) {
 		this.smtpPort = smtpPort;
 	}
-	
+
 	public void setAuth(String auth) {
 		this.auth = auth;
 	}
-	
+
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public void setStartTLSEnable(String startTLSEnable) {
 		this.startTLSEnable = startTLSEnable;
 	}
@@ -70,9 +70,9 @@ public class SendEmail implements ItemHandler {
 
 	@Override
 	public void process(Item item, Logger logger) throws ItemHandlerException {
-		
+
 		HtmlEmail email = new HtmlEmail();
-		
+
 		try {
 			email.addTo(to);
 			setFrom(email, item);
@@ -85,10 +85,10 @@ public class SendEmail implements ItemHandler {
 		catch (Exception e) {
 			throw new ItemHandlerException("Could not send email", e);
 		}
-		
+
 		logger.info("Sent item email to " + to);
 	}
-	
+
 	protected void setFrom(HtmlEmail email, Item item) throws EmailException {
 		if (this.from != null) {
 			try {
@@ -97,7 +97,7 @@ public class SendEmail implements ItemHandler {
 			} catch (EmailException e) {
 			}
 		}
-		
+
 		if (item.getAuthor() != null) {
 			try {
 				email.setFrom(item.getAuthor(), item.getChannel().getTitle());
@@ -105,10 +105,10 @@ public class SendEmail implements ItemHandler {
 			} catch (EmailException e) {
 			}
 		}
-		
+
 		email.setFrom("no@reply.com", item.getChannel().getTitle());
 	}
-	
+
 	protected void setSentDate(HtmlEmail email, Item item, Logger logger) {
 		if (item.getPubDate() != null) {
 			Date d = DateParser.parse(item.getPubDate(), logger);
@@ -117,7 +117,7 @@ public class SendEmail implements ItemHandler {
 			}
 		}
 	}
-	
+
 	protected String getHtmlMsg(Item item) {
 		MailItem mailItem = new MailItem(item);		
 		Reader reader = new InputStreamReader( getClass().getResourceAsStream("SendEmail.vm") );
@@ -127,12 +127,12 @@ public class SendEmail implements ItemHandler {
 		Velocity.evaluate(context, writer, "", reader);
 		return writer.toString();
 	}
-	
+
 	private Session mailSession;
-	
+
 	protected Session getMailSession() {
 		if (mailSession == null) {
-			
+
 			Properties props = new Properties();
 			props.put("mail.smtp.host", this.smtpHost);
 			props.put("mail.smtp.port", this.smtpPort);
@@ -141,24 +141,46 @@ public class SendEmail implements ItemHandler {
 			props.put("mail.smtp.password", this.password);
 			props.put("mail.smtp.starttls.enable", this.startTLSEnable);
 			props.put("mail.smtp.starttls.required", this.startTLSRequired);
-			
+
 			mailSession = Session.getInstance(props);
 		}
 		return mailSession;
 	}
-	
-	public static class MailItem {
-		
-		private final Item item;
-				
+
+	protected static class MailItem {
+
+		private final String description;
+		private final String link;
+		private final List<Enclosure> enclosures;
+		private final String id;
+
 		public MailItem(Item item) {
-			this.item = item;
+			this.link = item.getLink();
+			this.enclosures = item.getEnclosures();
+			this.id = item.getGuid();
+			this.description = getDescription(item);
 		}
-		
+
 		public String getDescription() {
-			
+			return description;
+		}
+
+		public String getLink() {
+			return link;
+		}
+
+		public List<Enclosure> getEnclosures() {
+			return enclosures;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		protected static String getDescription(Item item) {
+
 			StringBuilder encoded = new StringBuilder();
-			
+
 			if (item.getDescription() != null) {
 				DecimalFormat format = new DecimalFormat("0000");
 				for (int i = 0; i < item.getDescription().length(); i++) {
@@ -173,18 +195,6 @@ public class SendEmail implements ItemHandler {
 			}
 
 			return encoded.toString();
-		}
-		
-		public String getLink() {
-			return item.getLink();
-		}
-		
-		public List<Enclosure> getEnclosures() {
-			return item.getEnclosures();
-		}
-		
-		public String getId() {
-			return item.getGuid();
 		}
 	}
 }
