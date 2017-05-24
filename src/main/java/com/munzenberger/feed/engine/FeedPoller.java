@@ -64,7 +64,7 @@ public class FeedPoller {
 
 	protected void scheduleFeeds(Feeds config) throws FeedProcessorException {
 
-		logger.info("Scheduling " + config.getFeeds().size() + " feed" + (config.getFeeds().size() != 1 ? "s" : "") + "...");
+		logger.log("Scheduling " + config.getFeeds().size() + " feed" + (config.getFeeds().size() != 1 ? "s" : "") + "...");
 
 		for (Feed feed : config.getFeeds()) {
 			FeedProcessor processor = getFeedProcessor(feed);

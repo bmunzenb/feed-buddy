@@ -86,7 +86,7 @@ public class SendEmail implements ItemHandler {
 			throw new ItemHandlerException("Could not send email", e);
 		}
 
-		logger.info("Sent item email to " + to);
+		logger.log("Sent item email to " + to);
 	}
 
 	protected void setFrom(HtmlEmail email, Item item) throws EmailException {

@@ -11,24 +11,24 @@ public class ConfigListener extends TimerTask {
 	private final long lastModified;
 	private final FeedPoller poller;
 	private final Logger logger;
-	
+
 	public ConfigListener(File file, FeedPoller poller, Logger logger) {
 		this.file = file;
 		this.lastModified = file.lastModified();
 		this.poller = poller;
 		this.logger = logger;
 	}
-	
+
 	@Override
 	public void run() {
 		try {
 			if (lastModified != file.lastModified()) {
-				logger.info("Detected configuration change, restarting feed poller...");
+				logger.log("Detected configuration change, restarting feed poller...");
 				poller.start();
 			}
 		}
 		catch (Throwable t) {
-			logger.error("ConfigListener failure", t);
+			logger.log("ConfigListener failure", t);
 		}
 	}
 }

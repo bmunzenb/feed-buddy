@@ -14,12 +14,12 @@ public class DateParser {
 	public static Date parse(String source) {
 		return parse(source, null);
 	}
-	
+
 	public static Date parse(String source, Logger logger) {
 		if (source == null) {
 			return null;
 		}
-		
+
 		try {
 			DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");			
 			return format.parse(source);
@@ -27,7 +27,7 @@ public class DateParser {
 		catch (ParseException e) {
 			// try again below
 		}
-		
+
 		try {
 			long millis = ISODateTimeFormat.dateTime().parseMillis(source);
 			return new Date(millis);
@@ -35,18 +35,18 @@ public class DateParser {
 		catch (Exception e) {
 			// try again below
 		}
-		
+
 		try {
 			long millis = ISODateTimeFormat.dateTimeNoMillis().parseMillis(source);
 			return new Date(millis);
 		}
 		catch (Exception e) {
 		}
-		
+
 		if (logger != null) {
-			logger.info("Unparsable date: " + source);
+			logger.log("Unparsable date: " + source);
 		}
-		
+
 		return null;
 	}
 }

@@ -10,6 +10,7 @@ import com.munzenberger.feed.filter.ItemFilterException;
 import com.munzenberger.feed.handler.ItemHandler;
 import com.munzenberger.feed.handler.ItemHandlerException;
 import com.munzenberger.feed.log.Logger;
+import com.munzenberger.feed.log.TaggedLogger;
 import com.munzenberger.feed.parser.Parser;
 import com.munzenberger.feed.parser.rss.Channel;
 import com.munzenberger.feed.parser.rss.Item;
@@ -32,7 +33,7 @@ public class FeedProcessor extends TimerTask {
 		this.parser = parser;
 		this.logger = logger;
 	}
-	
+
 	@Override
 	public void run() {
 		try {
@@ -41,37 +42,39 @@ public class FeedProcessor extends TimerTask {
 			process(rss);
 		} 
 		catch (Throwable e) {
-			logger.error("Failure while processing feed " + url, e);
+			logger.log("Failure while processing feed " + url, e);
 		}
 	}
-	
+
 	protected void process(RSS rss) throws FeedProcessorException {
 		for (Channel c : rss.getChannels()) {
 			process(c);
 		}
 	}
-	
+
 	protected void process(Channel channel) throws FeedProcessorException {
-		
-		logger.info("Scanning " + channel.getTitle() + "...");
-		
+
+		Logger localLogger = new TaggedLogger(channel.getTitle(), logger);
+
+		localLogger.log("Scanning...");
+
 		for (Item i : channel.getItems()) {
-			
-			boolean shouldProcess = evaluateFilters(i);
-			
+
+			boolean shouldProcess = evaluateFilters(i, localLogger);
+
 			if (shouldProcess) {
-				process(i);
+				process(i, localLogger);
 			}
 		}
 	}
-	
-	protected void process(Item item) throws FeedProcessorException {
-		
+
+	protected void process(Item item, Logger localLogger) throws FeedProcessorException {
+
 		if (!registry.contains(item)) {
-			
-			logger.info("Processing " + item.getTitle() + " <Item-ID:" + item.getGuid() + ">...");
-				
-			boolean success = executeHandlers(item);
+
+			localLogger.log("Processing " + item.getTitle() + " <Item-ID:" + item.getGuid() + ">...");
+
+			boolean success = executeHandlers(item, localLogger);
 
 			if (success) {
 				try {
@@ -83,44 +86,44 @@ public class FeedProcessor extends TimerTask {
 			}
 		}
 	}
-	
-	protected boolean evaluateFilters(Item item) {
-		
+
+	protected boolean evaluateFilters(Item item, Logger localLogger) {
+
 		boolean result = true;
-		
+
 		Iterator<ItemFilter> i = filters.iterator();
-		
+
 		while (result && i.hasNext()) {
-			
+
 			ItemFilter f = i.next();
-			
+
 			try {
 				result = f.evaluate(item);
 			}
 			catch (ItemFilterException e) {
-				logger.error("Filter failed to evaluate item: " + item.getGuid(), e);
+				localLogger.log("Filter failed to evaluate item: " + item.getGuid(), e);
 				result = false;
 			}
 		}
-		
+
 		return result;
 	}
-	
-	protected boolean executeHandlers(Item item) {
-		
+
+	protected boolean executeHandlers(Item item, Logger localLogger) {
+
 		boolean success = true;
-		
+
 		for (ItemHandler h : handlers) {
-			
+
 			try {
-				h.process(item, logger);
+				h.process(item, localLogger);
 			}
 			catch (ItemHandlerException e) {
-				logger.error("Handler failed to process item: " + item.getGuid(), e);
+				localLogger.log("Handler failed to process item: " + item.getGuid(), e);
 				success = false;
 			}
 		}
-		
+
 		return success;
 	}
 }
