@@ -40,8 +40,8 @@ public class FeedProcessor extends TimerTask {
 			RSS rss = parser.parse(url);
 			process(rss);
 		} 
-		catch (Exception e) {
-			logger.error("Exception while processing feed " + url, e);
+		catch (Throwable e) {
+			logger.error("Failure while processing feed " + url, e);
 		}
 	}
 	

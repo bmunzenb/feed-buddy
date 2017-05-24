@@ -21,13 +21,14 @@ public class ConfigListener extends TimerTask {
 	
 	@Override
 	public void run() {
-		if (lastModified != file.lastModified()) {
-			try {
+		try {
+			if (lastModified != file.lastModified()) {
+				logger.info("Detected configuration change, restarting feed poller...");
 				poller.start();
 			}
-			catch (Exception e) {
-				logger.error("Failed to schedule feeds", e);
-			}
+		}
+		catch (Throwable t) {
+			logger.error("ConfigListener failure", t);
 		}
 	}
 }
