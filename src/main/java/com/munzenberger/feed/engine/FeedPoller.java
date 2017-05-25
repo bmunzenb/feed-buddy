@@ -28,12 +28,14 @@ public class FeedPoller {
 	private static final int ONE_MINUTE_IN_MILLIS = 60 * 1000;
 
 	private final File file;
+	private final String processed;
 	private final Logger logger;
 
 	private Timer timer;
 
-	public FeedPoller(File file, Logger logger) {
+	public FeedPoller(File file, String processed, Logger logger) {
 		this.file = file;
+		this.processed = processed;
 		this.logger = logger;
 	}
 
@@ -86,7 +88,7 @@ public class FeedPoller {
 			URL url = new URL(feed.getUrl());
 			List<ItemFilter> filters = getFilters(feed);
 			List<ItemHandler> handlers = getHandlers(feed);
-			ProcessedItemsRegistry registry = new FileBasedProcessedItemsRegistry(feed);
+			ProcessedItemsRegistry registry = new FileBasedProcessedItemsRegistry(processed, feed);
 			Parser parser = ParserFactory.getParser(feed.getType());
 
 			return new FeedProcessor(url, filters, handlers, registry, parser, logger);

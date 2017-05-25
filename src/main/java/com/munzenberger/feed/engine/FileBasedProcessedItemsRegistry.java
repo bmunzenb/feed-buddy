@@ -18,12 +18,16 @@ import com.munzenberger.feed.util.Formatter;
 public class FileBasedProcessedItemsRegistry implements ProcessedItemsRegistry {
 
 	private final Collection<String> processed = new HashSet<String>();
-	
+
 	private final File file;
-	
+
 	public FileBasedProcessedItemsRegistry(Feed config) throws ProcessedItemsRegistryException {
-		file = getFile(config);
-		
+		this(null, config);
+	}
+
+	public FileBasedProcessedItemsRegistry(String rootDir, Feed config) throws ProcessedItemsRegistryException {
+		file = getFile(rootDir, config);
+
 		try {
 			if (file.canRead()) {
 				load(file, processed);
@@ -38,33 +42,36 @@ public class FileBasedProcessedItemsRegistry implements ProcessedItemsRegistry {
 			throw new ProcessedItemsRegistryException("Could not initialize processed items registry: " + file, e);
 		}
 	}
-	
+
 	public boolean contains(Item item) {
 		return processed.contains( item.getGuid() );
 	}
-	
+
 	public void add(Item item) throws ProcessedItemsRegistryException {
 		String key = item.getGuid();
 		processed.add( key );
-		
+
 		try {
 			save(file, key);
 		} catch (IOException e) {
 			throw new ProcessedItemsRegistryException("Could not add item to processed registry", e);
 		}
 	}
-	
-	private static File getFile(Feed config) {
-		
-		String file = config.getUrl();
-		
-		file = Formatter.fileName(file);
 
+	private static File getFile(String rootDir, Feed config) {
+
+		String file = "";
+
+		if (rootDir != null) {
+			file = rootDir + File.separator;
+		}
+
+		file += Formatter.fileName(config.getUrl());
 		file += ".processed";
-		
+
 		return new File(file);
 	}
-	
+
 	private static void load(File file, Collection<String> list) throws IOException {
 		InputStream in = new FileInputStream(file);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -75,7 +82,7 @@ public class FileBasedProcessedItemsRegistry implements ProcessedItemsRegistry {
 		}
 		reader.close();
 	}
-	
+
 	private static void save(File file, String key) throws IOException {
 		PrintWriter out = new PrintWriter( new FileOutputStream(file, true), true );
 		out.println(key);

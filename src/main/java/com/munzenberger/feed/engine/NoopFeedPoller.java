@@ -11,8 +11,8 @@ import com.munzenberger.feed.log.Logger;
 
 public class NoopFeedPoller extends FeedPoller {
 
-	public NoopFeedPoller(File file, Logger logger) {
-		super(file, logger);
+	public NoopFeedPoller(File file, String processed, Logger logger) {
+		super(file, processed, logger);
 	}
 
 	@Override

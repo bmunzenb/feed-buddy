@@ -21,6 +21,7 @@ public class App {
 	private static final Logger logger = new DefaultLogger();
 
 	private static String feeds = "feeds.xml";
+	private static String processed = null;
 	private static boolean noop = false;
 	private static String logFile = null;
 	private static boolean help = false;
@@ -52,10 +53,10 @@ public class App {
 
 		if (noop) {
 			logger.log("Executing in NOOP mode: All items will be marked as processed without executing handlers.");
-			poller = new NoopFeedPoller(file, logger);
+			poller = new NoopFeedPoller(file, processed, logger);
 		}
 		else {
-			poller = new FeedPoller(file, logger);
+			poller = new FeedPoller(file, processed, logger);
 		}
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -71,13 +72,12 @@ public class App {
 
 	private static Options buildOptions() {
 
-		Options options = new Options();
-		options.addOption("feeds", true, "the feeds configuration file");
-		options.addOption("log", true, "file to write log to");
-		options.addOption("noop", false, "mark all items as processed without executing handlers, then exit");
-		options.addOption("help", false, "print help");
-
-		return options;
+		return new Options()
+			.addOption("feeds", true, "path to feeds configuration file")
+			.addOption("processed", true, "directory to write processed items files to")
+			.addOption("log", true, "file to write log to")
+			.addOption("noop", false, "mark all items as processed without executing handlers, then exit")
+			.addOption("help", false, "print help");
 	}
 
 	private static void parseCommandLine(String[] args, Options options) throws ParseException {
@@ -87,6 +87,10 @@ public class App {
 
 		if (line.hasOption("feeds")) {
 			feeds = line.getOptionValue("feeds");
+		}
+
+		if (line.hasOption("processed")) {
+			processed = line.getOptionValue("processed");
 		}
 
 		if (line.hasOption("log")) {
