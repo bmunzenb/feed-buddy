@@ -7,7 +7,7 @@ This project uses [Gradle](https://gradle.org/) with the [Application Plugin](ht
 
 `gradlew distZip`
 
-This will produce a `feed-buddy.zip` file in the `build\distributions` directory.
+This will produce a `feed-buddy.zip` file in the `build/distributions` directory.
 
 ## Configuration
 _Feed Buddy_ is configured using an XML file:
@@ -177,17 +177,17 @@ Downloads enclosures included in the feed item.
 ```
 
 ## Executing
-The distribution zip file contains batch scripts in the `bin` directory.  Execute the one that is appropriate for your platform.
-
-By default, _Feed Buddy_ will look for a `feeds.xml` configuration file in the current working directory.
+The distribution zip file contains scripts in the `bin` directory.  Execute the one that is appropriate for your platform.
 
 The following parameters are supported:
 
 | Parameter | Description |
 | :-------- | :---------- |
-| `-feeds <config>` | Specifies the location of the configuration file. |
-| `-log <file>` | Writes the log to the specified file. |
+| `-feeds <file>` | Specifies the location of the configuration file.  Defaults to `feeds.xml` in the current working directory. |
+| `-processed <directory>` | Specifies the location where the processed items files are written to.  Defaults to the current working directory. |
+| `-log <file>` | Writes the log to the specified file in addition to the console. |
 | `-noop` | Executes in no-op mode.  This means all of the feed items are marked as processed, but none of the handlers are executed. |
+| `-help` | Prints the help message. |
 
 ## Creating Your Own Filters and Handlers
 
