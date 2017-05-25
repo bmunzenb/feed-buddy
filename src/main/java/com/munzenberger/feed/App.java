@@ -2,11 +2,10 @@ package com.munzenberger.feed;
 
 import java.io.File;
 
-import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
@@ -24,10 +23,24 @@ public class App {
 	private static String feeds = "feeds.xml";
 	private static boolean noop = false;
 	private static String logFile = null;
+	private static boolean help = false;
 
 	public static void main( String[] args ) throws Exception {
 
-		parseCommandLine(args);
+		Options options = buildOptions();
+		parseCommandLine(args, options);
+
+		if (help) {
+			printOptions(options);
+			System.exit(0);
+		}
+
+		final File file = new File(feeds);
+		if (!file.canRead()) {
+			System.err.println(String.format("Configuration file not found: %s", feeds));
+			printOptions(options);
+			System.exit(1);
+		}
 
 		logger.addAppender(new ConsoleAppender());
 
@@ -35,11 +48,10 @@ public class App {
 			logger.addAppender(new FileAppender(logFile));
 		}
 
-		final File file = new File(feeds);
 		final FeedPoller poller;
 
 		if (noop) {
-			logger.log("Executing in NOOP mode.");
+			logger.log("Executing in NOOP mode: All items will be marked as processed without executing handlers.");
 			poller = new NoopFeedPoller(file, logger);
 		}
 		else {
@@ -57,20 +69,20 @@ public class App {
 		poller.start();
 	}
 
-	@SuppressWarnings("static-access")
-	private static void parseCommandLine(String[] args) throws ParseException {
-
-		Option feedsOption = OptionBuilder.withArgName("file").hasArg().withDescription("the feeds configuration file").create("feeds");
-		Option logOption = OptionBuilder.withArgName("file").hasArg().withDescription("file to write log to").create("log");
-
-		Option noopOption = new Option("noop", "marks all feeds as processed");
+	private static Options buildOptions() {
 
 		Options options = new Options();
-		options.addOption(feedsOption);
-		options.addOption(logOption);
-		options.addOption(noopOption);
+		options.addOption("feeds", true, "the feeds configuration file");
+		options.addOption("log", true, "file to write log to");
+		options.addOption("noop", false, "mark all items as processed without executing handlers, then exit");
+		options.addOption("help", false, "print help");
 
-		CommandLineParser cmdParser = new BasicParser();
+		return options;
+	}
+
+	private static void parseCommandLine(String[] args, Options options) throws ParseException {
+
+		CommandLineParser cmdParser = new DefaultParser();
 		CommandLine line = cmdParser.parse(options, args);
 
 		if (line.hasOption("feeds")) {
@@ -82,5 +94,12 @@ public class App {
 		}
 
 		noop = line.hasOption("noop");
+		help = line.hasOption("help");
+	}
+
+	private static void printOptions(Options options) {
+
+		HelpFormatter formatter = new HelpFormatter();
+		formatter.printHelp("feed-buddy [options]", options);
 	}
 }
