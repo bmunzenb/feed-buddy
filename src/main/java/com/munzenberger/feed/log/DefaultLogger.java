@@ -5,16 +5,7 @@ import java.util.List;
 
 public class DefaultLogger implements Logger {
 
-	private final Formatter formatter;
 	private final List<Appender> appenders = new LinkedList<>();
-
-	public DefaultLogger() {
-		this(new DefaultFormatter());
-	}
-
-	public DefaultLogger(Formatter formatter) {
-		this.formatter = formatter;
-	}
 
 	@Override
 	public void addAppender(Appender appender) {
@@ -38,9 +29,8 @@ public class DefaultLogger implements Logger {
 
 	@Override
 	public void log(String tag, String message, Throwable t) {
-		String formattedMessage = formatter.format(tag, message, t);
 		for (Appender a : appenders) {
-			a.append(formattedMessage);
+			a.append(tag, message, t);
 		}
 	}
 }

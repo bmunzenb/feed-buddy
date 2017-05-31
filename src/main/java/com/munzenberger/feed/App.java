@@ -12,8 +12,10 @@ import org.apache.commons.cli.ParseException;
 import com.munzenberger.feed.engine.FeedPoller;
 import com.munzenberger.feed.engine.NoopFeedPoller;
 import com.munzenberger.feed.log.ConsoleAppender;
+import com.munzenberger.feed.log.DefaultFormatter;
 import com.munzenberger.feed.log.DefaultLogger;
 import com.munzenberger.feed.log.FileAppender;
+import com.munzenberger.feed.log.Formatter;
 import com.munzenberger.feed.log.Logger;
 
 public class App {
@@ -43,10 +45,12 @@ public class App {
 			System.exit(1);
 		}
 
-		logger.addAppender(new ConsoleAppender());
+		Formatter formatter = new DefaultFormatter();
+
+		logger.addAppender(new ConsoleAppender(formatter));
 
 		if (logFile != null) {
-			logger.addAppender(new FileAppender(logFile));
+			logger.addAppender(new FileAppender(logFile, formatter));
 		}
 
 		final FeedPoller poller;

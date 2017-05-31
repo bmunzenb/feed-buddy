@@ -5,7 +5,7 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DefaultFormatter implements Logger.Formatter {
+public class DefaultFormatter implements Formatter {
 
 	private static final String separator = System.getProperty("line.separator");
 
