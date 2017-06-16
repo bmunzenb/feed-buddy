@@ -58,11 +58,11 @@ public class FeedPoller {
 
 		stop();
 
-		prepareTimer();
-
 		Feeds config = ConfigParser.parse(file);
 
 		System.setProperty("http.agent", config.getAgent());
+
+		prepareTimer();
 
 		scheduleFeeds(config);
 
