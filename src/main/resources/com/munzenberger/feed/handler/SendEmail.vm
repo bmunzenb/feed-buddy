@@ -32,6 +32,6 @@
 				<p>Download: <a href="$enclosure.url">$enclosure.url</a></p>
 			#end
 		</em>
-		<p style="font-size:0.75em;text-align:right;">[ID:${item.id}]</p>
+		<p style="font-size:0.75em;text-align:right;opacity:0.5">[ID:${item.id}]</p>
 	</body>
 </html>
