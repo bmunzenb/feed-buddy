@@ -16,23 +16,22 @@
 <html>
 	<head></head>
 	<body>
-		#if ( $item.description )
-			$item.description
-		#else
-			<em>No content</em>
-		#end
-		<br>
+		<div>
+			#if ( $item.description )
+				$item.description
+			#else
+				<em>No content</em>
+			#end
+		</div>
 		<hr>
-		<br>
 		<em>
 			#if ( $item.link )
-				Article: <a href="$item.link">$item.link</a>
+				<p>Article: <a href="$item.link">$item.link</a></p>
 			#end
-
 			#foreach ( $enclosure in $item.enclosures )
-				<br><br>Download: <a href="$enclosure.url">$enclosure.url</a>
+				<p>Download: <a href="$enclosure.url">$enclosure.url</a></p>
 			#end
 		</em>
-		<br><br><div style="font-size:0.75em;color:#aaa;text-align:right;">&lt;Item-ID:${item.id}&gt;</div>
+		<p style="font-size:0.75em;text-align:right;">[ID:${item.id}]</p>
 	</body>
 </html>
