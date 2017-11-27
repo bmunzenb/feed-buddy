@@ -60,7 +60,7 @@ public class FeedPoller {
 
 		Feeds config = ConfigParser.parse(file);
 
-		System.setProperty("http.agent", config.getAgent());
+		System.setProperty("http.agent", "feed-buddy/1.4 (+https://github.com/bmunzenb/feed-buddy)");
 
 		prepareTimer();
 
