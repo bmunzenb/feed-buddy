@@ -26,6 +26,7 @@ import org.apache.commons.cli.ParseException;
 
 import com.munzenberger.feed.engine.FeedPoller;
 import com.munzenberger.feed.engine.NoopFeedPoller;
+import com.munzenberger.feed.engine.OnceFeedPoller;
 import com.munzenberger.feed.log.ConsoleAppender;
 import com.munzenberger.feed.log.DefaultFormatter;
 import com.munzenberger.feed.log.DefaultLogger;
@@ -40,6 +41,7 @@ public class App {
 	private static String feeds = "feeds.xml";
 	private static String processed = null;
 	private static boolean noop = false;
+	private static boolean once = false;
 	private static String logFile = null;
 	private static boolean help = false;
 
@@ -74,6 +76,9 @@ public class App {
 			logger.log("Executing in NOOP mode: All items will be marked as processed without executing handlers.");
 			poller = new NoopFeedPoller(file, processed, logger);
 		}
+		else if (once) {
+			poller = new OnceFeedPoller(file, processed, logger);
+		}
 		else {
 			poller = new FeedPoller(file, processed, logger);
 		}
@@ -96,6 +101,7 @@ public class App {
 			.addOption("processed", true, "directory to write processed items files to")
 			.addOption("log", true, "file to write log to")
 			.addOption("noop", false, "mark all items as processed without executing handlers, then exit")
+			.addOption("once", false, "process feeds once and then exit")
 			.addOption("help", false, "print help");
 	}
 
@@ -117,6 +123,7 @@ public class App {
 		}
 
 		noop = line.hasOption("noop");
+		once = line.hasOption("once");
 		help = line.hasOption("help");
 	}
 

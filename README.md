@@ -185,6 +185,7 @@ The following parameters are supported:
 | `-feeds <file>` | Specifies the location of the configuration file.  Defaults to `feeds.xml` in the current working directory. |
 | `-processed <directory>` | Specifies the location where the processed items files are written to.  Defaults to the current working directory. |
 | `-log <file>` | Writes the log to the specified file in addition to the console. |
+| `-once` | Processes all feeds and handlers once then exits. |
 | `-noop` | Executes in no-op mode.  This means all of the feed items are marked as processed, but none of the handlers are executed. |
 | `-help` | Prints the help message. |
 
