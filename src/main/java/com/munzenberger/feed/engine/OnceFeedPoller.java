@@ -11,12 +11,15 @@ public class OnceFeedPoller extends FeedPoller {
 	}
 
 	@Override
+	protected void prepareTimer() {
+	}
+
+	@Override
 	protected void scheduleProcessor(FeedProcessor processor, long period) {
 		processor.run();
 	}
 
 	@Override
 	protected void scheduleConfigurationListener() {
-
 	}
 }

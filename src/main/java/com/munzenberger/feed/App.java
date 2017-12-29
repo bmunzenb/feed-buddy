@@ -77,6 +77,7 @@ public class App {
 			poller = new NoopFeedPoller(file, processed, logger);
 		}
 		else if (once) {
+			logger.log("Executing once...");
 			poller = new OnceFeedPoller(file, processed, logger);
 		}
 		else {
