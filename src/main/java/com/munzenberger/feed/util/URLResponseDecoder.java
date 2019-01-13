@@ -15,16 +15,13 @@
  */
 package com.munzenberger.feed.util;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 
 public class URLResponseDecoder {
 
 	private URLResponseDecoder() {}
 	
-	public static Reader decodeForXML(URLResponse response) throws UnsupportedEncodingException {
+	public static Reader decodeForXML(URLResponse response) throws IOException {
 		
 		String encoding = "UTF-8";
 		
@@ -32,13 +29,30 @@ public class URLResponseDecoder {
 		if (response.getContentType() != null && response.getContentType().toUpperCase().contains("UTF-16")) {
 			encoding = "UTF-16";
 		}
-		
-		return decodeForXML(encoding, response.getInputStream());
+
+		Reader reader = decodeForXML(encoding, response.getInputStream());
+
+		return trim(reader);
 	}
-	
-	public static Reader decodeForXML(String encoding, InputStream in) throws UnsupportedEncodingException {
+
+	private static Reader decodeForXML(String encoding, InputStream in) throws UnsupportedEncodingException {
 		
 		Reader reader = new InputStreamReader(in, encoding);
 		return new XMLFilterReader(reader, encoding);
+	}
+
+	private static Reader trim(Reader reader) throws IOException {
+
+		StringBuilder sb = new StringBuilder();
+
+		char[] cbuf = new char[4096];
+		int charsRead = reader.read(cbuf);
+
+		while (charsRead > 0) {
+			sb.append(cbuf, 0, charsRead);
+			charsRead = reader.read(cbuf);
+		}
+
+		return new StringReader(sb.toString().trim());
 	}
 }

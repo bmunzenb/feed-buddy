@@ -7,3 +7,4 @@ settings.gradle
 target/
 bin/
 .DS_Store
+.idea/
