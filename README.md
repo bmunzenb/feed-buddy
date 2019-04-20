@@ -124,6 +124,7 @@ Downloads enclosures included in the feed item.
 | :------------ | :------------------------- |
 | `targetDir` | The target directory to download enclosures to. Defaults to current directory. |
 | `overwriteExisting` | If set to `true`, the handler will overwrite any files in the target directory that already exist.  Defaults to `false`. |
+| `useFullPathForFilename` | If set to `true`, the handler will use the full URL path to generate the local filename, otherwise just the filename will be used. |
 | `filter` | (Optional) A regular expression that the URL of the enclosure must match in order for it to be downloaded.  If omitted, then all enclosures are downloaded. |
 
 ### Example

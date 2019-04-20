@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Brian Munzenberger
+ * Copyright 2019 Brian Munzenberger
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ public class DownloadEnclosures implements ItemHandler {
 	private String filter = null;
 
 	private boolean overwriteExisting = false;
+	private boolean useFullPathForFilename = false;
 
 	public void setTargetDir(String targetDir) {
 		this.targetDir = targetDir;
@@ -52,6 +53,10 @@ public class DownloadEnclosures implements ItemHandler {
 
 	public void setOverwriteExisting(String overwrite) {
 		this.overwriteExisting = Boolean.valueOf(overwrite);
+	}
+
+	public void setUseFullPathForFilename(String useFullPathForFilename) {
+		this.useFullPathForFilename = Boolean.valueOf(useFullPathForFilename);
 	}
 
 	@Override
@@ -99,21 +104,18 @@ public class DownloadEnclosures implements ItemHandler {
 	}
 
 	public File getLocalFile(String url) throws ItemHandlerException {
-		String filePath = url;
-		filePath = filePath.substring( filePath.lastIndexOf("/") + 1 );
 
-		int urlHash = url.hashCode();
-
-		int i = filePath.indexOf('?');
-		if (i > 0) {
-			filePath = filePath.substring(0, i);
-		}
+		String filePath;
 
 		try {
-			filePath = URLDecoder.decode(filePath, "UTF-8");
+			filePath = URLDecoder.decode(url, "UTF-8");
 		}
 		catch (UnsupportedEncodingException e) {
 			throw new ItemHandlerException(e);
+		}
+
+		if (!useFullPathForFilename) {
+			filePath = filePath.substring(filePath.lastIndexOf("/") + 1);
 		}
 
 		filePath = Formatter.fileName(filePath);
@@ -124,13 +126,6 @@ public class DownloadEnclosures implements ItemHandler {
 		try {
 
 			boolean newFileCreated = file.createNewFile();
-
-			if (!newFileCreated) {
-				int j = filePath.lastIndexOf('.');
-				filePath = filePath.substring(0, j) + "-" + String.valueOf(urlHash) + filePath.substring(j);
-				file = new File(filePath);
-				newFileCreated = file.createNewFile();
-			}
 
 			if (!newFileCreated && !this.overwriteExisting) {
 				throw new ItemHandlerException("File " + file + " already exists, skipping download of " + url);
