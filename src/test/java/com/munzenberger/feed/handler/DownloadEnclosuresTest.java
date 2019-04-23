@@ -34,7 +34,7 @@ public class DownloadEnclosuresTest extends TestCase {
 		
 		final String separator = System.getProperty("file.separator");
 		
-		assertEquals("." + separator + "download.mp3_id-1", f1.getPath());
+		assertEquals("." + separator + "download.mp3", f1.getPath());
 	}
 
 	public void testGetLocalFileWithFullPath() throws Exception {
@@ -51,7 +51,7 @@ public class DownloadEnclosuresTest extends TestCase {
 
 		final String separator = System.getProperty("file.separator");
 
-		assertEquals("." + separator + "http-www.test.com-download.mp3_id-1", f1.getPath());
+		assertEquals("." + separator + "http-www.test.com-download.mp3", f1.getPath());
 	}
 
 	public void testGetLocalFileWithEscapes() throws Exception {

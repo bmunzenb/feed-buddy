@@ -1,10 +1,10 @@
 /*
- * Copyright 2017 Brian Munzenberger
+ * Copyright 2019 Brian Munzenberger
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * 		http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.munzenberger.feed.engine;
+package com.munzenberger.feed.parser.rss;
 
-import java.util.HashSet;
-import java.util.Set;
+import junit.framework.TestCase;
 
-import com.munzenberger.feed.parser.rss.Item;
+public class ItemTest extends TestCase {
 
-public class MemoryBasedProcessedItemsRegistry implements ProcessedItemsRegistry {
+    public void testGetUniqueId() {
 
-	private final Set<Object> items = new HashSet<Object>();
-	
-	public void add(Item item) throws ProcessedItemsRegistryException {
-		items.add(item.getUniqueId());
-	}
+        Item item = new Item();
+        item.setTitle("title");
+        item.setDescription("description");
+        item.setPubDate("pubDate");
 
-	public boolean contains(Item item) {
-		return items.contains(item.getUniqueId());
-	}
+        String id = item.getUniqueId();
+
+        assertEquals("7Ii4Jn5KDOCyR1m6Fd9mvw==", id);
+    }
 }

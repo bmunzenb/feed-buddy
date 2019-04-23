@@ -8,3 +8,4 @@ target/
 bin/
 .DS_Store
 .idea/
+out/

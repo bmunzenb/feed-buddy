@@ -59,11 +59,11 @@ public class FileBasedProcessedItemsRegistry implements ProcessedItemsRegistry {
 	}
 
 	public boolean contains(Item item) {
-		return processed.contains( item.getGuid() );
+		return processed.contains( item.getUniqueId() );
 	}
 
 	public void add(Item item) throws ProcessedItemsRegistryException {
-		String key = item.getGuid();
+		String key = item.getUniqueId();
 		processed.add( key );
 
 		try {

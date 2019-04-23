@@ -103,32 +103,37 @@ public class DownloadEnclosures implements ItemHandler {
 		return file;
 	}
 
-	public File getLocalFile(String url) throws ItemHandlerException {
+	public File getLocalFile(String path) throws ItemHandlerException {
 
-		String filePath;
+		int queryIndex = path.indexOf('?');
+
+		if (queryIndex > 0) {
+			// discard the parameter component, if present
+			path = path.substring(0, queryIndex);
+		}
 
 		try {
-			filePath = URLDecoder.decode(url, "UTF-8");
+			path = URLDecoder.decode(path, "UTF-8");
 		}
 		catch (UnsupportedEncodingException e) {
 			throw new ItemHandlerException(e);
 		}
 
 		if (!useFullPathForFilename) {
-			filePath = filePath.substring(filePath.lastIndexOf("/") + 1);
+			path = path.substring(path.lastIndexOf("/") + 1);
 		}
 
-		filePath = Formatter.fileName(filePath);
+		path = Formatter.fileName(path);
 
-		filePath = targetDir + System.getProperty("file.separator") + filePath;
+		path = targetDir + System.getProperty("file.separator") + path;
 
-		File file = new File(filePath);
+		File file = new File(path);
 		try {
 
 			boolean newFileCreated = file.createNewFile();
 
 			if (!newFileCreated && !this.overwriteExisting) {
-				throw new ItemHandlerException("File " + file + " already exists, skipping download of " + url);
+				throw new ItemHandlerException("File " + file + " already exists, skipping download of " + path);
 			}
 		}
 		catch (IOException ex) {

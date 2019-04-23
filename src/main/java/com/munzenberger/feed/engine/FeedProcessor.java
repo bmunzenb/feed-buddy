@@ -87,7 +87,7 @@ public class FeedProcessor extends TimerTask {
 
 		if (!registry.contains(item)) {
 
-			localLogger.log("Processing " + item.getTitle() + " <Item-ID:" + item.getGuid() + ">...");
+			localLogger.log("Processing " + item + "...");
 
 			boolean success = executeHandlers(item, localLogger);
 
@@ -96,7 +96,7 @@ public class FeedProcessor extends TimerTask {
 					registry.add(item);
 				}
 				catch (ProcessedItemsRegistryException e) {
-					throw new FeedProcessorException("Failed to mark item as processed: " + item.getGuid(), e);
+					throw new FeedProcessorException("Failed to mark item as processed: " + item, e);
 				}
 			}
 		}
@@ -116,7 +116,7 @@ public class FeedProcessor extends TimerTask {
 				result = f.evaluate(item);
 			}
 			catch (ItemFilterException e) {
-				localLogger.log("Filter failed to evaluate item: " + item.getGuid(), e);
+				localLogger.log("Filter failed to evaluate item: " + item, e);
 				result = false;
 			}
 		}
@@ -134,7 +134,7 @@ public class FeedProcessor extends TimerTask {
 				h.process(item, localLogger);
 			}
 			catch (ItemHandlerException e) {
-				localLogger.log("Handler failed to process item: " + item.getGuid(), e);
+				localLogger.log("Handler failed to process item: " + item, e);
 				success = false;
 			}
 		}

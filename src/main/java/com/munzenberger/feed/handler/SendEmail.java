@@ -172,7 +172,7 @@ public class SendEmail implements ItemHandler {
 		public MailItem(Item item) {
 			this.link = item.getLink();
 			this.enclosures = item.getEnclosures();
-			this.id = item.getGuid();
+			this.id = item.getUniqueId();
 			this.description = getDescription(item);
 		}
 

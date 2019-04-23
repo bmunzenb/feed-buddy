@@ -15,6 +15,9 @@
  */
 package com.munzenberger.feed.parser.rss;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,16 +52,35 @@ public class Item {
 		}
 	}
 
+	public String getUniqueId() {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+
+			String id = "";
+
+			if (title != null) {
+				id += title;
+			}
+
+			if (description != null) {
+				id += description;
+			}
+
+			if (pubDate != null) {
+				id += pubDate;
+			}
+
+			digest.update(id.getBytes());
+			byte[] bytes = digest.digest();
+			return Base64.getEncoder().encodeToString(bytes);
+		}
+		catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public String getGuid() {
-		if (!isEmpty(guid)) {
-			return guid;
-		}
-		else if (!isEmpty(link)) {
-			return link;
-		}
-		else {
-			return title + ":" + pubDate;
-		}
+		return guid;
 	}
 
 	public void setGuid(String guid) {
@@ -111,6 +133,11 @@ public class Item {
 
 	public List<String> getCategories() {
 		return categories;
+	}
+
+	@Override
+	public String toString() {
+		return title + " (" + getUniqueId() + ")";
 	}
 
 	private static boolean isEmpty(String str) {
