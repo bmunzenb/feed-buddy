@@ -49,6 +49,7 @@ public class RSSParser extends AbstractParser {
 		digester.addObjectCreate("rss/channel/item", Item.class);
 		digester.addSetProperties("rss/channel/item");
 		digester.addCallMethod("rss/channel/item/title", "setTitle", 0);
+		digester.addCallMethod("rss/channel/item/guid", "setGuid", 0);
 		digester.addCallMethod("rss/channel/item/link", "setLink", 0);
 		digester.addCallMethod("rss/channel/item/description", "setDescription", 0);
 		digester.addCallMethod("rss/channel/item/author", "setAuthor", 0);
