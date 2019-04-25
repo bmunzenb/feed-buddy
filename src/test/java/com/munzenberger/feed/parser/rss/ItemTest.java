@@ -19,7 +19,17 @@ import junit.framework.TestCase;
 
 public class ItemTest extends TestCase {
 
-    public void testGetUniqueId() {
+    public void testGetUniqueIdWithGuid() {
+
+        Item item = new Item();
+        item.setGuid("guid");
+
+        String id = item.getUniqueId();
+
+        assertEquals("guid", id);
+    }
+
+    public void testGetUniqueIdWithoutGuid() {
 
         Item item = new Item();
         item.setTitle("title");

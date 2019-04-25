@@ -53,6 +53,11 @@ public class Item {
 	}
 
 	public String getUniqueId() {
+
+		if (!isEmpty(guid)) {
+			return guid;
+		}
+
 		try {
 			MessageDigest digest = MessageDigest.getInstance("MD5");
 
