@@ -52,11 +52,11 @@ public class DownloadEnclosures implements ItemHandler {
 	}
 
 	public void setOverwriteExisting(String overwrite) {
-		this.overwriteExisting = Boolean.valueOf(overwrite);
+		this.overwriteExisting = Boolean.parseBoolean(overwrite);
 	}
 
 	public void setUseFullPathForFilename(String useFullPathForFilename) {
-		this.useFullPathForFilename = Boolean.valueOf(useFullPathForFilename);
+		this.useFullPathForFilename = Boolean.parseBoolean(useFullPathForFilename);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class DownloadEnclosures implements ItemHandler {
 	}
 
 	protected File process(String downloadURL, Logger logger) throws ItemHandlerException {
-		File file = getLocalFile( downloadURL );
+		File file = getLocalFile(downloadURL, logger);
 
 		URL url;
 
@@ -103,7 +103,7 @@ public class DownloadEnclosures implements ItemHandler {
 		return file;
 	}
 
-	public File getLocalFile(String path) throws ItemHandlerException {
+	public File getLocalFile(String path, Logger logger) throws ItemHandlerException {
 
 		int queryIndex = path.indexOf('?');
 
@@ -130,10 +130,14 @@ public class DownloadEnclosures implements ItemHandler {
 		File file = new File(path);
 		try {
 
+			if (file.exists() && !this.overwriteExisting) {
+				throw new ItemHandlerException("File " + file + " already exists, skipping download of " + path);
+			}
+
 			boolean newFileCreated = file.createNewFile();
 
-			if (!newFileCreated && !this.overwriteExisting) {
-				throw new ItemHandlerException("File " + file + " already exists, skipping download of " + path);
+			if (!newFileCreated) {
+				logger.log("Overwriting file " + file);
 			}
 		}
 		catch (IOException ex) {

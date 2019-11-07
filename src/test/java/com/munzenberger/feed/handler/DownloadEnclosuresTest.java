@@ -17,9 +17,13 @@ package com.munzenberger.feed.handler;
 
 import java.io.File;
 
+import com.munzenberger.feed.log.DefaultLogger;
+import com.munzenberger.feed.log.Logger;
 import junit.framework.TestCase;
 
 public class DownloadEnclosuresTest extends TestCase {
+
+	private Logger logger = new DefaultLogger();
 
 	public void testGetLocalFile() throws Exception {
 		
@@ -27,7 +31,7 @@ public class DownloadEnclosuresTest extends TestCase {
 		
 		String url = "http://www.test.com/download.mp3?id=1";
 		
-		File f1 = handler.getLocalFile(url);
+		File f1 = handler.getLocalFile(url, logger);
 		
 		assertNotNull(f1);
 		f1.deleteOnExit();
@@ -44,7 +48,7 @@ public class DownloadEnclosuresTest extends TestCase {
 
 		String url = "http://www.test.com/download.mp3?id=1";
 
-		File f1 = handler.getLocalFile(url);
+		File f1 = handler.getLocalFile(url, logger);
 
 		assertNotNull(f1);
 		f1.deleteOnExit();
@@ -60,7 +64,7 @@ public class DownloadEnclosuresTest extends TestCase {
 
 		String url = "http://www.test.com/403+-+Raw+-+5%3A1%3A15%2C+3.15+PM.mp3";
 
-		File f1 = handler.getLocalFile(url);
+		File f1 = handler.getLocalFile(url, logger);
 
 		assertNotNull(f1);
 		f1.deleteOnExit();
