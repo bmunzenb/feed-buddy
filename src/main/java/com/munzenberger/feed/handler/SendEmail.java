@@ -100,7 +100,15 @@ public class SendEmail implements ItemHandler {
 
 			Message message = email.getMimeMessage();
 			Address[] addresses = new Address[] { new InternetAddress(to) };
-			getTransport().sendMessage(message, addresses);
+
+			Transport transport = getTransport();
+
+			if (!transport.isConnected()) {
+				logger.log("Connecting to mail transport...");
+				transport.connect(this.smtpHost, Integer.parseInt(this.smtpPort), this.username, this.password);
+			}
+
+			transport.sendMessage(message, addresses);
 		}
 		catch (Exception e) {
 			throw new ItemHandlerException("Could not send email", e);
@@ -176,7 +184,6 @@ public class SendEmail implements ItemHandler {
 	protected Transport getTransport() throws MessagingException {
 		if (transport == null) {
 			transport = getSession().getTransport();
-			transport.connect(this.smtpHost, Integer.parseInt(this.smtpPort), this.username, this.password);
 		}
 		return transport;
 	}
