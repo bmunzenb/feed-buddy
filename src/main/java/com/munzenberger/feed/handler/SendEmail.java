@@ -23,7 +23,8 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.List;
 
-import javax.mail.Session;
+import javax.mail.*;
+import javax.mail.internet.*;
 
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
@@ -85,17 +86,19 @@ public class SendEmail implements ItemHandler {
 
 	@Override
 	public void process(Item item, Logger logger) throws ItemHandlerException {
-
-		HtmlEmail email = new HtmlEmail();
-
 		try {
-			email.addTo(to);
+
+			HtmlEmail email = new HtmlEmail();
+
 			setFrom(email, item);
 			setSentDate(email, item, logger);
 			email.setSubject(item.getTitle());
 			email.setHtmlMsg(getHtmlMsg(item));
-			email.setMailSession(getMailSession());
-			email.send();
+			email.buildMimeMessage();
+
+			Message message = email.getMimeMessage();
+			Address[] addresses = new Address[] { new InternetAddress(to) };
+			getTransport().sendMessage(message, addresses);
 		}
 		catch (Exception e) {
 			throw new ItemHandlerException("Could not send email", e);
@@ -110,6 +113,7 @@ public class SendEmail implements ItemHandler {
 				email.setFrom(this.from, item.getChannel().getTitle());
 				return;
 			} catch (EmailException e) {
+				// ignore
 			}
 		}
 
@@ -118,6 +122,7 @@ public class SendEmail implements ItemHandler {
 				email.setFrom(item.getAuthor(), item.getChannel().getTitle());
 				return;
 			} catch (EmailException e) {
+				// ignore
 			}
 		}
 
@@ -143,12 +148,13 @@ public class SendEmail implements ItemHandler {
 		return writer.toString();
 	}
 
-	private Session mailSession;
+	private Transport transport;
 
-	protected Session getMailSession() {
-		if (mailSession == null) {
+	protected Transport getTransport() throws MessagingException {
+		if (transport == null) {
 
 			Properties props = new Properties();
+			props.put("mail.transport.protocol", "smtp");
 			props.put("mail.smtp.host", this.smtpHost);
 			props.put("mail.smtp.port", this.smtpPort);
 			props.put("mail.smtp.auth", this.auth);
@@ -157,9 +163,12 @@ public class SendEmail implements ItemHandler {
 			props.put("mail.smtp.starttls.enable", this.startTLSEnable);
 			props.put("mail.smtp.starttls.required", this.startTLSRequired);
 
-			mailSession = Session.getInstance(props);
+			Session session = Session.getDefaultInstance(props);
+
+			transport = session.getTransport();
+			transport.connect(this.smtpHost, Integer.parseInt(this.smtpPort), this.username, this.password);
 		}
-		return mailSession;
+		return transport;
 	}
 
 	public static class MailItem {
@@ -201,7 +210,7 @@ public class SendEmail implements ItemHandler {
 				for (int i = 0; i < item.getDescription().length(); i++) {
 					char c = item.getDescription().charAt(i);
 					if (c >= 0x7f) {
-						encoded.append("&#" + format.format(c) + ";");
+						encoded.append("&#").append(format.format(c)).append(";");
 					}
 					else {
 						encoded.append(c);

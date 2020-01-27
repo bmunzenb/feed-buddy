@@ -1,10 +1,22 @@
 apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: "com.github.ben-manes.versions"
+
+buildscript {
+
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.27.0"
+    }
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = '1.5.2'
+version = '1.5.3'
 
 repositories {
      jcenter()
@@ -13,12 +25,12 @@ repositories {
 dependencies {
 
     compile 'commons-digester:commons-digester:2.1'
-    compile 'org.apache.commons:commons-email:1.4'
+    compile 'org.apache.commons:commons-email:1.5'
     compile 'org.apache.velocity:velocity:1.7'
-    compile 'joda-time:joda-time:2.9.9'
+    compile 'joda-time:joda-time:2.10.5'
     compile 'commons-cli:commons-cli:1.4'
 
-    testCompile 'junit:junit:3.8.1'
+    testCompile 'junit:junit:4.13'
 }
 
 mainClassName = "com.munzenberger.feed.App"
