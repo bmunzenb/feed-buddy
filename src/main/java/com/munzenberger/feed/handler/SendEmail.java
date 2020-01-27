@@ -90,10 +90,12 @@ public class SendEmail implements ItemHandler {
 
 			HtmlEmail email = new HtmlEmail();
 
+			email.addTo(this.to);
 			setFrom(email, item);
 			setSentDate(email, item, logger);
 			email.setSubject(item.getTitle());
 			email.setHtmlMsg(getHtmlMsg(item));
+			email.setMailSession(getSession());
 			email.buildMimeMessage();
 
 			Message message = email.getMimeMessage();
@@ -148,10 +150,10 @@ public class SendEmail implements ItemHandler {
 		return writer.toString();
 	}
 
-	private Transport transport;
+	private Session session;
 
-	protected Transport getTransport() throws MessagingException {
-		if (transport == null) {
+	protected Session getSession() {
+		if (session == null) {
 
 			Properties props = new Properties();
 			props.put("mail.transport.protocol", "smtp");
@@ -163,9 +165,17 @@ public class SendEmail implements ItemHandler {
 			props.put("mail.smtp.starttls.enable", this.startTLSEnable);
 			props.put("mail.smtp.starttls.required", this.startTLSRequired);
 
-			Session session = Session.getDefaultInstance(props);
+			session = Session.getDefaultInstance(props);
+		}
 
-			transport = session.getTransport();
+		return session;
+	}
+
+	private Transport transport;
+
+	protected Transport getTransport() throws MessagingException {
+		if (transport == null) {
+			transport = getSession().getTransport();
 			transport.connect(this.smtpHost, Integer.parseInt(this.smtpPort), this.username, this.password);
 		}
 		return transport;
