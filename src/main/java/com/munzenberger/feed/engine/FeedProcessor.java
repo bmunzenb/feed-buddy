@@ -69,7 +69,7 @@ public class FeedProcessor extends TimerTask {
 
 	protected void process(Channel channel) throws FeedProcessorException {
 
-		Logger localLogger = new TaggedLogger(channel.getTitle(), logger);
+		Logger localLogger = new TaggedLogger(channel.getTitle(url.toString()), logger);
 
 		localLogger.log("Scanning...");
 

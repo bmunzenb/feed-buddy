@@ -22,10 +22,18 @@ public class Channel {
 
 	private String title;
 	
-	private final List<Item> items = new LinkedList<Item>();
+	private final List<Item> items = new LinkedList<>();
 
 	public String getTitle() {
-		return title;
+		return getTitle("");
+	}
+
+	public String getTitle(String defaultValue) {
+		if (title == null || title.trim().isEmpty()) {
+			return defaultValue;
+		} else {
+			return title;
+		}
 	}
 
 	public void setTitle(String title) {
