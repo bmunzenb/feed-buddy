@@ -34,14 +34,16 @@ import com.munzenberger.feed.parser.rss.RSS;
 public class FeedProcessor extends TimerTask {
 
 	private final URL url;
+	private final String userAgent;
 	private final List<ItemFilter> filters;
 	private final List<ItemHandler> handlers;
 	private final ProcessedItemsRegistry registry;
 	private final Parser parser;
 	private final Logger logger;
 
-	public FeedProcessor(URL url, List<ItemFilter> filters, List<ItemHandler> handlers, ProcessedItemsRegistry registry, Parser parser, Logger logger) {
+	public FeedProcessor(URL url, String userAgent, List<ItemFilter> filters, List<ItemHandler> handlers, ProcessedItemsRegistry registry, Parser parser, Logger logger) {
 		this.url = url;
+		this.userAgent = userAgent;
 		this.filters = filters;
 		this.handlers = handlers;
 		this.registry = registry;
@@ -53,7 +55,7 @@ public class FeedProcessor extends TimerTask {
 	public void run() {
 		try {
 
-			RSS rss = parser.parse(url);
+			RSS rss = parser.parse(url, userAgent);
 			process(rss);
 		} 
 		catch (Throwable e) {

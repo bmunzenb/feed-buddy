@@ -26,6 +26,8 @@ public class Feed {
 	
 	private String type = "rss";
 
+	private String userAgent = null;
+
 	private final List<Handler> handlers = new LinkedList<Handler>();
 	
 	private final List<Filter> filters = new LinkedList<Filter>();
@@ -68,5 +70,13 @@ public class Feed {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
 	}
 }

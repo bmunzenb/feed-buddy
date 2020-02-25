@@ -39,12 +39,18 @@ public final class URLProcessor {
 	private URLProcessor() {}
 
 	public static URLResponse getResponse(URL url) throws IOException {
-
-		URLConnection conn = url.openConnection();
-		return getResponse(conn);
+		return getResponse(url, null);
 	}
 
-	private static URLResponse getResponse(URLConnection conn) throws IOException {
+	public static URLResponse getResponse(URL url, String userAgent) throws IOException {
+		URLConnection conn = url.openConnection();
+		if (userAgent != null) {
+			conn.setRequestProperty("User-agent", userAgent);
+		}
+		return getResponse(conn, userAgent);
+	}
+
+	private static URLResponse getResponse(URLConnection conn, String userAgent) throws IOException {
 
 		// handle redirects
 		if (conn instanceof HttpURLConnection) {
@@ -54,7 +60,7 @@ public final class URLProcessor {
 				if (location == null) {
 					throw new IOException(String.format("Redirect response (%d) with no 'location' in header: %s", response, String.valueOf(conn.getHeaderFields())));
 				}
-				return getResponse(new URL(location));
+				return getResponse(new URL(location), userAgent);
 			}
 		}
 

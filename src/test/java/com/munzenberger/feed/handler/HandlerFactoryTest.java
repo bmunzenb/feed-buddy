@@ -26,8 +26,8 @@ public class HandlerFactoryTest extends TestCase {
 		
 		Handler h = new Handler();
 		h.setClazz(MockItemHandler.class.getName());
-		h.addProperty(new Property("poop", "value1"));
-		h.addProperty(new Property("dick", "value2"));
+		h.addProperty(new Property("foo", "value1"));
+		h.addProperty(new Property("bar", "value2"));
 		
 		MockItemHandler handler = (MockItemHandler) ItemHandlerFactory.newHandler(h);
 		handler.assertValues("value1", "value2");

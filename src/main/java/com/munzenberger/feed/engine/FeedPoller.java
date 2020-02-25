@@ -60,7 +60,7 @@ public class FeedPoller {
 
 		Feeds config = ConfigParser.parse(file);
 
-		System.setProperty("http.agent", "feed-buddy/1.4 (+https://github.com/bmunzenb/feed-buddy)");
+		System.setProperty("http.agent", "feed-buddy/1.5.4 (+https://github.com/bmunzenb/feed-buddy)");
 
 		prepareTimer();
 
@@ -101,12 +101,13 @@ public class FeedPoller {
 	protected FeedProcessor getFeedProcessor(Feed feed) throws FeedProcessorException {
 		try {
 			URL url = new URL(feed.getUrl());
+			String userAgent = feed.getUserAgent();
 			List<ItemFilter> filters = getFilters(feed);
 			List<ItemHandler> handlers = getHandlers(feed);
 			ProcessedItemsRegistry registry = new FileBasedProcessedItemsRegistry(processed, feed);
 			Parser parser = ParserFactory.getParser(feed.getType());
 
-			return new FeedProcessor(url, filters, handlers, registry, parser, logger);
+			return new FeedProcessor(url, userAgent, filters, handlers, registry, parser, logger);
 		}
 		catch (Exception e) {
 			throw new FeedProcessorException("Could not initialize feed processor", e);

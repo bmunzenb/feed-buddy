@@ -26,11 +26,11 @@ import com.munzenberger.feed.util.URLResponseDecoder;
 public abstract class AbstractParser implements Parser {
 
 	@Override
-	public RSS parse(URL url) throws ParserException {
+	public RSS parse(URL url, String userAgent) throws ParserException {
 		
 		try {
 			
-			URLResponse response = URLProcessor.getResponse(url);
+			URLResponse response = URLProcessor.getResponse(url, userAgent);
 			Reader reader = URLResponseDecoder.decodeForXML(response);
 			return parse(reader);
 		}

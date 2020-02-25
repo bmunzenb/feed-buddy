@@ -49,7 +49,7 @@ public class FeedProcessorTest extends TestCase {
 
 		List<ItemFilter> filters = new LinkedList<ItemFilter>();
 
-		FeedProcessor processor = new FeedProcessor(null, filters, null, null, null, null);
+		FeedProcessor processor = new FeedProcessor(null, null, filters, null, null, null, null);
 
 		assertTrue(processor.evaluateFilters(null, logger));
 	}
@@ -61,7 +61,7 @@ public class FeedProcessorTest extends TestCase {
 		filters.add(trueFilter);
 		filters.add(trueFilter);
 
-		FeedProcessor processor = new FeedProcessor(null, filters, null, null, null, null);
+		FeedProcessor processor = new FeedProcessor(null, null, filters, null, null, null, null);
 
 		assertTrue(processor.evaluateFilters(null, logger));
 	}
@@ -73,7 +73,7 @@ public class FeedProcessorTest extends TestCase {
 		filters.add(trueFilter);
 		filters.add(falseFilter);
 
-		FeedProcessor processor = new FeedProcessor(null, filters, null, null, null, null);
+		FeedProcessor processor = new FeedProcessor(null, null, filters, null, null, null, null);
 
 		assertFalse(processor.evaluateFilters(null, logger));
 	}
@@ -82,7 +82,7 @@ public class FeedProcessorTest extends TestCase {
 
 		List<ItemHandler> handlers = new LinkedList<ItemHandler>();
 
-		FeedProcessor processor = new FeedProcessor(null, null, handlers, null, null, null);
+		FeedProcessor processor = new FeedProcessor(null, null, null, handlers, null, null, null);
 
 		assertTrue(processor.executeHandlers(null, logger));
 	}
