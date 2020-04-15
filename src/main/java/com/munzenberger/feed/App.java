@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Brian Munzenberger
+ * Copyright 2020 Brian Munzenberger
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 package com.munzenberger.feed;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -46,6 +49,11 @@ public class App {
 	private static boolean help = false;
 
 	public static void main( String[] args ) throws Exception {
+
+		String applicationVersion = getApplicationVersion();
+
+		System.out.println("Feed Buddy version " + applicationVersion + " (https://github.com/bmunzenb/feed-buddy)");
+		System.setProperty("http.agent", "feed-buddy/" + applicationVersion + " (+https://github.com/bmunzenb/feed-buddy)");
 
 		Options options = buildOptions();
 		parseCommandLine(args, options);
@@ -132,5 +140,13 @@ public class App {
 
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp("feed-buddy [options]", options);
+	}
+
+	private static String getApplicationVersion() throws IOException {
+		try (InputStream in = ClassLoader.getSystemResourceAsStream("version.properties")) {
+			Properties props = new Properties();
+			props.load(in);
+			return props.getProperty("version");
+		}
 	}
 }

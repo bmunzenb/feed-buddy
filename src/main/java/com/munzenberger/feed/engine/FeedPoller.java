@@ -15,12 +15,6 @@
  */
 package com.munzenberger.feed.engine;
 
-import java.io.File;
-import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Timer;
-
 import com.munzenberger.feed.config.ConfigParser;
 import com.munzenberger.feed.config.ConfigParserException;
 import com.munzenberger.feed.config.Feed;
@@ -36,6 +30,12 @@ import com.munzenberger.feed.handler.ItemHandlerFactoryException;
 import com.munzenberger.feed.log.Logger;
 import com.munzenberger.feed.parser.Parser;
 import com.munzenberger.feed.parser.ParserFactory;
+
+import java.io.File;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Timer;
 
 public class FeedPoller {
 
@@ -59,8 +59,6 @@ public class FeedPoller {
 		stop();
 
 		Feeds config = ConfigParser.parse(file);
-
-		System.setProperty("http.agent", "feed-buddy/1.5.4 (+https://github.com/bmunzenb/feed-buddy)");
 
 		prepareTimer();
 
