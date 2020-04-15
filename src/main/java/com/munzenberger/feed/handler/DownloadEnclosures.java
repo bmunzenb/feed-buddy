@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Brian Munzenberger
+ * Copyright 2020 Brian Munzenberger
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.Files;
 import java.util.Date;
 
 import com.munzenberger.feed.log.Logger;
@@ -43,6 +44,7 @@ public class DownloadEnclosures implements ItemHandler {
 	private boolean overwriteExisting = false;
 	private boolean useFullPathForFilename = false;
 
+	@SuppressWarnings("unused")
 	public void setTargetDir(String targetDir) {
 		this.targetDir = targetDir;
 	}
@@ -51,6 +53,7 @@ public class DownloadEnclosures implements ItemHandler {
 		this.filter = filter;
 	}
 
+	@SuppressWarnings("unused")
 	public void setOverwriteExisting(String overwrite) {
 		this.overwriteExisting = Boolean.parseBoolean(overwrite);
 	}
@@ -74,13 +77,29 @@ public class DownloadEnclosures implements ItemHandler {
 
 			Date date = DateParser.parse(pubDate, logger);
 			if (date != null) {
-				file.setLastModified(date.getTime());
+				if (!file.setLastModified(date.getTime())) {
+					logger.log("Could not set last modified time on file: " + file);
+				}
 			}
 		}
 	}
 
 	protected File process(String downloadURL, Logger logger) throws ItemHandlerException {
-		File file = getLocalFile(downloadURL, logger);
+		File file = getLocalFile(downloadURL);
+
+		if (file.exists()) {
+			if (overwriteExisting) {
+				logger.log("Overwriting existing file: " + file);
+				try {
+					Files.delete(file.toPath());
+				} catch (IOException e) {
+					throw new ItemHandlerException("Could not delete existing file", e);
+				}
+			} else {
+				logger.log("Skipping download of existing file: " + file);
+				return file;
+			}
+		}
 
 		URL url;
 
@@ -103,7 +122,7 @@ public class DownloadEnclosures implements ItemHandler {
 		return file;
 	}
 
-	public File getLocalFile(String path, Logger logger) throws ItemHandlerException {
+	public File getLocalFile(String path) throws ItemHandlerException {
 
 		int queryIndex = path.indexOf('?');
 
@@ -127,29 +146,12 @@ public class DownloadEnclosures implements ItemHandler {
 
 		path = targetDir + System.getProperty("file.separator") + path;
 
-		File file = new File(path);
-		try {
-
-			if (file.exists() && !this.overwriteExisting) {
-				throw new ItemHandlerException("File " + file + " already exists, skipping download of " + path);
-			}
-
-			boolean newFileCreated = file.createNewFile();
-
-			if (!newFileCreated) {
-				logger.log("Overwriting file " + file);
-			}
-		}
-		catch (IOException ex) {
-			throw new ItemHandlerException("Could not create file", ex);
-		}
-
-		return file;
+		return new File(path);
 	}
 
 	protected void download(URL url, File file, Logger logger) throws IOException {
 		long time = System.currentTimeMillis();		
-		long bytes = 0;
+		long bytes;
 
 		logger.log("Transferring " + url + " -> " + file);
 
