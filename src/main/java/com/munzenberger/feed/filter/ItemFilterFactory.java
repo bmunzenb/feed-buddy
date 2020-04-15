@@ -28,7 +28,7 @@ public class ItemFilterFactory {
 	protected static ItemFilter newFilter(Filter f) throws ItemFilterFactoryException {
 		try {
 			Class<ItemFilter> clazz = (Class<ItemFilter>) Class.forName(f.getClazz());
-			ItemFilter filter = clazz.newInstance();
+			ItemFilter filter = clazz.getConstructor().newInstance();
 			PropertySetter.setProperties(clazz, filter, f);
 			
 			return filter;

@@ -44,7 +44,7 @@ public class ItemHandlerFactory {
 	protected static ItemHandler newHandler(Handler h) throws ItemHandlerFactoryException {
 		try {
 			Class<ItemHandler> clazz = (Class<ItemHandler>) Class.forName(h.getClazz());
-			ItemHandler handler = clazz.newInstance();
+			ItemHandler handler = clazz.getConstructor().newInstance();
 			PropertySetter.setProperties(clazz, handler, h);
 			
 			return handler;
