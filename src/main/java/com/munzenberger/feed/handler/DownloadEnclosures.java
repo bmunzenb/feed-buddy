@@ -15,6 +15,14 @@
  */
 package com.munzenberger.feed.handler;
 
+import com.munzenberger.feed.log.Logger;
+import com.munzenberger.feed.parser.rss.Enclosure;
+import com.munzenberger.feed.parser.rss.Item;
+import com.munzenberger.feed.util.DataTransfer;
+import com.munzenberger.feed.util.DateParser;
+import com.munzenberger.feed.util.Formatter;
+import com.munzenberger.feed.util.URLProcessor;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,25 +32,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.file.Files;
 import java.util.Date;
-
-import com.munzenberger.feed.log.Logger;
-import com.munzenberger.feed.parser.rss.Enclosure;
-import com.munzenberger.feed.parser.rss.Item;
-import com.munzenberger.feed.util.DataTransfer;
-import com.munzenberger.feed.util.DateParser;
-import com.munzenberger.feed.util.Formatter;
-import com.munzenberger.feed.util.URLProcessor;
 
 public class DownloadEnclosures implements ItemHandler {
 
 	private String targetDir = ".";
 
 	private String filter = null;
-
-	private boolean overwriteExisting = false;
-	private boolean useFullPathForFilename = false;
 
 	@SuppressWarnings("unused")
 	public void setTargetDir(String targetDir) {
@@ -51,15 +47,6 @@ public class DownloadEnclosures implements ItemHandler {
 
 	public void setFilter(String filter) {
 		this.filter = filter;
-	}
-
-	@SuppressWarnings("unused")
-	public void setOverwriteExisting(String overwrite) {
-		this.overwriteExisting = Boolean.parseBoolean(overwrite);
-	}
-
-	public void setUseFullPathForFilename(String useFullPathForFilename) {
-		this.useFullPathForFilename = Boolean.parseBoolean(useFullPathForFilename);
 	}
 
 	@Override
@@ -85,21 +72,8 @@ public class DownloadEnclosures implements ItemHandler {
 	}
 
 	protected File process(String downloadURL, Logger logger) throws ItemHandlerException {
-		File file = getLocalFile(downloadURL);
 
-		if (file.exists()) {
-			if (overwriteExisting) {
-				logger.log("Overwriting existing file: " + file);
-				try {
-					Files.delete(file.toPath());
-				} catch (IOException e) {
-					throw new ItemHandlerException("Could not delete existing file", e);
-				}
-			} else {
-				logger.log("Skipping download of existing file: " + file);
-				return file;
-			}
-		}
+		File file = getLocalFile(downloadURL);
 
 		URL url;
 
@@ -124,13 +98,6 @@ public class DownloadEnclosures implements ItemHandler {
 
 	public File getLocalFile(String path) throws ItemHandlerException {
 
-		int queryIndex = path.indexOf('?');
-
-		if (queryIndex > 0) {
-			// discard the parameter component, if present
-			path = path.substring(0, queryIndex);
-		}
-
 		try {
 			path = URLDecoder.decode(path, "UTF-8");
 		}
@@ -138,15 +105,41 @@ public class DownloadEnclosures implements ItemHandler {
 			throw new ItemHandlerException(e);
 		}
 
-		if (!useFullPathForFilename) {
-			path = path.substring(path.lastIndexOf("/") + 1);
+		String query = "";
+		int queryIndex = path.lastIndexOf('?');
+		if (queryIndex >= 0) {
+			query = "-" + Formatter.fileName(path.substring(queryIndex+1));
+			path = path.substring(0, queryIndex);
 		}
 
-		path = Formatter.fileName(path);
+		String extension = "";
+		int extIndex = path.lastIndexOf('.');
+		if (extIndex >= 0) {
+			extension = Formatter.fileName(path.substring(extIndex));
+			path = path.substring(0, extIndex);
+		}
 
-		path = targetDir + System.getProperty("file.separator") + path;
+		String filename = "";
+		int fileIndex = path.lastIndexOf('/');
+		if (fileIndex >= 0) {
+			filename = Formatter.fileName(path.substring(fileIndex+1));
+		}
 
-		return new File(path);
+		String localPath = targetDir + File.separator + filename + query + extension;
+
+		File file = new File(localPath);
+
+		if (file.exists()) {
+			// append a timestamp to make this file unique
+			localPath = targetDir + File.separator + filename + query + "-" + System.currentTimeMillis() + extension;
+			file = new File(localPath);
+
+			if (file.exists()) {
+				throw new ItemHandlerException("File already exists: " + file);
+			}
+		}
+
+		return file;
 	}
 
 	protected void download(URL url, File file, Logger logger) throws IOException {

@@ -15,11 +15,9 @@
  */
 package com.munzenberger.feed.handler;
 
-import java.io.File;
-
-import com.munzenberger.feed.log.DefaultLogger;
-import com.munzenberger.feed.log.Logger;
 import junit.framework.TestCase;
+
+import java.io.File;
 
 public class DownloadEnclosuresTest extends TestCase {
 
@@ -36,24 +34,7 @@ public class DownloadEnclosuresTest extends TestCase {
 		
 		final String separator = System.getProperty("file.separator");
 		
-		assertEquals("." + separator + "download.mp3", f1.getPath());
-	}
-
-	public void testGetLocalFileWithFullPath() throws Exception {
-
-		DownloadEnclosures handler = new DownloadEnclosures();
-		handler.setUseFullPathForFilename("true");
-
-		String url = "http://www.test.com/download.mp3?id=1";
-
-		File f1 = handler.getLocalFile(url);
-
-		assertNotNull(f1);
-		f1.deleteOnExit();
-
-		final String separator = System.getProperty("file.separator");
-
-		assertEquals("." + separator + "http-www.test.com-download.mp3", f1.getPath());
+		assertEquals("." + separator + "download-id-1.mp3", f1.getPath());
 	}
 
 	public void testGetLocalFileWithEscapes() throws Exception {
@@ -70,5 +51,20 @@ public class DownloadEnclosuresTest extends TestCase {
 		final String separator = System.getProperty("file.separator");
 
 		assertEquals("." + separator + "403 - Raw - 5-1-15, 3.15 PM.mp3", f1.getPath());
+	}
+
+	public void testGetLocalFileThatAlreadyExists() throws Exception {
+
+		DownloadEnclosures handler = new DownloadEnclosures();
+
+		String url = "http://www.test.com/download.mp3?id=1";
+
+		File f1 = handler.getLocalFile(url);
+		f1.deleteOnExit();
+		assertTrue(f1.createNewFile());
+
+		File f2 = handler.getLocalFile(url);
+		f2.deleteOnExit();
+		assertNotSame(f1.getAbsolutePath(), f2.getAbsolutePath());
 	}
 }
