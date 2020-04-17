@@ -73,8 +73,6 @@ public class DownloadEnclosures implements ItemHandler {
 
 	protected File process(String downloadURL, Logger logger) throws ItemHandlerException {
 
-		File file = getLocalFile(downloadURL);
-
 		URL url;
 
 		try {
@@ -82,6 +80,8 @@ public class DownloadEnclosures implements ItemHandler {
 		} catch (MalformedURLException ex) {
 			throw new ItemHandlerException(ex);
 		}
+
+		File file = getLocalFile(url);
 
 		try {
 			download(url, file, logger);
@@ -96,50 +96,50 @@ public class DownloadEnclosures implements ItemHandler {
 		return file;
 	}
 
-	public File getLocalFile(String path) throws ItemHandlerException {
+	public File getLocalFile(URL url) throws ItemHandlerException {
+
+		String file = url.getFile();
+
+		if (file.startsWith("/")) {
+			file = file.substring(1);
+		}
 
 		try {
-			path = URLDecoder.decode(path, "UTF-8");
-		}
-		catch (UnsupportedEncodingException e) {
+			file = URLDecoder.decode(file, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
 			throw new ItemHandlerException(e);
 		}
 
-		String query = "";
-		int queryIndex = path.lastIndexOf('?');
-		if (queryIndex >= 0) {
-			query = "-" + Formatter.fileName(path.substring(queryIndex+1));
-			path = path.substring(0, queryIndex);
+		int i = file.indexOf('?');
+		if (i > 0) {
+			// strip the query portion, if present
+			file = file.substring(0, i);
 		}
 
-		String extension = "";
-		int extIndex = path.lastIndexOf('.');
-		if (extIndex >= 0) {
-			extension = Formatter.fileName(path.substring(extIndex));
-			path = path.substring(0, extIndex);
+		String ext = "";
+		i = file.lastIndexOf('.');
+		if (i > 0) {
+			ext = file.substring(i);
+			file = file.substring(0, i);
 		}
 
-		String filename = "";
-		int fileIndex = path.lastIndexOf('/');
-		if (fileIndex >= 0) {
-			filename = Formatter.fileName(path.substring(fileIndex+1));
-		}
+		file = Formatter.fileName(file);
+		ext = Formatter.fileName(ext);
 
-		String localPath = targetDir + File.separator + filename + query + extension;
+		String localPath = targetDir + File.separator + file + ext;
+		File localFile = new File(localPath);
 
-		File file = new File(localPath);
-
-		if (file.exists()) {
+		if (localFile.exists()) {
 			// append a timestamp to make this file unique
-			localPath = targetDir + File.separator + filename + query + "-" + System.currentTimeMillis() + extension;
-			file = new File(localPath);
+			localPath = targetDir + File.separator + file + "-" + System.currentTimeMillis() + ext;
+			localFile = new File(localPath);
 
-			if (file.exists()) {
+			if (localFile.exists()) {
 				throw new ItemHandlerException("File already exists: " + file);
 			}
 		}
 
-		return file;
+		return localFile;
 	}
 
 	protected void download(URL url, File file, Logger logger) throws IOException {
