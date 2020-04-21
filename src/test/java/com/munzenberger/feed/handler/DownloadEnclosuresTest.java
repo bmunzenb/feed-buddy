@@ -26,7 +26,7 @@ public class DownloadEnclosuresTest extends TestCase {
 		
 		DownloadEnclosures handler = new DownloadEnclosures();
 		
-		URL url = new URL("http://www.test.com/download.mp3?id=1");
+		URL url = new URL("http://www.test.com/foo/download.mp3?id=1");
 		
 		File f1 = handler.getLocalFile(url);
 		
@@ -40,7 +40,7 @@ public class DownloadEnclosuresTest extends TestCase {
 
 		DownloadEnclosures handler = new DownloadEnclosures();
 
-		URL url = new URL("http://www.test.com/403+-+Raw+-+5%3A1%3A15%2C+3.15+PM.mp3");
+		URL url = new URL("http://www.test.com/foo/403+-+Raw+-+5%3A1%3A15%2C+3.15+PM.mp3");
 
 		File f1 = handler.getLocalFile(url);
 
@@ -54,7 +54,7 @@ public class DownloadEnclosuresTest extends TestCase {
 
 		DownloadEnclosures handler = new DownloadEnclosures();
 
-		URL url = new URL("http://www.test.com/download.mp3?id=1");
+		URL url = new URL("http://www.test.com/foo/download.mp3?id=1");
 
 		File f1 = handler.getLocalFile(url);
 		f1.deleteOnExit();

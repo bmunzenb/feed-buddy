@@ -98,22 +98,17 @@ public class DownloadEnclosures implements ItemHandler {
 
 	public File getLocalFile(URL url) throws ItemHandlerException {
 
-		String file = url.getFile();
+		String file = url.getPath();
 
-		if (file.startsWith("/")) {
-			file = file.substring(1);
+		int i = file.lastIndexOf('/');
+		if (i >= 0) {
+			file = file.substring(i+1);
 		}
 
 		try {
 			file = URLDecoder.decode(file, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw new ItemHandlerException(e);
-		}
-
-		int i = file.indexOf('?');
-		if (i > 0) {
-			// strip the query portion, if present
-			file = file.substring(0, i);
 		}
 
 		String ext = "";
