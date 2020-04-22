@@ -1,6 +1,5 @@
 package com.munzenberger.feed.source
 
-import com.munzenberger.feed.Channel
 import com.munzenberger.feed.Enclosure
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.Item
@@ -28,9 +27,7 @@ internal class AtomDocumentParser : DocumentParser {
 
         val items = parseItems(itemList)
 
-        val channel = Channel(title, items)
-
-        return Feed(listOf(channel))
+        return Feed(title, items)
     }
 
     private fun parseItems(nodeList: NodeList): List<Item> {

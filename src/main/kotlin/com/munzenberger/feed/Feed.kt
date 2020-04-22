@@ -1,10 +1,6 @@
 package com.munzenberger.feed
 
 data class Feed(
-        val channels: List<Channel>
-)
-
-data class Channel(
         val title: String,
         val items: List<Item>
 )

@@ -1,10 +1,10 @@
 package com.munzenberger.feed.source
 
-import com.munzenberger.feed.Channel
 import com.munzenberger.feed.Enclosure
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.Item
 import org.w3c.dom.Document
+import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
@@ -15,39 +15,26 @@ internal class RssDocumentParser : DocumentParser {
 
     override fun parse(document: Document): Feed {
 
-        val channelList = xPathFactory.newXPath()
+        val channelNode = xPathFactory.newXPath()
                 .compile("/rss/channel")
-                .evaluate(document, XPathConstants.NODESET) as NodeList
+                .evaluate(document, XPathConstants.NODE) as Node
 
-        val channels = parseChannels(channelList)
-
-        return Feed(channels)
+        return parseChannel(channelNode)
     }
 
-    private fun parseChannels(nodeList: NodeList): List<Channel> {
+    private fun parseChannel(node: Node): Feed {
 
-        val list = mutableListOf<Channel>()
+        val title = xPathFactory.newXPath()
+                .compile("title")
+                .evaluate(node, XPathConstants.STRING) as String
 
-        for (i in 0 until nodeList.length) {
+        val itemList = xPathFactory.newXPath()
+                .compile("item")
+                .evaluate(node, XPathConstants.NODESET) as NodeList
 
-            val node = nodeList.item(i)
+        val items = parseItems(itemList)
 
-            val title = xPathFactory.newXPath()
-                    .compile("title")
-                    .evaluate(node, XPathConstants.STRING) as String
-
-            val itemList = xPathFactory.newXPath()
-                    .compile("item")
-                    .evaluate(node, XPathConstants.NODESET) as NodeList
-
-            val items = parseItems(itemList)
-
-            val channel = Channel(title, items)
-
-            list.add(channel)
-        }
-
-        return list
+        return Feed(title, items)
     }
 
     private fun parseItems(nodeList: NodeList): List<Item> {
