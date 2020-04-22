@@ -9,6 +9,7 @@ data class Channel(
         val items: List<Item>
 )
 
+// TODO: add author
 data class Item(
         val title: String,
         val content: String,
@@ -19,5 +20,5 @@ data class Item(
 )
 
 data class Enclosure(
-        val link: String
+        val url: String
 )

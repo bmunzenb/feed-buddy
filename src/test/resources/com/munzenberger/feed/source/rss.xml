@@ -16,5 +16,15 @@
             <pubDate>Sun, 06 Sep 2009 16:20:00 +0000</pubDate>
         </item>
 
+        <item>
+            <title>Another entry</title>
+            <description><![CDATA[All good men come to the aid of their country.]]></description>
+            <link>http://www.example.com/blog/post/2</link>
+            <guid isPermaLink="false">2ea92767-ddf4-4696-a6fd-86d10d156a4c</guid>
+            <pubDate>Wed, 22 Apr 2020 04:01:00 +0000</pubDate>
+            <enclosure url="http://example.com/file1.mp3" />
+            <enclosure url="http://example.com/file2.mp3" />
+        </item>
+
     </channel>
 </rss>
