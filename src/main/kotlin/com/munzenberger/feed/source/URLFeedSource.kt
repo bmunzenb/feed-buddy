@@ -15,12 +15,14 @@ class URLFeedSource(override val name: String, private val source: URL) : FeedSo
         val inStream = source.openStream()
         val document = builder.parse(inStream)
 
-        val parser = when (val type = document.firstChild.nodeName) {
+        val root = document.documentElement
+
+        val parser = when (val type = root.nodeName) {
             "rss" -> RssDocumentParser()
             "feed" -> AtomDocumentParser()
             else -> throw IllegalArgumentException("Unsupported feed type: $type")
         }
 
-        return parser.parse(document)
+        return parser.parse(root)
     }
 }

@@ -3,11 +3,9 @@ package com.munzenberger.feed.source
 import com.munzenberger.feed.Enclosure
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.Item
-import org.w3c.dom.Document
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import org.w3c.dom.ls.DOMImplementationLS
-import java.lang.StringBuilder
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
 
@@ -15,15 +13,15 @@ internal class AtomDocumentParser : DocumentParser {
 
     private val xPathFactory = XPathFactory.newInstance()
 
-    override fun parse(document: Document): Feed {
+    override fun parse(node: Node): Feed {
 
         val title = xPathFactory.newXPath()
                 .compile("/feed/title")
-                .evaluate(document, XPathConstants.STRING) as String
+                .evaluate(node, XPathConstants.STRING) as String
 
         val itemList = xPathFactory.newXPath()
                 .compile("/feed/entry")
-                .evaluate(document, XPathConstants.NODESET) as NodeList
+                .evaluate(node, XPathConstants.NODESET) as NodeList
 
         val items = parseItems(itemList)
 

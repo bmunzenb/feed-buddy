@@ -3,7 +3,6 @@ package com.munzenberger.feed.source
 import com.munzenberger.feed.Enclosure
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.Item
-import org.w3c.dom.Document
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import javax.xml.xpath.XPathConstants
@@ -13,11 +12,11 @@ internal class RssDocumentParser : DocumentParser {
 
     private val xPathFactory = XPathFactory.newInstance()
 
-    override fun parse(document: Document): Feed {
+    override fun parse(node: Node): Feed {
 
         val channelNode = xPathFactory.newXPath()
                 .compile("/rss/channel")
-                .evaluate(document, XPathConstants.NODE) as Node
+                .evaluate(node, XPathConstants.NODE) as Node
 
         return parseChannel(channelNode)
     }
