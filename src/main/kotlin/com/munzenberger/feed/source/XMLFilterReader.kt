@@ -35,9 +35,8 @@ class XMLFilterReader(inReader: Reader, private val encoding: String) : FilterRe
 
         var pointer = off
         var counter = 0
-        var i = off
 
-        while (i < off + read) {
+        for (i in off until off + read) {
 
             if (first) {
                 first = false
@@ -51,8 +50,6 @@ class XMLFilterReader(inReader: Reader, private val encoding: String) : FilterRe
                 cbuf[pointer++] = cbuf[i]
                 counter++
             }
-
-            i++
         }
 
         return counter
