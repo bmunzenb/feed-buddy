@@ -29,11 +29,13 @@ object URLClient {
             307, // Temporary Redirect (since HTTP/1.1)
             308) // Permanent Redirect (RFC 7538)
 
-    fun connect(url: URL, userAgent: String? = null, locations: Set<String> = emptySet()): Response {
+    fun connect(url: URL, requestProperties: Map<String, String> = emptyMap()): Response =
+        connect(url, requestProperties, emptySet())
 
-        val connection = url.openConnection().apply {
-            userAgent?.run { setRequestProperty("User-agent", userAgent) }
-        }
+    private fun connect(url: URL, requestProperties: Map<String, String>, locations: Set<String>): Response {
+
+        val connection = url.openConnection()
+        requestProperties.forEach { (key, value) -> connection.setRequestProperty(key, value) }
 
         if (connection is HttpURLConnection) {
             val responseCode = connection.responseCode
@@ -41,12 +43,12 @@ object URLClient {
             if (responseCode in redirectCodes) {
                 return when (val location: String? = connection.getHeaderField("Location")) {
                     null ->
-                        throw IOException("Redirect response $responseCode with no 'location' in header: ${connection.headerFields}")
+                        throw IOException("Redirect response $responseCode with no 'Location' in header: ${connection.headerFields}")
                     else -> {
                         if (locations.contains(location)) {
                             throw IOException("Infinite redirect detected: $location -> $locations")
                         }
-                        connect(URL(location), userAgent, locations + location)
+                        connect(URL(location), requestProperties, locations + location)
                     }
                 }
             }

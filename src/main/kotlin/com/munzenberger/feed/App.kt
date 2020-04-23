@@ -32,7 +32,7 @@ private fun parseFeeds(file: File) {
     file.readLines().forEach { source ->
         try {
             print("$source ... ")
-            val feed = URLFeedSource(source, URL(source)).read()
+            val feed = URLFeedSource(URL(source)).read()
             println("SUCCESS: ${feed.title}, ${feed.items.size} item(s)")
             results = results.first+1 to results.second
         } catch (e: Throwable) {

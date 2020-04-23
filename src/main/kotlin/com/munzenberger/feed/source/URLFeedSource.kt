@@ -5,9 +5,7 @@ import org.xml.sax.InputSource
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
 
-class URLFeedSource(override val name: String, private val source: URL) : FeedSource {
-
-    private val dbFactory = DocumentBuilderFactory.newInstance()
+class URLFeedSource(private val source: URL) : FeedSource {
 
     override fun read(): Feed {
 
@@ -15,13 +13,16 @@ class URLFeedSource(override val name: String, private val source: URL) : FeedSo
         val response = URLClient.connect(source)
         val reader = XMLInputStreamDecoder.decode(response.inStream, response.encoding)
         val inputSource = InputSource(reader)
-        val document = dbFactory.newDocumentBuilder().parse(inputSource)
+
+        val document = DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder()
+                .parse(inputSource)
 
         val root = document.documentElement
 
         val parser = when (val type = root.nodeName) {
-            "rss" -> RssDocumentParser()
-            "feed" -> AtomDocumentParser()
+            "rss" -> RssFeedParser()
+            "feed" -> AtomFeedParser()
             else -> throw IllegalArgumentException("Unsupported feed type: $type")
         }
 
