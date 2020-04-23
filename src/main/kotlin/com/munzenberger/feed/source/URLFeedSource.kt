@@ -1,6 +1,7 @@
 package com.munzenberger.feed.source
 
 import com.munzenberger.feed.Feed
+import org.xml.sax.InputSource
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
 
@@ -10,10 +11,11 @@ class URLFeedSource(override val name: String, private val source: URL) : FeedSo
 
     override fun read(): Feed {
 
-        val builder = dbFactory.newDocumentBuilder()
-
-        val inStream = source.openStream()
-        val document = builder.parse(inStream)
+        // handles many of the things that can go wrong while reading XML streams
+        val response = URLClient.connect(source)
+        val reader = XMLInputStreamDecoder.decode(response.inStream, response.encoding)
+        val inputSource = InputSource(reader)
+        val document = dbFactory.newDocumentBuilder().parse(inputSource)
 
         val root = document.documentElement
 
