@@ -66,26 +66,23 @@ class DownloadEnclosures : ItemHandler {
 private fun String.urlDecode(encoding: String = "UTF-8") =
         URLDecoder.decode(this, encoding)
 
-private fun download(source: URL, target: File): Long {
+private fun download(source: URL, target: File): Long =
+    URLClient.connect(source).inStream.use { inStream ->
+        target.outputStream().use { outStream ->
 
-    val inStream = URLClient.connect(source).inStream
-    val outStream = target.outputStream()
+            val buffer = ByteArray(4096)
+            var total: Long = 0
 
-    val buffer = ByteArray(4096)
-    var total: Long = 0
+            var read = inStream.read(buffer)
+            while (read >= 0) {
+                outStream.write(buffer, 0, read)
+                total += read
+                read = inStream.read(buffer)
+            }
 
-    var read = inStream.read(buffer)
-    while (read >= 0) {
-        outStream.write(buffer, 0, read)
-        total += read
-        read = inStream.read(buffer)
+            total
+        }
     }
-
-    inStream.close()
-    outStream.close()
-
-    return total
-}
 
 private fun <T> profile(block: () -> T): Pair<T, Long> {
     val start = System.currentTimeMillis()
