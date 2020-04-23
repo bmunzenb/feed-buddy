@@ -36,72 +36,50 @@ internal class RssFeedParser : FeedParser {
         return Feed(title, items)
     }
 
-    private fun parseItems(nodeList: NodeList): List<Item> {
+    private fun parseItems(nodeList: NodeList) = nodeList.asList().map { node ->
 
-        val list = mutableListOf<Item>()
+        val title = xPathFactory.newXPath()
+                .compile("title")
+                .evaluate(node, XPathConstants.STRING) as String
 
-        for (i in 0 until nodeList.length) {
+        val content = xPathFactory.newXPath()
+                .compile("description")
+                .evaluate(node, XPathConstants.STRING) as String
 
-            val node = nodeList.item(i)
+        val link = xPathFactory.newXPath()
+                .compile("link")
+                .evaluate(node, XPathConstants.STRING) as String
 
-            val title = xPathFactory.newXPath()
-                    .compile("title")
-                    .evaluate(node, XPathConstants.STRING) as String
+        val guid = xPathFactory.newXPath()
+                .compile("guid")
+                .evaluate(node, XPathConstants.STRING) as String
 
-            val content = xPathFactory.newXPath()
-                    .compile("description")
-                    .evaluate(node, XPathConstants.STRING) as String
+        val timestamp = xPathFactory.newXPath()
+                .compile("pubDate")
+                .evaluate(node, XPathConstants.STRING) as String
 
-            val link = xPathFactory.newXPath()
-                    .compile("link")
-                    .evaluate(node, XPathConstants.STRING) as String
+        val enclosureList = xPathFactory.newXPath()
+                .compile("enclosure")
+                .evaluate(node, XPathConstants.NODESET) as NodeList
 
-            val guid = xPathFactory.newXPath()
-                    .compile("guid")
-                    .evaluate(node, XPathConstants.STRING) as String
+        val enclosures = parseEnclosures(enclosureList)
 
-            val timestamp = xPathFactory.newXPath()
-                    .compile("pubDate")
-                    .evaluate(node, XPathConstants.STRING) as String
-
-            val enclosureList = xPathFactory.newXPath()
-                    .compile("enclosure")
-                    .evaluate(node, XPathConstants.NODESET) as NodeList
-
-            val enclosures = parseEnclosures(enclosureList)
-
-            val item = Item(
-                    title = title,
-                    content = content,
-                    link = link,
-                    guid = guid,
-                    timestamp = timestamp,
-                    enclosures = enclosures
-            )
-
-            list.add(item)
-        }
-
-        return list
+        Item(
+                title = title,
+                content = content,
+                link = link,
+                guid = guid,
+                timestamp = timestamp,
+                enclosures = enclosures
+        )
     }
 
-    private fun parseEnclosures(nodeList: NodeList): List<Enclosure> {
+    private fun parseEnclosures(nodeList: NodeList) = nodeList.asList().map { node ->
 
-        val list = mutableListOf<Enclosure>()
+        val url = node.attributes
+                .getNamedItem("url")
+                .nodeValue
 
-        for (i in 0 until nodeList.length) {
-
-            val node = nodeList.item(i)
-
-            val url = node.attributes
-                    .getNamedItem("url")
-                    .nodeValue
-
-            val enclosure = Enclosure(url)
-
-            list.add(enclosure)
-        }
-
-        return list
+        Enclosure(url)
     }
 }

@@ -28,59 +28,45 @@ internal class AtomFeedParser : FeedParser {
         return Feed(title, items)
     }
 
-    private fun parseItems(nodeList: NodeList): List<Item> {
+    private fun parseItems(nodeList: NodeList) = nodeList.asList().map { node ->
 
-        val list = mutableListOf<Item>()
+        val title = xPathFactory.newXPath()
+                .compile("title")
+                .evaluate(node, XPathConstants.STRING) as String
 
-        for (i in 0 until nodeList.length) {
+        val contentNode = xPathFactory.newXPath()
+                .compile("content[not(@type) or @type='xhtml']")
+                .evaluate(node, XPathConstants.NODE) as Node?
 
-            val node = nodeList.item(i)
+        val content = contentNode?.innerXml ?: ""
 
-            val title = xPathFactory.newXPath()
-                    .compile("title")
-                    .evaluate(node, XPathConstants.STRING) as String
+        val linkList = xPathFactory.newXPath()
+                .compile("link[not(@rel) or @rel='alternate']")
+                .evaluate(node, XPathConstants.NODESET) as NodeList
 
-            val contentNode = xPathFactory.newXPath()
-                    .compile("content[not(@type) or @type='xhtml']")
-                    .evaluate(node, XPathConstants.NODE) as Node?
+        val linkNode = linkList.asList().firstOrNull()
 
-            val content = contentNode?.innerXml ?: ""
+        val link = linkNode?.attributes?.getNamedItem("href")?.nodeValue ?: ""
 
-            val linkList = xPathFactory.newXPath()
-                    .compile("link[not(@rel) or @rel='alternate']")
-                    .evaluate(node, XPathConstants.NODESET) as NodeList
+        val guid = xPathFactory.newXPath()
+                .compile("id")
+                .evaluate(node, XPathConstants.STRING) as String
 
-            val linkNode = when {
-                linkList.length > 0 -> linkList.item(0)
-                else -> null
-            }
+        val timestamp = xPathFactory.newXPath()
+                .compile("updated")
+                .evaluate(node, XPathConstants.STRING) as String
 
-            val link = linkNode?.attributes?.getNamedItem("href")?.nodeValue ?: ""
+        // TODO: parse enclosures
+        val enclosures = emptyList<Enclosure>()
 
-            val guid = xPathFactory.newXPath()
-                    .compile("id")
-                    .evaluate(node, XPathConstants.STRING) as String
-
-            val timestamp = xPathFactory.newXPath()
-                    .compile("updated")
-                    .evaluate(node, XPathConstants.STRING) as String
-
-            // TODO: parse enclosures
-            val enclosures = emptyList<Enclosure>()
-
-            val item = Item(
-                    title = title,
-                    content = content,
-                    link = link,
-                    guid = guid,
-                    timestamp = timestamp,
-                    enclosures = enclosures
-            )
-
-            list.add(item)
-        }
-
-        return list
+        Item(
+                title = title,
+                content = content,
+                link = link,
+                guid = guid,
+                timestamp = timestamp,
+                enclosures = enclosures
+        )
     }
 }
 

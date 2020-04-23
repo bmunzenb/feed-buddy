@@ -26,6 +26,18 @@ class XMLFilterReader(inReader: Reader, private val encoding: String) : FilterRe
         throw UnsupportedOperationException()
     }
 
+    override fun reset() {
+        throw UnsupportedOperationException()
+    }
+
+    override fun markSupported(): Boolean {
+        return false
+    }
+
+    override fun mark(readAheadLimit: Int) {
+        throw UnsupportedOperationException()
+    }
+
     override fun read(cbuf: CharArray, off: Int, len: Int): Int {
         val read = super.read(cbuf, off, len)
 
@@ -38,16 +50,18 @@ class XMLFilterReader(inReader: Reader, private val encoding: String) : FilterRe
 
         for (i in off until off + read) {
 
+            val c = cbuf[i]
+
             if (first) {
                 first = false
                 // strip the UTF-8 byte order mark, if present
-                if (encoding == "UTF-8" && cbuf[i] == BYTE_ORDER_MARK) {
+                if (encoding == "UTF-8" && c == BYTE_ORDER_MARK) {
                     continue
                 }
             }
 
-            if (isValidXMLChar(cbuf[i])) {
-                cbuf[pointer++] = cbuf[i]
+            if (isValidXMLChar(c)) {
+                cbuf[pointer++] = c
                 counter++
             }
         }
