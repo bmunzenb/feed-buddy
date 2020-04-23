@@ -1,4 +1,4 @@
-package com.munzenberger.feed.source
+package com.munzenberger.feed
 
 import java.io.IOException
 import java.io.InputStream
@@ -30,7 +30,7 @@ object URLClient {
             308) // Permanent Redirect (RFC 7538)
 
     fun connect(url: URL, requestProperties: Map<String, String> = emptyMap()): Response =
-        connect(url, requestProperties, emptySet())
+            connect(url, requestProperties, emptySet())
 
     private fun connect(url: URL, requestProperties: Map<String, String>, locations: Set<String>): Response {
 

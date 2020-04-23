@@ -9,7 +9,7 @@ import org.w3c.dom.ls.DOMImplementationLS
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
 
-internal class AtomFeedParser : FeedParser {
+internal class AtomXMLFeedParser : XMLFeedParser {
 
     private val xPathFactory = XPathFactory.newInstance()
 

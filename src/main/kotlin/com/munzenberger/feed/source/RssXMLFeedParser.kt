@@ -8,7 +8,7 @@ import org.w3c.dom.NodeList
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
 
-internal class RssFeedParser : FeedParser {
+internal class RssXMLFeedParser : XMLFeedParser {
 
     private val xPathFactory = XPathFactory.newInstance()
 

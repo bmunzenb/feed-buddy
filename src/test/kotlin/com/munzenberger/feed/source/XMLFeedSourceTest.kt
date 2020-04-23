@@ -6,13 +6,13 @@ import com.munzenberger.feed.Item
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class URLFeedSourceTest {
+class XMLFeedSourceTest {
 
     @Test
     fun `it can parse rss xml`() {
 
         val url = javaClass.getResource("rss.xml")
-        val source = URLFeedSource(url)
+        val source = XMLFeedSource(url)
         val feed = source.read()
 
         val expected = Feed(title = "RSS Title", items = listOf(
@@ -42,7 +42,7 @@ class URLFeedSourceTest {
     fun `it can parse atom xml`() {
 
         val url = javaClass.getResource("atom.xml")
-        val source = URLFeedSource(url)
+        val source = XMLFeedSource(url)
         val feed = source.read()
 
         val expected = Feed(title = "Example Feed", items = listOf(

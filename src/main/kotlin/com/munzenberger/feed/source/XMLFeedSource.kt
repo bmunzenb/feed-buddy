@@ -1,17 +1,22 @@
 package com.munzenberger.feed.source
 
 import com.munzenberger.feed.Feed
+import com.munzenberger.feed.URLClient
 import org.xml.sax.InputSource
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
 
-class URLFeedSource(private val source: URL) : FeedSource {
+class XMLFeedSource(
+        private val source: URL,
+        private val parser: XMLFeedParser = DynamicXMLFeedParser()
+) : FeedSource {
 
     override fun read(): Feed {
 
-        // handles many of the things that can go wrong while reading XML streams
         val response = URLClient.connect(source)
+
         val reader = XMLInputStreamDecoder.decode(response.inStream, response.encoding)
+
         val inputSource = InputSource(reader)
 
         val document = DocumentBuilderFactory.newInstance()
@@ -19,12 +24,6 @@ class URLFeedSource(private val source: URL) : FeedSource {
                 .parse(inputSource)
 
         val root = document.documentElement
-
-        val parser = when (val type = root.nodeName) {
-            "rss" -> RssFeedParser()
-            "feed" -> AtomFeedParser()
-            else -> throw IllegalArgumentException("Unsupported feed type: $type")
-        }
 
         return parser.parse(root)
     }

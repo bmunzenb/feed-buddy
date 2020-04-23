@@ -8,19 +8,10 @@ class XMLFilterReader(inReader: Reader, private val encoding: String) : FilterRe
 
     companion object {
         private const val BYTE_ORDER_MARK = '\uFEFF'
-
-        private fun isValidXMLChar(c: Char) = c.toInt().let {
-            // https://www.w3.org/TR/xml/#charsets
-            it == 0x9 ||
-                    it == 0xA ||
-                    it == 0xD ||
-                    it in 0x20..0xD7FF ||
-                    it in 0xE000..0xFFFD ||
-                    it in 0x10000..0x10FFFF
-        }
     }
 
-    private var first: Boolean = true
+    private var firstChar: Boolean = true
+    private var contentStarted: Boolean = false
 
     override fun read(): Int {
         throw UnsupportedOperationException()
@@ -52,15 +43,23 @@ class XMLFilterReader(inReader: Reader, private val encoding: String) : FilterRe
 
             val c = cbuf[i]
 
-            if (first) {
-                first = false
+            if (firstChar) {
+                firstChar = false
                 // strip the UTF-8 byte order mark, if present
                 if (encoding == "UTF-8" && c == BYTE_ORDER_MARK) {
                     continue
                 }
             }
 
-            if (isValidXMLChar(c)) {
+            if (!contentStarted) {
+                // trim any leading whitespace
+                if (c.isWhitespace()) {
+                    continue
+                }
+                contentStarted = true
+            }
+
+            if (c.isValidXML()) {
                 cbuf[pointer++] = c
                 counter++
             }
@@ -68,4 +67,14 @@ class XMLFilterReader(inReader: Reader, private val encoding: String) : FilterRe
 
         return counter
     }
+}
+
+private fun Char.isValidXML(): Boolean = toInt().let {
+    // https://www.w3.org/TR/xml/#charsets
+    it == 0x9 ||
+            it == 0xA ||
+            it == 0xD ||
+            it in 0x20..0xD7FF ||
+            it in 0xE000..0xFFFD ||
+            it in 0x10000..0x10FFFF
 }
