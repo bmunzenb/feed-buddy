@@ -4,16 +4,19 @@ import com.munzenberger.feed.Feed
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import java.lang.IllegalArgumentException
+import javax.xml.xpath.XPathFactory
 
 interface XMLFeedParser {
     fun parse(node: Node): Feed
 }
 
-class DynamicXMLFeedParser : XMLFeedParser {
+object DynamicXMLFeedParser : XMLFeedParser {
+
+    private val xPathFactory = XPathFactory.newInstance()
 
     private val parsers = mapOf(
-            "rss" to RssXMLFeedParser(),
-            "feed" to AtomXMLFeedParser()
+            "rss" to RssXMLFeedParser(xPathFactory),
+            "feed" to AtomXMLFeedParser(xPathFactory)
     )
 
     override fun parse(node: Node): Feed {

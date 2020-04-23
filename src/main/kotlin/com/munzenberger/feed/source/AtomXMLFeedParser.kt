@@ -9,9 +9,7 @@ import org.w3c.dom.ls.DOMImplementationLS
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
 
-internal class AtomXMLFeedParser : XMLFeedParser {
-
-    private val xPathFactory = XPathFactory.newInstance()
+internal class AtomXMLFeedParser(private val xPathFactory: XPathFactory) : XMLFeedParser {
 
     override fun parse(node: Node): Feed {
 
