@@ -54,6 +54,8 @@ public class App {
 
 		System.out.println("Feed Buddy version " + applicationVersion + " (https://github.com/bmunzenb/feed-buddy)");
 		System.setProperty("http.agent", "feed-buddy/" + applicationVersion + " (+https://github.com/bmunzenb/feed-buddy)");
+		System.setProperty("sun.net.client.defaultConnectTimeout", "30000");
+		System.setProperty("sun.net.client.defaultReadTimeout", "30000");
 
 		Options options = buildOptions();
 		parseCommandLine(args, options);
