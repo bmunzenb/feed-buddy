@@ -31,13 +31,11 @@ class ItemHandlerFactory(private val registry: MutableMap<String, ItemHandler> =
             val clazz = Class.forName(config.type)
             val handler = clazz.getConstructor().newInstance() as ItemHandler
 
+            val properties = handler::class.memberProperties.filterIsInstance<KMutableProperty<*>>()
+
             config.properties.forEach { (name, value) ->
 
-                val property = handler::class.memberProperties
-                        .filterIsInstance<KMutableProperty<*>>()
-                        .firstOrNull { it.name == name }
-
-                when (property) {
+                when (val property = properties.firstOrNull { it.name == name }) {
                     null -> throw IllegalArgumentException("Item handler ${config.type} does not have a settable property named '$name'.")
                     else -> property.setter.call(handler, value)
                 }
