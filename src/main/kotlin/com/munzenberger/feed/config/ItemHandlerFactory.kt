@@ -6,22 +6,20 @@ import kotlin.reflect.full.memberProperties
 
 class ItemHandlerFactory(private val registry: MutableMap<String, ItemHandler> = mutableMapOf()) {
 
-    fun getInstance(config: ItemHandlerConfig): ItemHandler {
+    fun getInstance(config: ItemHandlerConfig): ItemHandler = when {
 
-        return when {
-            config.ref != null ->
-                registry[config.ref] ?: throw IllegalArgumentException("Item handler with name ${config.ref} not found.")
+        config.ref != null ->
+            registry[config.ref] ?: throw IllegalArgumentException("Item handler with name ${config.ref} not found.")
 
-            config.type != null ->
-                newItemHandler(config).also {
-                    if (config.name != null) {
-                        registry[config.name] = it
-                    }
+        config.type != null ->
+            newItemHandler(config).also {
+                if (config.name != null) {
+                    registry[config.name] = it
                 }
+            }
 
-            else ->
-                throw IllegalArgumentException("An item handler must define either a 'type' or a 'ref'.")
-        }
+        else ->
+            throw IllegalArgumentException("An item handler must define either a 'type' or a 'ref'.")
     }
 
     companion object {
