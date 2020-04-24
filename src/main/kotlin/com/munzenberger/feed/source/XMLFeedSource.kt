@@ -12,6 +12,8 @@ class XMLFeedSource(
         private val documentBuilderFactory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
 ) : FeedSource {
 
+    override val name: String = source.toExternalForm()
+
     override fun read(): Feed {
 
         val response = URLClient.connect(source)
