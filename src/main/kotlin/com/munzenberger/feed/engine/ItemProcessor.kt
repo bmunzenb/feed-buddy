@@ -1,26 +1,25 @@
 package com.munzenberger.feed.engine
 
 import com.munzenberger.feed.Item
+import com.munzenberger.feed.handler.ItemHandler
 
 interface ItemProcessor {
     fun execute(item: Item): Boolean
 }
 
-abstract class LifecycleItemProcessor(private val itemProcessor: ItemProcessor) : ItemProcessor {
+class HandlersItemProcessor(private val handlers: List<ItemHandler>) : ItemProcessor {
 
-    open fun preExecute(item: Item): Boolean = true
-
-    open fun postExecute(item: Item, processed: Boolean) {}
+    private fun ItemHandler.executeWithTryCatch(item: Item): Boolean {
+        return try {
+            execute(item)
+            true
+        } catch (e: Throwable) {
+            println("error [${e.javaClass.simpleName}] ${e.message}")
+            false
+        }
+    }
 
     override fun execute(item: Item): Boolean {
-
-        val processed = when (preExecute(item)) {
-            true -> itemProcessor.execute(item)
-            else -> false
-        }
-
-        postExecute(item, processed)
-
-        return processed
+        return handlers.all { it.executeWithTryCatch(item) }
     }
 }

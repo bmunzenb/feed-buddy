@@ -60,7 +60,7 @@ class SendEmail : ItemHandler {
         if (!transport.isConnected) {
             print("Connecting to mail transport $smtpHost:$smtpPort ... ")
             transport.connect(smtpHost, smtpPort.toInt(), username, password)
-            println("connection established.")
+            println("connected.")
         }
 
         print("Sending email to $to ... ")

@@ -2,18 +2,16 @@ package com.munzenberger.feed.engine
 
 import com.munzenberger.feed.source.FeedSource
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 class FeedProcessor(
         private val source: FeedSource,
+        private val itemRegistry: ItemRegistry,
         private val itemProcessor: ItemProcessor
 ) {
 
     companion object {
-        private val tf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)
         private val timestamp: String
-            get() = tf.format(LocalDateTime.now())
+            get() = LocalDateTime.now().toString()
     }
 
     fun execute() {
@@ -23,16 +21,23 @@ class FeedProcessor(
 
             val feed = source.read()
 
-            println("${feed.title}, ${feed.items.size} item(s).")
+            println("${feed.title}, ${feed.items.size} ${"item".pluralize(feed.items.size)}.")
 
             val processed = feed.items
-                    .map { itemProcessor.execute(it) }
-                    .count { it }
+                    .filterNot(itemRegistry::contains)
+                    .filter(itemProcessor::execute)
+                    .map(itemRegistry::add)
+                    .count()
 
-            println("Processed $processed item(s).")
+            println("$processed ${"item".pluralize(processed)} processed.")
 
         } catch (e: Throwable) {
             println("error [${e.javaClass.simpleName}] ${e.message}")
         }
     }
+}
+
+private fun String.pluralize(count: Int) = when (count) {
+    1 -> this
+    else -> this + "s"
 }

@@ -29,7 +29,11 @@ object URLClient {
             307, // Temporary Redirect (since HTTP/1.1)
             308) // Permanent Redirect (RFC 7538)
 
-    fun connect(url: URL, requestProperties: Map<String, String> = emptyMap()): Response {
+    fun connect(url: URL, userAgent: String? = null): Response {
+
+        val requestProperties = mutableMapOf<String, String>()
+        userAgent?.run { requestProperties["User-agent"] = this }
+
         return connect(url, requestProperties, emptySet())
     }
 

@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 class XMLFeedSource(
         private val source: URL,
+        private val userAgent: String? = null,
         private val parser: XMLFeedParser = DynamicXMLFeedParser,
         private val documentBuilderFactory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
 ) : FeedSource {
@@ -16,7 +17,7 @@ class XMLFeedSource(
 
     override fun read(): Feed {
 
-        val response = URLClient.connect(source)
+        val response = URLClient.connect(source, userAgent)
 
         val reader = XMLInputStreamDecoder.decode(response.inStream, response.encoding)
 
