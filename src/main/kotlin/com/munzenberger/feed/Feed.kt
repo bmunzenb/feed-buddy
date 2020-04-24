@@ -5,8 +5,8 @@ data class Feed(
         val items: List<Item>
 )
 
-// TODO: add author
 data class Item(
+        val feedTitle: String,
         val title: String,
         val content: String,
         val link: String,

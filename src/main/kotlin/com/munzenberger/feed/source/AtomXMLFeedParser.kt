@@ -21,12 +21,12 @@ internal class AtomXMLFeedParser(private val xPathFactory: XPathFactory) : XMLFe
                 .compile("/feed/entry")
                 .evaluate(node, XPathConstants.NODESET) as NodeList
 
-        val items = parseItems(itemList)
+        val items = parseItems(title, itemList)
 
         return Feed(title, items)
     }
 
-    private fun parseItems(nodeList: NodeList) = nodeList.asList().map { node ->
+    private fun parseItems(feedTitle: String, nodeList: NodeList) = nodeList.asList().map { node ->
 
         val title = xPathFactory.newXPath()
                 .compile("title")
@@ -58,6 +58,7 @@ internal class AtomXMLFeedParser(private val xPathFactory: XPathFactory) : XMLFe
         val enclosures = emptyList<Enclosure>()
 
         Item(
+                feedTitle = feedTitle,
                 title = title,
                 content = content,
                 link = link,

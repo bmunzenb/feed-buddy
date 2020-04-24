@@ -7,17 +7,18 @@ import java.util.Properties
 
 fun main(args: Array<String>) {
 
-    val version = Properties().apply {
+    val versionProperties = Properties().apply {
         val inStream = ClassLoader.getSystemResourceAsStream("version.properties")
         load(inStream)
-    }["version"]
+    }
+
+    val version = versionProperties["version"]
 
     println("Feed Buddy version $version (https://github.com/bmunzenb/feed-buddy)")
 
     System.setProperty("http.agent", "Feed-Buddy/$version (+https://github.com/bmunzenb/feed-buddy)")
     System.setProperty("sun.net.client.defaultConnectTimeout", "30000")
     System.setProperty("sun.net.client.defaultReadTimeout", "30000")
-
 
     if (args.isNotEmpty()) {
         // assume the first argument is a file containing feeds to parse

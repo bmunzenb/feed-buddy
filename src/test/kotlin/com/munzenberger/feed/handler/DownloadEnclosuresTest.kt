@@ -3,6 +3,7 @@ package com.munzenberger.feed.handler
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
+import java.io.File
 import java.net.URL
 
 class DownloadEnclosuresTest {
@@ -13,7 +14,7 @@ class DownloadEnclosuresTest {
         val handler = DownloadEnclosures()
         val localFile = handler.targetFileFor(URL("http://www.example.com/foo/bar/file.ext"))
 
-        assertEquals("./file.ext", localFile.path)
+        assertEquals(".${File.separator}file.ext", localFile.path)
     }
 
     @Test
@@ -22,7 +23,7 @@ class DownloadEnclosuresTest {
         val handler = DownloadEnclosures()
         val localFile = handler.targetFileFor(URL("http://www.example.com/foo/bar/file.ext?abc=123"))
 
-        assertEquals("./file.ext", localFile.path)
+        assertEquals(".${File.separator}file.ext", localFile.path)
     }
 
     @Test
@@ -31,7 +32,7 @@ class DownloadEnclosuresTest {
         val handler = DownloadEnclosures()
         val localFile = handler.targetFileFor(URL("http://www.example.com/foo/bar/fizz+-%20buzz.ext"))
 
-        assertEquals("./fizz - buzz.ext", localFile.path)
+        assertEquals(".${File.separator}fizz - buzz.ext", localFile.path)
     }
 
     @Test

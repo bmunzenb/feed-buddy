@@ -29,8 +29,9 @@ object URLClient {
             307, // Temporary Redirect (since HTTP/1.1)
             308) // Permanent Redirect (RFC 7538)
 
-    fun connect(url: URL, requestProperties: Map<String, String> = emptyMap()): Response =
-            connect(url, requestProperties, emptySet())
+    fun connect(url: URL, requestProperties: Map<String, String> = emptyMap()): Response {
+        return connect(url, requestProperties, emptySet())
+    }
 
     private fun connect(url: URL, requestProperties: Map<String, String>, locations: Set<String>): Response {
 
