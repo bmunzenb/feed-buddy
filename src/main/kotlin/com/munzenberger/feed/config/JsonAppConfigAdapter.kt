@@ -1,5 +1,6 @@
 package com.munzenberger.feed.config
 
+import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okio.Okio
@@ -45,6 +46,11 @@ object JsonAppConfigAdapter : AppConfigAdapter {
 
     private fun write(config: AppConfig, sink: Sink) {
         val bufferedSink = Okio.buffer(sink)
-        bufferedSink.use { adapter.toJson(bufferedSink, config) }
+        bufferedSink.use {
+            val writer = JsonWriter.of(it).apply {
+                indent = "    "
+            }
+            adapter.toJson(writer, config)
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.munzenberger.feed.handler
 
 import com.munzenberger.feed.Item
 import com.munzenberger.feed.URLClient
+import okio.Okio
 import java.io.File
 import java.io.IOException
 import java.net.URL
@@ -71,23 +72,18 @@ private fun String.urlDecode(encoding: String = "UTF-8"): String {
     }
 }
 
-private fun download(source: URL, target: File): Long =
-    URLClient.connect(source).inStream.use { inStream ->
-        target.outputStream().use { outStream ->
+private fun download(source: URL, target: File): Long {
 
-            val buffer = ByteArray(4096)
-            var total: Long = 0
+    val inStream = URLClient.connect(source).inStream
+    val inputSource = Okio.buffer(Okio.source(inStream))
+    val outputSink = Okio.buffer(Okio.sink(target))
 
-            var read = inStream.read(buffer)
-            while (read >= 0) {
-                outStream.write(buffer, 0, read)
-                total += read
-                read = inStream.read(buffer)
-            }
-
-            total
+    return inputSource.use { input ->
+        outputSink.use { output ->
+            input.readAll(output)
         }
     }
+}
 
 private fun <T> profile(block: () -> T): Pair<T, Long> {
     val start = System.currentTimeMillis()

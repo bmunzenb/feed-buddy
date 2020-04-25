@@ -22,4 +22,5 @@ fun main(args: Array<String>) {
     val jsonFile = File("D:\\config.json")
 
     JsonAppConfigAdapter.write(config, jsonFile)
+    println("Wrote sample JSON config to $jsonFile.")
 }
