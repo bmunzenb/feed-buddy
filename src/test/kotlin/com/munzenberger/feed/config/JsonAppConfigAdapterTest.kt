@@ -17,7 +17,7 @@ class JsonAppConfigAdapterTest {
                         ItemHandlerConfig(
                                 name = "global handler",
                                 type = "com.test.Class",
-                                properties = mapOf("foo" to "bar", "fizz" to 32.0)
+                                properties = mapOf("foo" to "bar", "fizz" to 32)
                         )
                 ),
                 feeds = listOf(

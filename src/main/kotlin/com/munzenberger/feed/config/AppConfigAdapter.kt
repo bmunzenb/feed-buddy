@@ -6,15 +6,11 @@ import java.io.OutputStream
 
 interface AppConfigAdapter {
 
-    fun read(file: File): AppConfig {
-        return file.inputStream().use { read(it) }
-    }
+    fun read(file: File): AppConfig
 
     fun read(inStream: InputStream): AppConfig
 
-    fun write(config: AppConfig, file: File) {
-        file.outputStream().use { write(config, it) }
-    }
+    fun write(config: AppConfig, file: File)
 
     fun write(config: AppConfig, outStream: OutputStream)
 }

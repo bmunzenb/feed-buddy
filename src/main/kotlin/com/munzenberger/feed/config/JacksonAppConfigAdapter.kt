@@ -1,0 +1,56 @@
+package com.munzenberger.feed.config
+
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
+
+abstract class JacksonAppConfigAdapter : AppConfigAdapter {
+
+    protected abstract val objectMapper: ObjectMapper
+
+    override fun read(file: File): AppConfig {
+        return objectMapper.readValue(file)
+    }
+
+    override fun read(inStream: InputStream): AppConfig {
+        return inStream.use { objectMapper.readValue(it) }
+    }
+
+    override fun write(config: AppConfig, file: File) {
+        objectMapper.writeValue(file, config)
+    }
+
+    override fun write(config: AppConfig, outStream: OutputStream) {
+        outStream.use { objectMapper.writeValue(it, config) }
+    }
+}
+
+object JsonAppConfigAdapter : JacksonAppConfigAdapter() {
+    override val objectMapper: ObjectMapper = jacksonObjectMapper().apply {
+        enable(SerializationFeature.INDENT_OUTPUT)
+    }
+}
+
+object XmlAppConfigAdapter : JacksonAppConfigAdapter() {
+    override val objectMapper: ObjectMapper
+    init {
+        val module = JacksonXmlModule().apply {
+            setDefaultUseWrapper(false)
+        }
+        objectMapper = XmlMapper(module).registerKotlinModule().apply {
+            enable(SerializationFeature.INDENT_OUTPUT)
+        }
+    }
+}
+
+object YamlAppConfigAdapter : JacksonAppConfigAdapter() {
+    override val objectMapper: ObjectMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
+}

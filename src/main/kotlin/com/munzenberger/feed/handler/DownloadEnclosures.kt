@@ -2,7 +2,9 @@ package com.munzenberger.feed.handler
 
 import com.munzenberger.feed.Item
 import com.munzenberger.feed.URLClient
-import okio.Okio
+import okio.buffer
+import okio.sink
+import okio.source
 import java.io.File
 import java.io.IOException
 import java.net.URL
@@ -22,6 +24,8 @@ class DownloadEnclosures : ItemHandler {
             print("Downloading $source to $target... ")
 
             val result = profile { download(source, target) }
+
+            // TODO set the last modified time on the local file
 
             println("${result.first.formatAsSize()} transferred in ${result.second.formatAsTime()}.")
         }
@@ -75,8 +79,8 @@ private fun String.urlDecode(encoding: String = "UTF-8"): String {
 private fun download(source: URL, target: File): Long {
 
     val inStream = URLClient.connect(source).inStream
-    val inputSource = Okio.buffer(Okio.source(inStream))
-    val outputSink = Okio.buffer(Okio.sink(target))
+    val inputSource = inStream.source().buffer()
+    val outputSink = target.sink().buffer()
 
     return inputSource.use { input ->
         outputSink.use { output ->
