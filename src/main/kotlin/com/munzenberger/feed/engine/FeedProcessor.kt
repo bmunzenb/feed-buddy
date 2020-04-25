@@ -28,19 +28,29 @@ class FeedProcessor(
 
             var processed = 0
 
-            feed.items.filterNot(itemRegistry::contains).forEach {
-                if (itemProcessor.execute(it)) {
-                    itemRegistry.add(it)
-                    processed++
+            val items = feed.items.filterNot(itemRegistry::contains)
+
+            items.forEachIndexed { index, item ->
+                println("--> Processing item ${index+1} of ${items.size}, '${item.title}' (${item.guid})...")
+                when (itemProcessor.execute(item)) {
+                    true -> {
+                        itemRegistry.add(item)
+                        processed++
+                        println("<-- Item successfully processed.")
+                    }
+                    else -> {
+                        println("<-- Item not processed.")
+                    }
                 }
             }
 
-            if (processed > 0) {
+            if (items.isNotEmpty()) {
                 println("$processed ${"item".pluralize(processed)} processed.")
             }
 
         } catch (e: Throwable) {
             println("error [${e.javaClass.simpleName}] ${e.message}")
+            e.printStackTrace()
         }
     }
 }

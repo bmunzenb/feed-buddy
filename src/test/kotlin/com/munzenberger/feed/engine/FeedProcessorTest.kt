@@ -8,8 +8,21 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
+import java.lang.Exception
 
 class FeedProcessorTest {
+
+    @Test
+    fun `it gracefully handles exceptions thrown by the feed source`() {
+
+        val mockFeedSource = mockk<FeedSource>().apply {
+            every { name } returns "test source"
+            every { read() } throws Exception("test exception")
+        }
+
+        val processor = FeedProcessor(mockFeedSource, mockk(), mockk())
+        processor.execute()
+    }
 
     @Test
     fun `it processes feeds successfully`() {
