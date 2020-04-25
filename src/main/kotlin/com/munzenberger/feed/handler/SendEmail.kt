@@ -17,12 +17,18 @@ import javax.mail.internet.InternetAddress
 class SendEmail : ItemHandler {
 
     lateinit var to: String
+    lateinit var from: String
     lateinit var smtpHost: String
-    lateinit var smtpPort: String
 
-    var auth: String = ""
-    var startTLSEnable: String = "false"
-    var startTLSRequired: String = "false"
+    // because JSON doesn't support integers...
+    private var _smtpPort: Int = 0
+    var smtpPort: Double
+        get() = _smtpPort.toDouble()
+        set(value) { _smtpPort = value.toInt() }
+
+    var auth: Boolean = false
+    var startTLSEnable: Boolean = false
+    var startTLSRequired: Boolean = false
     var username: String = ""
     var password: String = ""
 
@@ -50,7 +56,7 @@ class SendEmail : ItemHandler {
 
         val htmlEmail = HtmlEmail().apply {
             addTo(to)
-            setFrom("feedbuddy@noreply.com", item.feedTitle)
+            setFrom(from, item.feedTitle)
             subject = item.title
             setHtmlMsg(toHtmlMessage(item))
             mailSession = session
@@ -58,12 +64,12 @@ class SendEmail : ItemHandler {
         }
 
         if (!transport.isConnected) {
-            print("Connecting to mail transport $smtpHost:$smtpPort ... ")
-            transport.connect(smtpHost, smtpPort.toInt(), username, password)
+            print("Connecting to mail transport $smtpHost:$_smtpPort... ")
+            transport.connect(smtpHost, _smtpPort, username, password)
             println("connected.")
         }
 
-        print("Sending email to $to ... ")
+        print("Sending email for '${item.guid}' to $to... ")
         val message = htmlEmail.mimeMessage
         val recipients = arrayOf<Address>(InternetAddress(to))
         transport.sendMessage(message, recipients)
@@ -74,7 +80,8 @@ class SendEmail : ItemHandler {
         val mailItem = MailItem(item)
         val context = VelocityContext().apply { put("item", mailItem) }
         val writer = StringWriter()
-        val reader = InputStreamReader(javaClass.getResourceAsStream("SendMail.vm"))
+        val template = javaClass.getResourceAsStream("SendEmail.vm")
+        val reader = InputStreamReader(template)
         Velocity.evaluate(context, writer, "", reader)
         return writer.toString()
     }

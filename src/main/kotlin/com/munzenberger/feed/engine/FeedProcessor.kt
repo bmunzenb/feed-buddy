@@ -2,6 +2,8 @@ package com.munzenberger.feed.engine
 
 import com.munzenberger.feed.source.FeedSource
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 class FeedProcessor(
         private val source: FeedSource,
@@ -10,26 +12,32 @@ class FeedProcessor(
 ) {
 
     companion object {
+        private val tf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
         private val timestamp: String
-            get() = LocalDateTime.now().toString()
+            get() = tf.format(LocalDateTime.now())
     }
 
     fun execute() {
         try {
 
-            print("$timestamp Reading from ${source.name} ... ")
+            print("$timestamp Reading from ${source.name}... ")
 
             val feed = source.read()
 
             println("${feed.title}, ${feed.items.size} ${"item".pluralize(feed.items.size)}.")
 
-            val processed = feed.items
-                    .filterNot(itemRegistry::contains)
-                    .filter(itemProcessor::execute)
-                    .map(itemRegistry::add)
-                    .count()
+            var processed = 0
 
-            println("$processed ${"item".pluralize(processed)} processed.")
+            feed.items.filterNot(itemRegistry::contains).forEach {
+                if (itemProcessor.execute(it)) {
+                    itemRegistry.add(it)
+                    processed++
+                }
+            }
+
+            if (processed > 0) {
+                println("$processed ${"item".pluralize(processed)} processed.")
+            }
 
         } catch (e: Throwable) {
             println("error [${e.javaClass.simpleName}] ${e.message}")

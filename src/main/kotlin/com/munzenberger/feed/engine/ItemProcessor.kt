@@ -15,6 +15,7 @@ class HandlersItemProcessor(private val handlers: List<ItemHandler>) : ItemProce
             true
         } catch (e: Throwable) {
             println("error [${e.javaClass.simpleName}] ${e.message}")
+            e.printStackTrace()
             false
         }
     }

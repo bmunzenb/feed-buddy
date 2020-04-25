@@ -18,7 +18,7 @@ class DownloadEnclosures : ItemHandler {
             val source = URL(enclosure.url)
             val target = targetFileFor(source)
 
-            print("Downloading $source to $target ... ")
+            print("Downloading $source to $target... ")
 
             val result = profile { download(source, target) }
 
@@ -29,9 +29,9 @@ class DownloadEnclosures : ItemHandler {
     internal fun targetFileFor(source: URL): File {
 
         val filename = source.path
+                .urlDecode()
                 .split('/')
                 .last()
-                .urlDecode()
 
         var path = targetDirectory + File.separator + filename
 
@@ -63,8 +63,13 @@ class DownloadEnclosures : ItemHandler {
     }
 }
 
-private fun String.urlDecode(encoding: String = "UTF-8") =
-        URLDecoder.decode(this, encoding)
+private fun String.urlDecode(encoding: String = "UTF-8"): String {
+    // handles nested URLs
+    return when (val decoded = URLDecoder.decode(this, encoding)) {
+        this -> this
+        else -> decoded.urlDecode(encoding)
+    }
+}
 
 private fun download(source: URL, target: File): Long =
     URLClient.connect(source).inStream.use { inStream ->

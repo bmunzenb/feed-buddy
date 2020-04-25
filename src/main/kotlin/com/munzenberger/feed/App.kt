@@ -1,8 +1,9 @@
 package com.munzenberger.feed
 
-import com.munzenberger.feed.source.XMLFeedSource
+import com.munzenberger.feed.config.ConfigParser
+import com.munzenberger.feed.config.FeedProcessorFactory
+import com.munzenberger.feed.config.ItemHandlerFactory
 import java.io.File
-import java.net.URL
 import java.util.Properties
 
 fun main(args: Array<String>) {
@@ -21,26 +22,19 @@ fun main(args: Array<String>) {
     System.setProperty("sun.net.client.defaultReadTimeout", "30000")
 
     if (args.isNotEmpty()) {
-        // assume the first argument is a file containing feeds to parse
-        parseFeeds(File(args[0]))
-    }
-}
+        // assume the first argument is a config file
 
-private fun parseFeeds(file: File) {
+        val file = File(args[0])
 
-    var results = 0 to 0
+        val config = ConfigParser.parse(file)
 
-    file.readLines().forEach { source ->
-        results = try {
-            print("$source ... ")
-            val feed = XMLFeedSource(URL(source)).read()
-            println("SUCCESS: ${feed.title}, ${feed.items.size} item(s)")
-            results.first+1 to results.second
-        } catch (e: Throwable) {
-            println("ERROR: [${e.javaClass.simpleName}] ${e.message}")
-            results.first to results.second+1
+        val itemHandlerFactory = ItemHandlerFactory()
+        val processorFactory = FeedProcessorFactory(itemHandlerFactory)
+
+        config.feeds.forEach { feedConfig ->
+
+            val processor = processorFactory.getInstance(feedConfig)
+            processor.execute()
         }
     }
-
-    println("Processed ${results.first + results.second} feeds, ${results.first} success(es) and ${results.second} failure(s).")
 }

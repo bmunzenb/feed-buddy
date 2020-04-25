@@ -9,7 +9,7 @@ class ItemHandlerFactory(private val registry: MutableMap<String, ItemHandler> =
     fun getInstance(config: ItemHandlerConfig): ItemHandler = when {
 
         config.ref != null ->
-            registry[config.ref] ?: throw IllegalArgumentException("Item handler with name ${config.ref} not found.")
+            registry[config.ref] ?: throw IllegalArgumentException("Item handler with name '${config.ref}' not found.")
 
         config.type != null ->
             newItemHandler(config).also {

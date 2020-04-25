@@ -26,12 +26,12 @@
 		<hr>
 		<em>
 			#if ( $item.link )
-				<div>Article: <a href="$item.link">$item.link</a></div>
+				<p>Article: <a href="$item.link">$item.link</a></p>
 			#end
 			#foreach ( $enclosure in $item.enclosures )
-				<div>Download: <a href="$enclosure.url">$enclosure.url</a></div>
+				<p>Download: <a href="$enclosure.url">$enclosure.url</a></p>
 			#end
 		</em>
-		<p style="font-size:0.75em;">Feed item ID: ${item.id}</p>
 	</body>
 </html>
+<!-- ${item.id} -->

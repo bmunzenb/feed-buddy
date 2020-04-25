@@ -51,4 +51,13 @@ class DownloadEnclosuresTest {
 
         assertNotEquals(localFile.path, dupFile.path)
     }
+
+    @Test
+    fun `it maps to a local file for encoded invalid characters`() {
+
+        val handler = DownloadEnclosures()
+        val localFile = handler.targetFileFor(URL("https://anchor.fm/s/10bb8090/podcast/play/10052621/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fproduction%2F2020-0-30%2F45841909-22050-1-24041a3ac9d8e.mp3"))
+
+        assertEquals(".${File.separator}45841909-22050-1-24041a3ac9d8e.mp3", localFile.path)
+    }
 }
