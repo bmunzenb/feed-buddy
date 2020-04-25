@@ -3,13 +3,13 @@ package com.munzenberger.feed.config
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ConfigParserTest {
+class JsonAppConfigAdapterTest {
 
     @Test
     fun `it can parse a config file`() {
 
         val source = javaClass.getResourceAsStream("config.json")
-        val config = ConfigParser.parse(source)
+        val config = JsonAppConfigAdapter.read(source)
 
         val expected = AppConfig(
                 period = 42,

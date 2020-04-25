@@ -1,6 +1,6 @@
 package com.munzenberger.feed
 
-import com.munzenberger.feed.config.ConfigParser
+import com.munzenberger.feed.config.JsonAppConfigAdapter
 import com.munzenberger.feed.config.FeedProcessorFactory
 import com.munzenberger.feed.config.ItemHandlerFactory
 import java.io.File
@@ -26,7 +26,7 @@ fun main(args: Array<String>) {
 
         val file = File(args[0])
 
-        val config = ConfigParser.parse(file)
+        val config = JsonAppConfigAdapter.read(file)
 
         val itemHandlerFactory = ItemHandlerFactory()
         val processorFactory = FeedProcessorFactory(itemHandlerFactory)
