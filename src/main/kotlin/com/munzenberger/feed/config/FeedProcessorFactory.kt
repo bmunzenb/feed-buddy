@@ -1,8 +1,9 @@
 package com.munzenberger.feed.config
 
+import com.munzenberger.feed.Item
 import com.munzenberger.feed.engine.FeedProcessor
 import com.munzenberger.feed.engine.FileItemRegistry
-import com.munzenberger.feed.engine.HandlersItemProcessor
+import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.XMLFeedSource
 import java.net.URL
 import java.nio.file.Path
@@ -16,6 +17,7 @@ class FeedProcessorFactory(private val itemHandlerFactory: ItemHandlerFactory) {
     fun getInstance(feedConfig: FeedConfig): FeedProcessor {
 
         val url = URL(feedConfig.url)
+
         val source = XMLFeedSource(
                 source = url,
                 userAgent = feedConfig.userAgent,
@@ -23,10 +25,14 @@ class FeedProcessorFactory(private val itemHandlerFactory: ItemHandlerFactory) {
 
         val itemRegistry = FileItemRegistry(url.registryFilePath)
 
-        val handlers = feedConfig.handlers.map(itemHandlerFactory::getInstance)
-        val itemProcessor = HandlersItemProcessor(handlers)
+        val itemHandler = object : ItemHandler {
+            private val handlers = feedConfig.handlers.map(itemHandlerFactory::getInstance)
+            override fun execute(item: Item) {
+                handlers.forEach { it.execute(item) }
+            }
+        }
 
-        return FeedProcessor(source, itemRegistry, itemProcessor)
+        return FeedProcessor(source, itemRegistry, itemHandler)
     }
 }
 

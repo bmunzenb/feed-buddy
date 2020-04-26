@@ -1,5 +1,6 @@
 package com.munzenberger.feed.engine
 
+import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.FeedSource
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -8,7 +9,7 @@ import java.time.format.FormatStyle
 class FeedProcessor(
         private val source: FeedSource,
         private val itemRegistry: ItemRegistry,
-        private val itemProcessor: ItemProcessor
+        private val itemHandler: ItemHandler
 ) {
 
     companion object {
@@ -32,15 +33,13 @@ class FeedProcessor(
 
             items.forEachIndexed { index, item ->
                 println("--> Processing item ${index+1} of ${items.size}, '${item.title}' (${item.guid})...")
-                when (itemProcessor.execute(item)) {
-                    true -> {
-                        itemRegistry.add(item)
-                        processed++
-                        println("<-- Item successfully processed.")
-                    }
-                    else -> {
-                        println("<-- Item not processed.")
-                    }
+                try {
+                    itemHandler.execute(item)
+                    itemRegistry.add(item)
+                    processed++
+                } catch (e: Throwable) {
+                    println("error [${e.javaClass.simpleName}] ${e.message}")
+                    e.printStackTrace()
                 }
             }
 
