@@ -1,5 +1,6 @@
 package com.munzenberger.feed.engine
 
+import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.FeedSource
 import java.time.LocalDateTime
@@ -9,6 +10,7 @@ import java.time.format.FormatStyle
 class FeedProcessor(
         private val source: FeedSource,
         private val itemRegistry: ItemRegistry,
+        private val itemFilter: ItemFilter,
         private val itemHandler: ItemHandler
 ) {
 
@@ -29,7 +31,9 @@ class FeedProcessor(
 
             var processed = 0
 
-            val items = feed.items.filterNot(itemRegistry::contains)
+            val items = feed.items
+                    .filterNot(itemRegistry::contains)
+                    .filter(itemFilter::evaluate)
 
             items.forEachIndexed { index, item ->
                 println("--> Processing item ${index+1} of ${items.size}, '${item.title}' (${item.guid})...")

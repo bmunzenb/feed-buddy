@@ -1,9 +1,7 @@
 package com.munzenberger.feed
 
-import com.munzenberger.feed.config.JsonAppConfigAdapter
 import com.munzenberger.feed.config.FeedProcessorFactory
-import com.munzenberger.feed.config.ItemProcessorFactory
-import com.munzenberger.feed.handler.ItemHandler
+import com.munzenberger.feed.config.JsonAppConfigAdapter
 import java.io.File
 import java.util.Properties
 
@@ -29,8 +27,7 @@ fun main(args: Array<String>) {
 
         val config = JsonAppConfigAdapter.read(file)
 
-        val itemHandlerFactory = ItemProcessorFactory<ItemHandler>()
-        val processorFactory = FeedProcessorFactory(itemHandlerFactory)
+        val processorFactory = FeedProcessorFactory()
 
         config.feeds.forEach { feedConfig ->
 
