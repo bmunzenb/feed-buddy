@@ -9,17 +9,17 @@ import java.util.zip.GZIPInputStream
 object URLClient {
 
     data class Response(
+            val resolvedUrl: URL,
             val contentType: String?,
             val inStream: InputStream
     ) {
         val encoding: String
-            get() = contentType?.let {
-                // TODO: parse the charset from the content type
-                when {
-                    it.contains("UTF-16", true) -> "UTF-16"
-                    else -> null
-                }
-            } ?: "UTF-8"
+            // TODO: better to parse the 'charset' from the content-type
+            get() = when {
+                contentType == null -> "UTF-8"
+                contentType.contains("UTF-16", true) -> "UTF-16"
+                else -> "UTF-8"
+            }
     }
 
     private val redirectCodes = setOf(
@@ -43,6 +43,7 @@ object URLClient {
         requestProperties.forEach { (key, value) -> connection.setRequestProperty(key, value) }
 
         if (connection is HttpURLConnection) {
+            connection.instanceFollowRedirects = false
             val responseCode = connection.responseCode
             // handle redirects
             if (responseCode in redirectCodes) {
@@ -59,15 +60,13 @@ object URLClient {
             }
         }
 
-        val contentEncoding: String? = connection.getHeaderField("Content-Encoding")
-        val contentType: String? = connection.getHeaderField("Content-Type")
         var inStream = connection.getInputStream()
 
         // handle gzip encoded responses
-        if (contentEncoding.equals("gzip", true)) {
+        if (connection.contentEncoding.equals("gzip", true)) {
             inStream = GZIPInputStream(inStream)
         }
 
-        return Response(contentType, inStream)
+        return Response(url, connection.contentType, inStream)
     }
 }

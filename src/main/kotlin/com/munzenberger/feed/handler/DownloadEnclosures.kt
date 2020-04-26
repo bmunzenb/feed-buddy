@@ -7,6 +7,7 @@ import okio.sink
 import okio.source
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
 import java.net.URL
 import java.net.URLDecoder
 import java.text.NumberFormat
@@ -18,12 +19,17 @@ class DownloadEnclosures : ItemHandler {
     override fun execute(item: Item) {
         item.enclosures.forEach { enclosure ->
 
-            val source = URL(enclosure.url)
-            val target = targetFileFor(source)
+            print("Resolving enclosure source... ")
 
-            print("Downloading $source to $target... ")
+            val response = URLClient.connect(URL(enclosure.url))
 
-            val result = profile { download(source, target) }
+            println(response.resolvedUrl)
+
+            val target = targetFileFor(response.resolvedUrl)
+
+            print("Downloading to $target... ")
+
+            val result = profile { download(response.inStream, target) }
 
             // TODO set the last modified time on the local file
 
@@ -76,9 +82,8 @@ private fun String.urlDecode(encoding: String = "UTF-8"): String {
     }
 }
 
-private fun download(source: URL, target: File): Long {
+private fun download(inStream: InputStream, target: File): Long {
 
-    val inStream = URLClient.connect(source).inStream
     val inputSource = inStream.source().buffer()
     val outputSink = target.sink().buffer()
 
