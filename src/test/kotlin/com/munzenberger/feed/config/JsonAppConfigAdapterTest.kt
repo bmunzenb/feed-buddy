@@ -14,7 +14,7 @@ class JsonAppConfigAdapterTest {
         val expected = AppConfig(
                 period = 42,
                 handlers = listOf(
-                        ItemHandlerConfig(
+                        ItemProcessorConfig(
                                 name = "global handler",
                                 type = "com.test.Class",
                                 properties = mapOf("foo" to "bar", "fizz" to 32)
@@ -26,11 +26,11 @@ class JsonAppConfigAdapterTest {
                                 userAgent = "test user agent",
                                 period = 86,
                                 handlers = listOf(
-                                        ItemHandlerConfig(
+                                        ItemProcessorConfig(
                                                 type = "com.test.Handler",
                                                 properties = mapOf("bar" to "foo", "boolean" to true)
                                         ),
-                                        ItemHandlerConfig(
+                                        ItemProcessorConfig(
                                                 ref = "global handler"
                                         )
                                 )

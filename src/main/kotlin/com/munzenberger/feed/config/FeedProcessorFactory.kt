@@ -10,7 +10,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import javax.xml.parsers.DocumentBuilderFactory
 
-class FeedProcessorFactory(private val itemHandlerFactory: ItemHandlerFactory) {
+class FeedProcessorFactory(private val itemHandlerFactory: ItemProcessorFactory<ItemHandler>) {
 
     private val documentBuilderFactory = DocumentBuilderFactory.newInstance()
 

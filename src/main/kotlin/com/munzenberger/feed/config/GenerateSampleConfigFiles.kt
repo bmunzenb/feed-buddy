@@ -6,13 +6,13 @@ import java.io.File
 
 fun main(args: Array<String>) {
 
-    val handler1 = ItemHandlerConfig(
+    val handler1 = ItemProcessorConfig(
             name = "Download Enclosures",
             type = DownloadEnclosures::class.qualifiedName,
             properties = mapOf("targetDirectory" to "C:\\Downloads")
     )
 
-    val handler2 = ItemHandlerConfig(
+    val handler2 = ItemProcessorConfig(
             name = "Send Email",
             type = SendEmail::class.qualifiedName,
             properties = mapOf(

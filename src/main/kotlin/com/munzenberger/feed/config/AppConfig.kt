@@ -8,7 +8,9 @@ data class AppConfig(
         @JacksonXmlProperty(isAttribute = true)
         val period: Int = 360, // default 3 hours
         @JacksonXmlProperty(localName = "handler")
-        val handlers: List<ItemHandlerConfig> = emptyList(),
+        val handlers: List<ItemProcessorConfig> = emptyList(),
+        @JacksonXmlProperty(localName = "filter")
+        val filters: List<ItemProcessorConfig> = emptyList(),
         @JacksonXmlProperty(localName = "feed")
         val feeds: List<FeedConfig>
 )
@@ -21,10 +23,12 @@ data class FeedConfig(
         @JacksonXmlProperty(isAttribute = true)
         val userAgent: String? = null,
         @JacksonXmlProperty(localName = "handler")
-        val handlers: List<ItemHandlerConfig> = emptyList()
+        val handlers: List<ItemProcessorConfig> = emptyList(),
+        @JacksonXmlProperty(localName = "filter")
+        val filters: List<ItemProcessorConfig> = emptyList()
 )
 
-data class ItemHandlerConfig(
+data class ItemProcessorConfig(
         @JacksonXmlProperty(isAttribute = true)
         val name: String? = null,
         @JacksonXmlProperty(isAttribute = true)
