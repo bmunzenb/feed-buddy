@@ -1,16 +1,19 @@
 package com.munzenberger.feed
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.path
-import com.munzenberger.feed.config.AppConfigProvider
+import com.munzenberger.feed.config.BaseItemProcessorFactory
 import com.munzenberger.feed.config.FeedProcessorFactory
 import com.munzenberger.feed.config.FileAppConfigProvider
-import com.munzenberger.feed.engine.pluralize
-import java.io.File
+import com.munzenberger.feed.config.ItemProcessorConfig
+import com.munzenberger.feed.config.ItemProcessorFactory
+import com.munzenberger.feed.handler.ItemHandler
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.Properties
-import java.util.Timer
-import java.util.TimerTask
 
 fun main(args: Array<String>) {
 
@@ -30,70 +33,54 @@ fun main(args: Array<String>) {
     App().main(args)
 }
 
+enum class OperatingMode {
+    POLL, ONCE, NOOP
+}
+
 class App : CliktCommand() {
 
-    private val feeds by option(help = "Path to feeds configuration file")
+    private val feeds: Path by option(help = "Path to feeds configuration file")
             .path(mustBeReadable = true, mustExist = true, canBeDir = false)
+            .default(Paths.get("feeds.xml"))
 
-    private lateinit var file: File
-    private lateinit var configProvider: AppConfigProvider
-    private lateinit var processorFactory: FeedProcessorFactory
-
-    private var timer: Timer? = null
+    private val mode: OperatingMode by option(help = "Sets the operating mode")
+            .enum<OperatingMode>()
+            .default(OperatingMode.POLL)
 
     override fun run() {
 
-        file = feeds?.toFile() ?: File("feeds.xml")
+        val configFile = feeds.toFile()
 
-        configProvider = FileAppConfigProvider(file)
+        val configProvider = FileAppConfigProvider(configFile)
 
-        processorFactory = FeedProcessorFactory()
+        if (mode == OperatingMode.NOOP) {
+            println("Executing in NOOP mode: items will be marked as processed but no handlers will execute.")
+        }
+
+        val handlerFactory: ItemProcessorFactory<ItemHandler> = when (mode) {
+            OperatingMode.NOOP -> object : ItemProcessorFactory<ItemHandler> {
+                override fun getInstance(config: ItemProcessorConfig): ItemHandler {
+                    return object : ItemHandler {
+                        override fun execute(item: Item) {}
+                    }
+                }
+            }
+            else -> BaseItemProcessorFactory()
+        }
+
+        val processorFactory = FeedProcessorFactory(itemHandlerFactory = handlerFactory)
+
+        val feedOperator: FeedOperator = when (mode) {
+            OperatingMode.POLL -> PollingFeedOperator(configProvider, processorFactory)
+            OperatingMode.ONCE, OperatingMode.NOOP -> OnceFeedOperator(configProvider, processorFactory)
+        }
 
         Runtime.getRuntime().addShutdownHook(object : Thread() {
             override fun run() {
-                timer?.cancel()
+                feedOperator.cancel()
             }
         })
 
-        startPolling()
-    }
-
-    private fun startPolling() {
-
-        timer?.cancel()
-
-        val config = configProvider.config
-
-        with(config.feeds.size) {
-            println("Scheduling $this ${"feed".pluralize(this)} from ${configProvider.name}.")
-        }
-
-        val tasks: List<Pair<TimerTask, Long>> = config.feeds.map {
-
-            val feed = processorFactory.getInstance(it)
-
-            val task = object : TimerTask() {
-                override fun run() {
-                    feed.execute()
-                }
-            }
-
-            val period = (it.period ?: config.period).toLong() * 60 * 1000 // convert from minutes to millis
-
-            task to period
-        }
-
-        val configurationChangeTask = ConfigurationChangeTask(file) {
-            println("Detected configuration change.")
-            startPolling()
-        }
-
-        timer = Timer().apply {
-
-            tasks.forEach { schedule(it.first, 0, it.second) }
-
-            // check for configuration changes every 5 seconds
-            schedule(configurationChangeTask, 5000, 5000)
-        }
+        feedOperator.start()
     }
 }

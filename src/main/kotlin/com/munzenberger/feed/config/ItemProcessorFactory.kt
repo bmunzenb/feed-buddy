@@ -3,9 +3,13 @@ package com.munzenberger.feed.config
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.memberProperties
 
-class ItemProcessorFactory<T>(private val registry: MutableMap<String, T> = mutableMapOf()) {
+interface ItemProcessorFactory<out T> {
+    fun getInstance(config: ItemProcessorConfig): T
+}
 
-    fun getInstance(config: ItemProcessorConfig): T = when {
+class BaseItemProcessorFactory<T>(private val registry: MutableMap<String, T> = mutableMapOf()) : ItemProcessorFactory<T> {
+
+    override fun getInstance(config: ItemProcessorConfig): T = when {
 
         config.ref != null ->
             registry[config.ref] ?: throw IllegalArgumentException("Item processor with name '${config.ref}' not found.")
