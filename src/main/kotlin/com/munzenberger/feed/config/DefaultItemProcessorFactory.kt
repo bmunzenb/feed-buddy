@@ -37,13 +37,22 @@ class DefaultItemProcessorFactory<T>(private val registry: MutableMap<String, T>
 
             config.properties.forEach { (name, value) ->
 
-                when (val property = properties.firstOrNull { it.name == name }) {
-                    null -> throw IllegalArgumentException("Item processor ${config.type} does not have a settable property named '$name'.")
-                    else -> try {
-                        property.setter.call(process, value)
-                    } catch (e: Throwable) {
-                        throw IllegalArgumentException("[${config.type}] Could not set property \"$name\" to value \"$value\" of type ${value::class.simpleName}", e)
-                    }
+                val property = properties.firstOrNull { it.name == name }
+                        ?: throw IllegalArgumentException("Item processor ${config.type} does not have a settable property named '$name'.")
+
+                val propertyType = property.returnType.classifier
+
+                val coercedValue: Any = when {
+                    value::class == propertyType -> value
+                    value is String && propertyType == Int::class -> value.toInt()
+                    value is String && propertyType == Boolean::class -> value.toBoolean()
+                    else -> throw IllegalArgumentException("Incompatible types: $value (${value::class}) cannot be set for property \"$name\" of type $propertyType.")
+                }
+
+                try {
+                    property.setter.call(process, coercedValue)
+                } catch (e: Throwable) {
+                    throw IllegalArgumentException("[${config.type}] Could not set property \"$name\" to value \"$value\" of type ${value::class.simpleName}", e)
                 }
             }
 

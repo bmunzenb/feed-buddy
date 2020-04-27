@@ -20,12 +20,7 @@ class SendEmail : ItemHandler {
     lateinit var from: String
     lateinit var smtpHost: String
 
-    // because JSON doesn't support integers...
-    private var _smtpPort: Int = 0
-    var smtpPort: Double
-        get() = _smtpPort.toDouble()
-        set(value) { _smtpPort = value.toInt() }
-
+    var smtpPort: Int = 0
     var auth: Boolean = false
     var startTLSEnable: Boolean = false
     var startTLSRequired: Boolean = false
@@ -64,12 +59,12 @@ class SendEmail : ItemHandler {
         }
 
         if (!transport.isConnected) {
-            print("Connecting to mail transport $smtpHost:$_smtpPort... ")
-            transport.connect(smtpHost, _smtpPort, username, password)
+            print("Connecting to mail transport $smtpHost:$smtpPort... ")
+            transport.connect(smtpHost, smtpPort, username, password)
             println("connected.")
         }
 
-        print("Sending email for '${item.guid}' to $to... ")
+        print("Sending email to $to... ")
         val message = htmlEmail.mimeMessage
         val recipients = arrayOf<Address>(InternetAddress(to))
         transport.sendMessage(message, recipients)

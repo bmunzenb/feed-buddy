@@ -53,6 +53,25 @@ class DefaultItemProcessorFactoryTest {
     }
 
     @Test
+    fun `it can construct a new item handler with coerced types`() {
+
+        val config = ItemProcessorConfig(
+                type = TestItemProcessor::class.java.name,
+                properties = mapOf(
+                        "stringProperty" to "testValue",
+                        "booleanProperty" to "true",
+                        "integerProperty" to "42"
+                )
+        )
+
+        val handler = DefaultItemProcessorFactory.newItemProcessor<TestItemProcessor>(config)
+
+        assertEquals("testValue", handler.stringProperty)
+        assertEquals(true, handler.booleanProperty)
+        assertEquals(42, handler.integerProperty)
+    }
+
+    @Test
     fun `it saves newly created handlers with names in global registry`() {
 
         val config = ItemProcessorConfig(

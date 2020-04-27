@@ -1,0 +1,17 @@
+<feeds period="42">
+    <handler name="global handler" type="com.test.Class">
+        <properties>
+            <foo>bar</foo>
+            <fizz>32</fizz>
+        </properties>
+    </handler>
+    <feed url="http://www.example.com/feed.xml" userAgent="test user agent" period="86">
+        <handler type="com.test.Handler">
+            <properties>
+                <bar>foo</bar>
+                <boolean>true</boolean>
+            </properties>
+        </handler>
+        <handler ref="global handler"/>
+    </feed>
+</feeds>
