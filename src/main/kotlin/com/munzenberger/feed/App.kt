@@ -5,7 +5,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.path
-import com.munzenberger.feed.config.BaseItemProcessorFactory
+import com.munzenberger.feed.config.DefaultItemProcessorFactory
 import com.munzenberger.feed.config.FeedProcessorFactory
 import com.munzenberger.feed.config.FileAppConfigProvider
 import com.munzenberger.feed.config.ItemProcessorConfig
@@ -14,6 +14,7 @@ import com.munzenberger.feed.handler.ItemHandler
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Properties
+import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
 
@@ -51,21 +52,31 @@ class App : CliktCommand() {
 
         val configFile = feeds.toFile()
 
-        val configProvider = FileAppConfigProvider(configFile)
-
-        if (mode == OperatingMode.NOOP) {
-            println("Executing in NOOP mode: items will be marked as processed but no handlers will execute.")
+        when {
+            !configFile.exists() -> {
+                println("Configuration file not found: $configFile")
+                exitProcess(1)
+            }
+            !configFile.canRead() -> {
+                println("Configuration file not readable: $configFile")
+                exitProcess(1)
+            }
         }
 
+        val configProvider = FileAppConfigProvider(configFile)
+
         val handlerFactory: ItemProcessorFactory<ItemHandler> = when (mode) {
-            OperatingMode.NOOP -> object : ItemProcessorFactory<ItemHandler> {
-                override fun getInstance(config: ItemProcessorConfig): ItemHandler {
-                    return object : ItemHandler {
-                        override fun execute(item: Item) {}
+            OperatingMode.NOOP -> {
+                println("Executing in NOOP mode: items will be marked as processed but no handlers will execute.")
+                object : ItemProcessorFactory<ItemHandler> {
+                    override fun getInstance(config: ItemProcessorConfig): ItemHandler {
+                        return object : ItemHandler {
+                            override fun execute(item: Item) {}
+                        }
                     }
                 }
             }
-            else -> BaseItemProcessorFactory()
+            else -> DefaultItemProcessorFactory()
         }
 
         val processorFactory = FeedProcessorFactory(itemHandlerFactory = handlerFactory)

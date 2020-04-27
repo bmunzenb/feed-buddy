@@ -4,7 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class BaseItemProcessorFactoryTest {
+class DefaultItemProcessorFactoryTest {
 
     class TestItemProcessor {
         var stringProperty: String = "default"
@@ -19,7 +19,7 @@ class BaseItemProcessorFactoryTest {
                 type = "does.not.exist"
         )
 
-        BaseItemProcessorFactory.newItemProcessor<TestItemProcessor>(config)
+        DefaultItemProcessorFactory.newItemProcessor<TestItemProcessor>(config)
     }
 
     @Test(expected = IllegalArgumentException::class)
@@ -30,7 +30,7 @@ class BaseItemProcessorFactoryTest {
                 properties = mapOf("invalidProperty" to "testValue")
         )
 
-        BaseItemProcessorFactory.newItemProcessor<TestItemProcessor>(config)
+        DefaultItemProcessorFactory.newItemProcessor<TestItemProcessor>(config)
     }
 
     @Test
@@ -45,7 +45,7 @@ class BaseItemProcessorFactoryTest {
                 )
         )
 
-        val handler = BaseItemProcessorFactory.newItemProcessor<TestItemProcessor>(config)
+        val handler = DefaultItemProcessorFactory.newItemProcessor<TestItemProcessor>(config)
 
         assertEquals("testValue", handler.stringProperty)
         assertEquals(true, handler.booleanProperty)
@@ -62,7 +62,7 @@ class BaseItemProcessorFactoryTest {
 
         val registry = mutableMapOf<String, TestItemProcessor>()
 
-        val factory = BaseItemProcessorFactory(registry)
+        val factory = DefaultItemProcessorFactory(registry)
 
         val handler = factory.getInstance(config)
 
@@ -81,7 +81,7 @@ class BaseItemProcessorFactoryTest {
 
         val registry = mutableMapOf("global" to global)
 
-        val factory = BaseItemProcessorFactory(registry)
+        val factory = DefaultItemProcessorFactory(registry)
 
         val process = factory.getInstance(config)
 

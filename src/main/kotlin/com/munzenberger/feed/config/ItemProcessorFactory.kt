@@ -7,7 +7,7 @@ interface ItemProcessorFactory<out T> {
     fun getInstance(config: ItemProcessorConfig): T
 }
 
-class BaseItemProcessorFactory<T>(private val registry: MutableMap<String, T> = mutableMapOf()) : ItemProcessorFactory<T> {
+class DefaultItemProcessorFactory<T>(private val registry: MutableMap<String, T> = mutableMapOf()) : ItemProcessorFactory<T> {
 
     override fun getInstance(config: ItemProcessorConfig): T = when {
 
