@@ -58,7 +58,7 @@ class FeedProcessor(
     }
 }
 
-private fun String.pluralize(count: Int) = when (count) {
+fun String.pluralize(count: Int) = when (count) {
     1 -> this
     else -> this + "s"
 }

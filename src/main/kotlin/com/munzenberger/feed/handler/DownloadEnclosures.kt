@@ -25,6 +25,8 @@ class DownloadEnclosures : ItemHandler {
 
             println(response.resolvedUrl)
 
+            // TODO can we determine the local filename by the 'content-disposition' response header?
+
             val target = targetFileFor(response.resolvedUrl)
 
             print("Downloading to $target... ")
