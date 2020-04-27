@@ -36,7 +36,7 @@ class FeedProcessor(
                     .filter(itemFilter::evaluate)
 
             items.forEachIndexed { index, item ->
-                println("--> Processing item ${index+1} of ${items.size}, '${item.title}' (${item.guid})...")
+                println("--> Processing item ${index+1} of ${items.size}, \"${item.title}\" (${item.guid})...")
                 try {
                     itemHandler.execute(item)
                     itemRegistry.add(item)
