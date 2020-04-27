@@ -5,6 +5,7 @@ import kotlin.reflect.full.memberProperties
 
 interface ItemProcessorFactory<out T> {
     fun getInstance(config: ItemProcessorConfig): T
+    fun reset() {}
 }
 
 class DefaultItemProcessorFactory<T>(private val registry: MutableMap<String, T> = mutableMapOf()) : ItemProcessorFactory<T> {
@@ -25,6 +26,10 @@ class DefaultItemProcessorFactory<T>(private val registry: MutableMap<String, T>
             throw IllegalArgumentException("An item processor must define either a 'type' or a 'ref'.")
     }
 
+    override fun reset() {
+        registry.clear()
+    }
+
     companion object {
 
         @Suppress("UNCHECKED_CAST")
@@ -38,7 +43,7 @@ class DefaultItemProcessorFactory<T>(private val registry: MutableMap<String, T>
             config.properties.forEach { (name, value) ->
 
                 when (val property = properties.firstOrNull { it.name == name }) {
-                    null -> throw IllegalArgumentException("Item process ${config.type} does not have a settable property named '$name'.")
+                    null -> throw IllegalArgumentException("Item processor ${config.type} does not have a settable property named '$name'.")
                     else -> property.setter.call(process, value)
                 }
             }

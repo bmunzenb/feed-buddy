@@ -1,22 +1,19 @@
 package com.munzenberger.feed
 
+import com.munzenberger.feed.config.AppConfig
 import com.munzenberger.feed.config.AppConfigProvider
 import com.munzenberger.feed.config.FeedProcessorFactory
-import com.munzenberger.feed.engine.pluralize
+import com.munzenberger.feed.config.ItemProcessorFactory
+import com.munzenberger.feed.filter.ItemFilter
+import com.munzenberger.feed.handler.ItemHandler
 
 class OnceFeedOperator(
-        private val configProvider: AppConfigProvider,
-        private val processorFactory: FeedProcessorFactory
-) : FeedOperator {
+        configProvider: AppConfigProvider,
+        filterFactory: ItemProcessorFactory<ItemFilter>,
+        handlerFactory: ItemProcessorFactory<ItemHandler>
+) : BaseFeedOperator(configProvider, filterFactory, handlerFactory) {
 
-    override fun start() {
-
-        val config = configProvider.config
-
-        with(config.feeds.size) {
-            println("Processing $this ${"feed".pluralize(this)} from ${configProvider.name}.")
-        }
-
+    override fun start(config: AppConfig, processorFactory: FeedProcessorFactory) {
         config.feeds.map(processorFactory::getInstance).forEach { it.execute() }
     }
 }

@@ -27,16 +27,19 @@ class FeedProcessor(
 
             val feed = source.read()
 
-            println("${feed.title}, ${feed.items.size} ${"item".pluralize(feed.items.size)}.")
+            with(feed.items.size) {
+                println("${feed.title}, $this ${"item".pluralize(this)}.")
+            }
 
             var processed = 0
+            var errors = 0
 
             val items = feed.items
                     .filterNot(itemRegistry::contains)
                     .filter(itemFilter::evaluate)
 
             items.forEachIndexed { index, item ->
-                println("--> Processing item ${index+1} of ${items.size}, \"${item.title}\" (${item.guid})...")
+                println("Processing item ${index+1} of ${items.size}, \"${item.title}\" (${item.guid})")
                 try {
                     itemHandler.execute(item)
                     itemRegistry.add(item)
@@ -44,11 +47,15 @@ class FeedProcessor(
                 } catch (e: Throwable) {
                     println("error [${e.javaClass.simpleName}] ${e.message}")
                     e.printStackTrace()
+                    errors++
                 }
             }
 
             if (items.isNotEmpty()) {
-                println("$processed ${"item".pluralize(processed)} processed.")
+                when (errors) {
+                    0 -> println("$processed ${"item".pluralize(processed)} processed.")
+                    else -> println("$processed ${"item".pluralize(processed)} processed successfully, $errors ${"failure".pluralize(errors)}.")
+                }
             }
 
         } catch (e: Throwable) {

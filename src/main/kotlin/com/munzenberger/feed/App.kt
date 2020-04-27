@@ -12,6 +12,7 @@ import com.munzenberger.feed.config.FeedProcessorFactory
 import com.munzenberger.feed.config.FileAppConfigProvider
 import com.munzenberger.feed.config.ItemProcessorConfig
 import com.munzenberger.feed.config.ItemProcessorFactory
+import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import java.nio.file.Path
 import java.util.Properties
@@ -70,6 +71,8 @@ class App : CliktCommand() {
 
         val configProvider = FileAppConfigProvider(configFile)
 
+        val filterFactory = DefaultItemProcessorFactory<ItemFilter>()
+
         val handlerFactory: ItemProcessorFactory<ItemHandler> = when (mode) {
             OperatingMode.NOOP -> {
                 println("Executing in NOOP mode: items will be marked as processed but no handlers will execute.")
@@ -84,11 +87,9 @@ class App : CliktCommand() {
             else -> DefaultItemProcessorFactory()
         }
 
-        val processorFactory = FeedProcessorFactory(itemHandlerFactory = handlerFactory)
-
         val feedOperator: FeedOperator = when (mode) {
-            OperatingMode.POLL -> PollingFeedOperator(configProvider, processorFactory)
-            OperatingMode.ONCE, OperatingMode.NOOP -> OnceFeedOperator(configProvider, processorFactory)
+            OperatingMode.POLL -> PollingFeedOperator(configProvider, filterFactory, handlerFactory)
+            OperatingMode.ONCE, OperatingMode.NOOP -> OnceFeedOperator(configProvider, filterFactory, handlerFactory)
         }
 
         Runtime.getRuntime().addShutdownHook(object : Thread() {

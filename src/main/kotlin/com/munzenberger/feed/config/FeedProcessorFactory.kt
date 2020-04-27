@@ -12,8 +12,8 @@ import java.nio.file.Paths
 import javax.xml.parsers.DocumentBuilderFactory
 
 class FeedProcessorFactory(
-        private val itemFilterFactory: ItemProcessorFactory<ItemFilter> = DefaultItemProcessorFactory(),
-        private val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory()
+        val itemFilterFactory: ItemProcessorFactory<ItemFilter> = DefaultItemProcessorFactory(),
+        val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory()
 ) {
 
     private val documentBuilderFactory = DocumentBuilderFactory.newInstance()

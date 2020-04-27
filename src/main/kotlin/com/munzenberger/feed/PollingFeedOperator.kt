@@ -1,25 +1,23 @@
 package com.munzenberger.feed
 
+import com.munzenberger.feed.config.AppConfig
 import com.munzenberger.feed.config.AppConfigProvider
 import com.munzenberger.feed.config.FeedProcessorFactory
-import com.munzenberger.feed.engine.pluralize
+import com.munzenberger.feed.config.ItemProcessorFactory
+import com.munzenberger.feed.filter.ItemFilter
+import com.munzenberger.feed.handler.ItemHandler
 import java.util.Timer
 import java.util.TimerTask
 
 class PollingFeedOperator(
         private val configProvider: AppConfigProvider,
-        private val processorFactory: FeedProcessorFactory
-) : FeedOperator {
+        filterFactory: ItemProcessorFactory<ItemFilter>,
+        handlerFactory: ItemProcessorFactory<ItemHandler>
+) : BaseFeedOperator(configProvider, filterFactory, handlerFactory) {
 
     private var timer: Timer? = null
 
-    override fun start() {
-
-        val config = configProvider.config
-
-        with(config.feeds.size) {
-            println("Scheduling $this ${"feed".pluralize(this)} from ${configProvider.name}.")
-        }
+    override fun start(config: AppConfig, processorFactory: FeedProcessorFactory) {
 
         val tasks: List<Pair<TimerTask, Long>> = config.feeds.map {
 
