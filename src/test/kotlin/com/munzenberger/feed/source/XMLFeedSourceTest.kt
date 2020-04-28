@@ -62,6 +62,13 @@ class XMLFeedSourceTest {
                         guid = "urn:uuid:7dead42c-7506-4748-ad03-d2d893730975",
                         timestamp = "2020-04-21T04:25:02Z",
                         enclosures = emptyList()
+                ),
+                Item(title = "HTML entry",
+                        content = """<div style="info"><p>This is the entry content.</p></div>""",
+                        link = "http://example.org/2003/12/13/atom03.html",
+                        guid = "urn:uuid:617ab45c-77c9-4e40-877a-85d062a4ac21",
+                        timestamp = "2018-05-05T04:25:02Z",
+                        enclosures = emptyList()
                 )
         ))
 

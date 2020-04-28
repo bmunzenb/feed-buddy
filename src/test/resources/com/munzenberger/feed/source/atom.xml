@@ -39,4 +39,16 @@
         </author>
     </entry>
 
+    <entry>
+        <title>HTML entry</title>
+        <link rel="alternate" type="text/html" href="http://example.org/2003/12/13/atom03.html"/>
+        <id>urn:uuid:617ab45c-77c9-4e40-877a-85d062a4ac21</id>
+        <updated>2018-05-05T04:25:02Z</updated>
+        <summary>HTML summary</summary>
+        <content type="html">&lt;div style=&quot;info&quot;&gt;&lt;p&gt;This is the entry content.&lt;/p&gt;&lt;/div&gt;</content>
+        <author>
+            <name>John Doe</name>
+            <email>johndoe@example.com</email>
+        </author>
+    </entry>
 </feed>
