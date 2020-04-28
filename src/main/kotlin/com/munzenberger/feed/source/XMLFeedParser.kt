@@ -1,39 +1,20 @@
 package com.munzenberger.feed.source
 
 import com.munzenberger.feed.Feed
-import org.w3c.dom.Node
-import org.w3c.dom.NodeList
-import java.lang.IllegalArgumentException
-import javax.xml.xpath.XPathFactory
+import javax.xml.stream.XMLEventReader
 
 interface XMLFeedParser {
-    fun parse(node: Node): Feed
-}
+    fun parse(eventReader: XMLEventReader): Feed
 
-object DynamicXMLFeedParser : XMLFeedParser {
+    fun parseCharacterData(eventReader: XMLEventReader): String {
 
-    private val xPathFactory = XPathFactory.newInstance()
+        var value = ""
 
-    private val parsers = mapOf(
-            "rss" to RssXMLFeedParser(xPathFactory),
-            "feed" to AtomXMLFeedParser(xPathFactory)
-    )
-
-    override fun parse(node: Node): Feed {
-
-        val type = node.nodeName
-
-        return when (val parser = parsers[type]) {
-            null -> throw IllegalArgumentException("Unsupported feed type: $type")
-            else -> parser.parse(node)
+        val event = eventReader.nextEvent()
+        if (event.isCharacters) {
+            value = event.asCharacters().data
         }
-    }
-}
 
-internal fun NodeList.asList(): List<Node> {
-    var list = emptyList<Node>()
-    for (i in 0 until length) {
-        list = list + item(i)
+        return value
     }
-    return list
 }

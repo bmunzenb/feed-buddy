@@ -1,88 +1,140 @@
 package com.munzenberger.feed.source
 
-import com.munzenberger.feed.Enclosure
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.Item
-import org.w3c.dom.Node
-import org.w3c.dom.NodeList
-import org.w3c.dom.ls.DOMImplementationLS
-import javax.xml.xpath.XPathConstants
-import javax.xml.xpath.XPathFactory
+import java.io.StringWriter
+import javax.xml.stream.XMLEventReader
+import javax.xml.stream.events.Attribute
+import javax.xml.stream.events.StartElement
 
-internal class AtomXMLFeedParser(private val xPathFactory: XPathFactory) : XMLFeedParser {
-
-    private val feedTitlePath = xPathFactory.newXPath().compile("/feed/title")
-    private val entryPath = xPathFactory.newXPath().compile("/feed/entry")
-    private val itemTitlePath = xPathFactory.newXPath().compile("title")
-    private val contentPath = xPathFactory.newXPath().compile("content")
-    private val linkPath = xPathFactory.newXPath().compile("link[not(@rel) or @rel='alternate']")
-    private val idPath = xPathFactory.newXPath().compile("id")
-    private val timestampPath = xPathFactory.newXPath().compile("updated")
-
-    // Feeds from YouTube use the following node for content description
-    private val mediaGroupDescription = xPathFactory.newXPath().compile("group/description")
-
-    override fun parse(node: Node): Feed {
-
-        val title = feedTitlePath.evaluate(node, XPathConstants.STRING) as String
-
-        val itemList = entryPath.evaluate(node, XPathConstants.NODESET) as NodeList
-
-        val items = parseItems(itemList)
-
-        return Feed(title, items)
-    }
-
-    private fun parseItems(nodeList: NodeList) = nodeList.asList().map { node ->
-
-        val title = itemTitlePath.evaluate(node, XPathConstants.STRING) as String
-
-        val contentNode = contentPath.evaluate(node, XPathConstants.NODE) as Node?
-        val description = mediaGroupDescription.evaluate(node, XPathConstants.STRING) as String?
-
-        val content = when {
-            contentNode != null -> contentNode.innerXml
-            description != null -> description
-            else -> ""
-        }
-
-        val linkList = linkPath.evaluate(node, XPathConstants.NODESET) as NodeList
-
-        val linkNode = linkList.asList().firstOrNull()
-
-        val link = linkNode?.attributes?.getNamedItem("href")?.nodeValue ?: ""
-
-        val guid = idPath.evaluate(node, XPathConstants.STRING) as String
-
-        val timestamp = timestampPath.evaluate(node, XPathConstants.STRING) as String
-
-        // TODO: parse enclosures
-        val enclosures = emptyList<Enclosure>()
-
-        Item(
-                title = title,
-                content = content,
-                link = link,
-                guid = guid,
-                timestamp = timestamp,
-                enclosures = enclosures
-        )
-    }
+private class AtomFeed {
+    var title = ""
+    val entries = mutableListOf<AtomEntry>()
 }
 
-private val Node.innerXml: String
-    get() {
-        // https://stackoverflow.com/questions/3300839/get-a-nodes-inner-xml-as-string-in-java-dom
-        val lsImpl = ownerDocument.implementation.getFeature("LS", "3.0") as DOMImplementationLS
-        val serializer = lsImpl.createLSSerializer().apply {
-            domConfig.setParameter("xml-declaration", false)
+private class AtomEntry {
+    var title = ""
+    val links = mutableListOf<AtomLink>()
+    var id = ""
+    var updated = ""
+    var summary = ""
+    val contents = mutableListOf<AtomContent>()
+}
+
+private class AtomLink {
+    var rel = ""
+    var type = ""
+    var href = ""
+}
+
+private class AtomContent {
+    var type = ""
+    var value = ""
+}
+
+private fun AtomFeed.toFeed() = Feed(
+        title = title,
+        items = entries.map { it.toItem() }
+)
+
+private fun AtomEntry.toItem() = Item(
+        title = title,
+        content = contents.firstOrNull()?.value ?: summary,
+        link = links.firstOrNull { it.rel.isEmpty() || it.rel == "alternate" }?.href ?: "",
+        guid = id,
+        timestamp = updated,
+        enclosures = emptyList()
+)
+
+internal object AtomXMLFeedParser : XMLFeedParser {
+
+    private const val TITLE = "title"
+    private const val ENTRY = "entry"
+    private const val LINK = "link"
+    private const val REL = "rel"
+    private const val TYPE = "type"
+    private const val HREF = "href"
+    private const val ID = "id"
+    private const val UPDATED = "updated"
+    private const val SUMMARY = "summary"
+    private const val CONTENT = "content"
+
+    override fun parse(eventReader: XMLEventReader): Feed {
+
+        val feed = AtomFeed()
+
+        while (eventReader.hasNext()) {
+            val event = eventReader.nextEvent()
+
+            if (event.isStartElement) {
+                when (event.asStartElement().name.localPart) {
+                    TITLE -> feed.title = parseCharacterData(eventReader)
+                    ENTRY -> feed.entries += AtomEntry().apply { parseEntry(this, eventReader) }
+                }
+            }
         }
-        val nodes = childNodes
-        val sb = StringBuilder()
-        for (i in 0 until nodes.length) {
-            val n = nodes.item(i)
-            val s = serializer.writeToString(n)
-            sb.append(s)
-        }
-        return sb.toString()
+
+        return feed.toFeed()
     }
+
+    private fun parseEntry(entry: AtomEntry, eventReader: XMLEventReader) {
+
+        while (eventReader.hasNext()) {
+            val event = eventReader.nextEvent()
+
+            if (event.isStartElement) {
+                when (event.asStartElement().name.localPart) {
+                    TITLE -> entry.title = parseCharacterData(eventReader)
+                    LINK -> entry.links += AtomLink().apply { parseLink(this, event.asStartElement()) }
+                    ID -> entry.id = parseCharacterData(eventReader)
+                    UPDATED -> entry.updated = parseCharacterData(eventReader)
+                    SUMMARY -> entry.summary = parseCharacterData(eventReader)
+                    CONTENT -> entry.contents += AtomContent().apply { parseContent(this, event.asStartElement(), eventReader) }
+                }
+            }
+
+            if (event.isEndElement && event.asEndElement().name.localPart == ENTRY) {
+                return
+            }
+        }
+    }
+
+    private fun parseLink(link: AtomLink, startElement: StartElement) {
+
+        val attributes = startElement.attributes
+
+        while (attributes.hasNext()) {
+            val attr = attributes.next() as Attribute
+            when (attr.name.localPart) {
+                REL -> link.rel = attr.value
+                TYPE -> link.type = attr.value
+                HREF -> link.href = attr.value
+            }
+        }
+    }
+
+    private fun parseContent(content: AtomContent, startElement: StartElement, eventReader: XMLEventReader) {
+
+        val attributes = startElement.attributes
+
+        while (attributes.hasNext()) {
+            val attr = attributes.next() as Attribute
+            when (attr.name.localPart) {
+                TYPE -> content.type = attr.value
+            }
+        }
+
+        val valueWriter = StringWriter()
+
+        while (eventReader.hasNext()) {
+            val event = eventReader.nextEvent()
+
+            if (event.isEndElement && event.asEndElement().name.localPart == CONTENT) {
+                content.value = valueWriter.toString()
+                return
+            }
+
+            event.writeAsEncodedUnicode(valueWriter)
+        }
+    }
+}

@@ -9,7 +9,6 @@ import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.XMLFeedSource
 import java.net.URL
 import java.nio.file.Path
-import javax.xml.parsers.DocumentBuilderFactory
 
 class FeedProcessorFactory(
         private val registryDirectory: Path,
@@ -17,16 +16,13 @@ class FeedProcessorFactory(
         private val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory()
 ) {
 
-    private val documentBuilderFactory = DocumentBuilderFactory.newInstance()
-
     fun getInstance(feedConfig: FeedConfig): FeedProcessor {
 
         val url = URL(feedConfig.url)
 
         val source = XMLFeedSource(
                 source = url,
-                userAgent = feedConfig.userAgent,
-                documentBuilderFactory = documentBuilderFactory)
+                userAgent = feedConfig.userAgent)
 
         val itemRegistry = FileItemRegistry(registryDirectory.resolve(url.registryFilename))
 

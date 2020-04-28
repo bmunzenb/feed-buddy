@@ -1,10 +1,15 @@
 package com.munzenberger.feed.source
 
 import java.io.FilterReader
+import java.io.InputStream
+import java.io.InputStreamReader
 import java.io.Reader
 import java.lang.UnsupportedOperationException
 
-class XMLFilterReader(inReader: Reader, private val encoding: String) : FilterReader(inReader) {
+class XMLFilterReader(
+        inStream: InputStream,
+        private val encoding: String
+) : FilterReader(InputStreamReader(inStream, encoding)) {
 
     companion object {
         private const val BYTE_ORDER_MARK = '\uFEFF'

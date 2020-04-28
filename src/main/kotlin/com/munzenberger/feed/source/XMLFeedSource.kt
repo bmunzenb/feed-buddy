@@ -1,17 +1,18 @@
 package com.munzenberger.feed.source
 
+import com.ctc.wstx.stax.WstxInputFactory
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.URLClient
-import org.xml.sax.InputSource
 import java.net.URL
-import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.stream.XMLEventReader
+import javax.xml.stream.events.StartElement
 
 class XMLFeedSource(
         private val source: URL,
-        private val userAgent: String? = null,
-        private val parser: XMLFeedParser = DynamicXMLFeedParser,
-        private val documentBuilderFactory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+        private val userAgent: String? = null
 ) : FeedSource {
+
+    private val factory = WstxInputFactory.newFactory()
 
     override val name: String = source.toExternalForm()
 
@@ -19,14 +20,29 @@ class XMLFeedSource(
 
         val response = URLClient.connect(source, userAgent)
 
-        val reader = XMLReader(response.inStream, response.encoding)
+        val reader = XMLFilterReader(response.inStream, response.encoding)
 
-        val inputSource = InputSource(reader)
+        val eventReader = factory.createXMLEventReader(reader)
 
-        val document = documentBuilderFactory.newDocumentBuilder().parse(inputSource)
+        // inspect the first element to determine the feed type
+        val firstElement = firstElement(eventReader)
 
-        val root = document.documentElement
+        val parser = when (val type = firstElement.name.localPart) {
+            "rss" -> RssXMLFeedParser
+            "feed" -> AtomXMLFeedParser
+            else -> throw IllegalArgumentException("No parser available for feed type $type")
+        }
 
-        return parser.parse(root)
+        return parser.parse(eventReader)
+    }
+
+    private fun firstElement(eventReader: XMLEventReader): StartElement {
+        while (eventReader.hasNext()) {
+            val event = eventReader.nextEvent()
+            if (event.isStartElement) {
+                return event.asStartElement()
+            }
+        }
+        throw IllegalStateException("End of document before start element.")
     }
 }
