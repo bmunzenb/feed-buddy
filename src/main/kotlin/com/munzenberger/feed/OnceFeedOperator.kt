@@ -6,12 +6,14 @@ import com.munzenberger.feed.config.FeedProcessorFactory
 import com.munzenberger.feed.config.ItemProcessorFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
+import java.nio.file.Path
 
 class OnceFeedOperator(
+        registryDirectory: Path,
         configProvider: AppConfigProvider,
         filterFactory: ItemProcessorFactory<ItemFilter>,
         handlerFactory: ItemProcessorFactory<ItemHandler>
-) : BaseFeedOperator(configProvider, filterFactory, handlerFactory) {
+) : BaseFeedOperator(registryDirectory, configProvider, filterFactory, handlerFactory) {
 
     override fun start(config: AppConfig, processorFactory: FeedProcessorFactory) {
         config.feeds.map(processorFactory::getInstance).forEach { it.execute() }

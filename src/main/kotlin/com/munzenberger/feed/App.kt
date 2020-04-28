@@ -8,13 +8,13 @@ import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.munzenberger.feed.config.DefaultItemProcessorFactory
-import com.munzenberger.feed.config.FeedProcessorFactory
 import com.munzenberger.feed.config.FileAppConfigProvider
 import com.munzenberger.feed.config.ItemProcessorConfig
 import com.munzenberger.feed.config.ItemProcessorFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.Properties
 import kotlin.system.exitProcess
 
@@ -38,10 +38,14 @@ enum class OperatingMode {
     POLL, ONCE, NOOP
 }
 
-class App : CliktCommand() {
+class App : CliktCommand(name = "feed-buddy") {
 
     private val feeds: Path by argument(help = "Path to feeds configuration file")
             .path(mustBeReadable = true, mustExist = true, canBeDir = false)
+
+    private val registry: Path by option("-r", "--registry", help = "Path to processed items registry")
+            .path(mustBeWritable = true, mustExist = true, canBeFile = false)
+            .default(value = Paths.get("."), defaultForHelp = "Current working directory")
 
     private val mode: OperatingMode by option("-m", "--mode", help = "Sets the operating mode")
             .enum<OperatingMode>()
@@ -74,6 +78,7 @@ class App : CliktCommand() {
         val filterFactory = DefaultItemProcessorFactory<ItemFilter>()
 
         val handlerFactory: ItemProcessorFactory<ItemHandler> = when (mode) {
+
             OperatingMode.NOOP -> {
                 println("Executing in NOOP mode: items will be marked as processed but no handlers will execute.")
                 object : ItemProcessorFactory<ItemHandler> {
@@ -84,12 +89,18 @@ class App : CliktCommand() {
                     }
                 }
             }
-            else -> DefaultItemProcessorFactory()
+
+            else ->
+                DefaultItemProcessorFactory()
         }
 
         val feedOperator: FeedOperator = when (mode) {
-            OperatingMode.POLL -> PollingFeedOperator(configProvider, filterFactory, handlerFactory)
-            OperatingMode.ONCE, OperatingMode.NOOP -> OnceFeedOperator(configProvider, filterFactory, handlerFactory)
+
+            OperatingMode.POLL ->
+                PollingFeedOperator(registry, configProvider, filterFactory, handlerFactory)
+
+            OperatingMode.ONCE, OperatingMode.NOOP ->
+                OnceFeedOperator(registry, configProvider, filterFactory, handlerFactory)
         }
 
         Runtime.getRuntime().addShutdownHook(object : Thread() {

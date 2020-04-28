@@ -8,6 +8,7 @@ import com.munzenberger.feed.config.ItemProcessorFactory
 import com.munzenberger.feed.engine.pluralize
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
+import java.nio.file.Path
 
 interface FeedOperator {
     fun start()
@@ -15,6 +16,7 @@ interface FeedOperator {
 }
 
 abstract class BaseFeedOperator(
+        private val registryDirectory: Path,
         private val configProvider: AppConfigProvider,
         private val filterFactory: ItemProcessorFactory<ItemFilter>,
         private val handlerFactory: ItemProcessorFactory<ItemHandler>
@@ -35,7 +37,7 @@ abstract class BaseFeedOperator(
             println("Scheduling $this ${"feed".pluralize(this)} from ${configProvider.name}.")
         }
 
-        val processorFactory = FeedProcessorFactory(filterFactory, handlerFactory)
+        val processorFactory = FeedProcessorFactory(registryDirectory, filterFactory, handlerFactory)
 
         start(config, processorFactory)
     }

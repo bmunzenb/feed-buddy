@@ -6,14 +6,16 @@ import com.munzenberger.feed.config.FeedProcessorFactory
 import com.munzenberger.feed.config.ItemProcessorFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
+import java.nio.file.Path
 import java.util.Timer
 import java.util.TimerTask
 
 class PollingFeedOperator(
+        registryDirectory: Path,
         private val configProvider: AppConfigProvider,
         filterFactory: ItemProcessorFactory<ItemFilter>,
         handlerFactory: ItemProcessorFactory<ItemHandler>
-) : BaseFeedOperator(configProvider, filterFactory, handlerFactory) {
+) : BaseFeedOperator(registryDirectory, configProvider, filterFactory, handlerFactory) {
 
     private var timer: Timer? = null
 

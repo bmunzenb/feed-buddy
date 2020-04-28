@@ -8,12 +8,12 @@ import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.XMLFeedSource
 import java.net.URL
 import java.nio.file.Path
-import java.nio.file.Paths
 import javax.xml.parsers.DocumentBuilderFactory
 
 class FeedProcessorFactory(
-        val itemFilterFactory: ItemProcessorFactory<ItemFilter> = DefaultItemProcessorFactory(),
-        val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory()
+        private val registryDirectory: Path,
+        private val itemFilterFactory: ItemProcessorFactory<ItemFilter> = DefaultItemProcessorFactory(),
+        private val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory()
 ) {
 
     private val documentBuilderFactory = DocumentBuilderFactory.newInstance()
@@ -27,7 +27,7 @@ class FeedProcessorFactory(
                 userAgent = feedConfig.userAgent,
                 documentBuilderFactory = documentBuilderFactory)
 
-        val itemRegistry = FileItemRegistry(url.registryFilePath)
+        val itemRegistry = FileItemRegistry(registryDirectory.resolve(url.registryFilename))
 
         val itemFilter = object : ItemFilter {
             private val filters = feedConfig.filters.map(itemFilterFactory::getInstance)
@@ -58,8 +58,5 @@ private fun String.filteredForPath(): String {
     return sb.toString()
 }
 
-private val URL.registryFilePath: Path
-    get() {
-        val filename = host.filteredForPath() + file.filteredForPath() + ".processed"
-        return Paths.get(".", filename)
-    }
+private val URL.registryFilename: String
+    get() = host.filteredForPath() + file.filteredForPath() + ".processed"
