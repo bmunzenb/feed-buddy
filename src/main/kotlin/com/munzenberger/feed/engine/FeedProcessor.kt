@@ -1,5 +1,6 @@
 package com.munzenberger.feed.engine
 
+import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.FeedSource
@@ -31,17 +32,19 @@ class FeedProcessor(
                 println("${feed.title}, $this ${"item".pluralize(this)}.")
             }
 
+            val context = FeedContext(source.name, feed.title)
+
             var processed = 0
             var errors = 0
 
             val items = feed.items
                     .filterNot(itemRegistry::contains)
-                    .filter(itemFilter::evaluate)
+                    .filter { itemFilter.evaluate(context, it) }
 
             items.forEachIndexed { index, item ->
                 println("--> Processing item ${index+1} of ${items.size}, \"${item.title}\" (${item.guid})")
                 try {
-                    itemHandler.execute(item)
+                    itemHandler.execute(context, item)
                     itemRegistry.add(item)
                     processed++
                 } catch (e: Throwable) {

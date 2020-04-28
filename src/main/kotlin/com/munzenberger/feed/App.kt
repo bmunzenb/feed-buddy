@@ -84,7 +84,7 @@ class App : CliktCommand(name = "feed-buddy") {
                 object : ItemProcessorFactory<ItemHandler> {
                     override fun getInstance(config: ItemProcessorConfig): ItemHandler {
                         return object : ItemHandler {
-                            override fun execute(item: Item) {}
+                            override fun execute(context: FeedContext, item: Item) {}
                         }
                     }
                 }

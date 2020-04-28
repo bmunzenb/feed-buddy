@@ -1,6 +1,7 @@
 package com.munzenberger.feed.engine
 
 import com.munzenberger.feed.Feed
+import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
@@ -15,7 +16,6 @@ import java.lang.Exception
 class FeedProcessorTest {
 
     private val item = Item(
-            feedTitle = "test feed",
             title = "item title",
             content = "item content",
             link = "item link",
@@ -28,6 +28,13 @@ class FeedProcessorTest {
             title = "test feed",
             items = listOf(item)
     )
+
+    private val source = object : FeedSource {
+        override val name = "test source"
+        override fun read() = feed
+    }
+
+    private val context = FeedContext("test source", feed.title)
 
     @Test
     fun `it gracefully handles exceptions thrown by the feed source`() {
@@ -49,26 +56,21 @@ class FeedProcessorTest {
     @Test
     fun `it processes feeds successfully`() {
 
-        val mockFeedSource = mockk<FeedSource>().apply {
-            every { name } returns "test source"
-            every { read() } returns feed
-        }
-
         val mockItemRegistry = mockk<ItemRegistry>().apply {
             every { contains(item) } returns false
             every { add(item) } returns Unit
         }
 
         val mockItemFilter = mockk<ItemFilter>().apply {
-            every { evaluate(any()) } returns true
+            every { evaluate(any(), any()) } returns true
         }
 
         val mockItemHandler = mockk<ItemHandler>().apply {
-            every { execute(any()) } returns Unit
+            every { execute(any(), any()) } returns Unit
         }
 
         val processor = FeedProcessor(
-                source = mockFeedSource,
+                source = source,
                 itemRegistry = mockItemRegistry,
                 itemFilter = mockItemFilter,
                 itemHandler = mockItemHandler)
@@ -76,11 +78,9 @@ class FeedProcessorTest {
         processor.execute()
 
         verify(ordering = Ordering.SEQUENCE) {
-            mockFeedSource.name
-            mockFeedSource.read()
             mockItemRegistry.contains(item)
-            mockItemFilter.evaluate(item)
-            mockItemHandler.execute(item)
+            mockItemFilter.evaluate(context, item)
+            mockItemHandler.execute(context, item)
             mockItemRegistry.add(item)
         }
     }
@@ -88,17 +88,12 @@ class FeedProcessorTest {
     @Test
     fun `it does not process items in the registry`() {
 
-        val mockFeedSource = mockk<FeedSource>().apply {
-            every { name } returns "test source"
-            every { read() } returns feed
-        }
-
         val mockItemRegistry = mockk<ItemRegistry>().apply {
             every { contains(item) } returns true
         }
 
         val processor = FeedProcessor(
-                source = mockFeedSource,
+                source = source,
                 itemRegistry = mockItemRegistry,
                 itemFilter = mockk(),
                 itemHandler = mockk())
@@ -106,8 +101,6 @@ class FeedProcessorTest {
         processor.execute()
 
         verify(ordering = Ordering.SEQUENCE) {
-            mockFeedSource.name
-            mockFeedSource.read()
             mockItemRegistry.contains(item)
         }
     }
@@ -115,25 +108,20 @@ class FeedProcessorTest {
     @Test
     fun `it does not add failed items to the registry`() {
 
-        val mockFeedSource = mockk<FeedSource>().apply {
-            every { name } returns "test source"
-            every { read() } returns feed
-        }
-
         val mockItemRegistry = mockk<ItemRegistry>().apply {
             every { contains(item) } returns false
         }
 
         val mockItemFilter = mockk<ItemFilter>().apply {
-            every { evaluate(any()) } returns true
+            every { evaluate(any(), any()) } returns true
         }
 
         val mockItemHandler = mockk<ItemHandler>().apply {
-            every { execute(any()) } throws Exception("text exception")
+            every { execute(any(), any()) } throws Exception("text exception")
         }
 
         val processor = FeedProcessor(
-                source = mockFeedSource,
+                source = source,
                 itemRegistry = mockItemRegistry,
                 itemFilter = mockItemFilter,
                 itemHandler = mockItemHandler)
@@ -141,31 +129,24 @@ class FeedProcessorTest {
         processor.execute()
 
         verify(ordering = Ordering.SEQUENCE) {
-            mockFeedSource.name
-            mockFeedSource.read()
             mockItemRegistry.contains(item)
-            mockItemHandler.execute(item)
+            mockItemHandler.execute(context, item)
         }
     }
 
     @Test
     fun `it does not add execute handlers for filtered items`() {
 
-        val mockFeedSource = mockk<FeedSource>().apply {
-            every { name } returns "test source"
-            every { read() } returns feed
-        }
-
         val mockItemRegistry = mockk<ItemRegistry>().apply {
             every { contains(item) } returns false
         }
 
         val mockItemFilter = mockk<ItemFilter>().apply {
-            every { evaluate(any()) } returns false
+            every { evaluate(any(), any()) } returns false
         }
 
         val processor = FeedProcessor(
-                source = mockFeedSource,
+                source = source,
                 itemRegistry = mockItemRegistry,
                 itemFilter = mockItemFilter,
                 itemHandler = mockk())
@@ -173,10 +154,8 @@ class FeedProcessorTest {
         processor.execute()
 
         verify(ordering = Ordering.SEQUENCE) {
-            mockFeedSource.name
-            mockFeedSource.read()
             mockItemRegistry.contains(item)
-            mockItemFilter.evaluate(item)
+            mockItemFilter.evaluate(context, item)
         }
     }
 }

@@ -6,7 +6,6 @@ data class Feed(
 )
 
 data class Item(
-        val feedTitle: String,
         val title: String,
         val content: String,
         val link: String,

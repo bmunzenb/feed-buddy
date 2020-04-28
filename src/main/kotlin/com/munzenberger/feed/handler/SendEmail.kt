@@ -1,6 +1,7 @@
 package com.munzenberger.feed.handler
 
 import com.munzenberger.feed.Enclosure
+import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
 import org.apache.commons.mail.HtmlEmail
 import org.apache.velocity.VelocityContext
@@ -47,11 +48,11 @@ class SendEmail : ItemHandler {
         session.transport
     }
 
-    override fun execute(item: Item) {
+    override fun execute(context: FeedContext, item: Item) {
 
         val htmlEmail = HtmlEmail().apply {
             addTo(to)
-            setFrom(from, item.feedTitle)
+            setFrom(from, context.feedTitle)
             subject = item.title
             setHtmlMsg(toHtmlMessage(item))
             mailSession = session

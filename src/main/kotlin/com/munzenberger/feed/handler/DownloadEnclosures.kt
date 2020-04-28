@@ -1,5 +1,6 @@
 package com.munzenberger.feed.handler
 
+import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
 import com.munzenberger.feed.URLClient
 import okio.buffer
@@ -16,7 +17,7 @@ class DownloadEnclosures : ItemHandler {
 
     var targetDirectory: String = "."
 
-    override fun execute(item: Item) {
+    override fun execute(context: FeedContext, item: Item) {
         item.enclosures.forEach { enclosure ->
 
             print("Resolving enclosure source... ")

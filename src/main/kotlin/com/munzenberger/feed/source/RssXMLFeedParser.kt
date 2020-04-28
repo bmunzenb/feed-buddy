@@ -32,12 +32,12 @@ internal class RssXMLFeedParser(private val xPathFactory: XPathFactory) : XMLFee
 
         val itemList = itemPath.evaluate(node, XPathConstants.NODESET) as NodeList
 
-        val items = parseItems(title, itemList)
+        val items = parseItems(itemList)
 
         return Feed(title, items)
     }
 
-    private fun parseItems(feedTitle: String, nodeList: NodeList) = nodeList.asList().map { node ->
+    private fun parseItems(nodeList: NodeList) = nodeList.asList().map { node ->
 
         val title = titlePath.evaluate(node, XPathConstants.STRING) as String
 
@@ -54,7 +54,6 @@ internal class RssXMLFeedParser(private val xPathFactory: XPathFactory) : XMLFee
         val enclosures = parseEnclosures(enclosureList)
 
         Item(
-                feedTitle = feedTitle,
                 title = title,
                 content = content,
                 link = link,

@@ -1,5 +1,6 @@
 package com.munzenberger.feed.config
 
+import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
 import com.munzenberger.feed.engine.FeedProcessor
 import com.munzenberger.feed.engine.FileItemRegistry
@@ -31,15 +32,15 @@ class FeedProcessorFactory(
 
         val itemFilter = object : ItemFilter {
             private val filters = feedConfig.filters.map(itemFilterFactory::getInstance)
-            override fun evaluate(item: Item): Boolean {
-                return filters.all { it.evaluate(item) }
+            override fun evaluate(context: FeedContext, item: Item): Boolean {
+                return filters.all { it.evaluate(context, item) }
             }
         }
 
         val itemHandler = object : ItemHandler {
             private val handlers = feedConfig.handlers.map(itemHandlerFactory::getInstance)
-            override fun execute(item: Item) {
-                handlers.forEach { it.execute(item) }
+            override fun execute(context: FeedContext, item: Item) {
+                handlers.forEach { it.execute(context, item) }
             }
         }
 
