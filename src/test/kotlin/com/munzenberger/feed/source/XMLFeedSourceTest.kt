@@ -35,6 +35,13 @@ class XMLFeedSourceTest {
                                 Enclosure("http://example.com/file1.mp3"),
                                 Enclosure("http://example.com/file2.mp3")
                         )
+                ),
+                Item(title = "Encoded content",
+                        content = "This is encoded content.",
+                        link = "http://www.example.com/blog/post/3",
+                        guid = "11fc01c0-7940-42b6-8bf5-df2730e46dfe",
+                        timestamp = "Thu, 23 Apr 2020 04:01:00 +0000",
+                        enclosures = emptyList()
                 )
         ))
 

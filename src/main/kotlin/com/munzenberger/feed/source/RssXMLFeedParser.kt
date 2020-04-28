@@ -94,13 +94,20 @@ internal object RssXMLFeedParser : XMLFeedParser {
             val event = eventReader.nextEvent()
 
             if (event.isStartElement) {
-                when (event.asStartElement().name.localPart) {
+                val startElement = event.asStartElement()
+
+                when (startElement.name.localPart) {
                     TITLE -> item.title = parseCharacterData(eventReader)
                     DESCRIPTION -> item.description = parseCharacterData(eventReader)
                     LINK -> item.link = parseCharacterData(eventReader)
                     GUID -> item.guid = parseCharacterData(eventReader)
                     PUBDATE -> item.pubDate = parseCharacterData(eventReader)
-                    ENCLOSURE -> item.enclosures += RssEnclosure().apply { parseEnclosure(this, event.asStartElement()) }
+                    ENCLOSURE -> item.enclosures += RssEnclosure().apply { parseEnclosure(this, startElement) }
+                }
+
+                if (startElement.name.prefix == "content" && startElement.name.localPart == "encoded") {
+                    // some feeds embed html in <content:encoded>
+                    item.description = parseCharacterData(eventReader)
                 }
             }
 
