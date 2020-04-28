@@ -19,7 +19,7 @@ class XMLFeedSource(
 
         val response = URLClient.connect(source, userAgent)
 
-        val reader = XMLInputStreamDecoder.decode(response.inStream, response.encoding)
+        val reader = XMLReader(response.inStream, response.encoding)
 
         val inputSource = InputSource(reader)
 
