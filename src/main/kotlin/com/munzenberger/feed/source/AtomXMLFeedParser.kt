@@ -11,15 +11,22 @@ import javax.xml.xpath.XPathFactory
 
 internal class AtomXMLFeedParser(private val xPathFactory: XPathFactory) : XMLFeedParser {
 
+    private val feedTitlePath = xPathFactory.newXPath().compile("/feed/title")
+    private val entryPath = xPathFactory.newXPath().compile("/feed/entry")
+    private val itemTitlePath = xPathFactory.newXPath().compile("title")
+    private val contentPath = xPathFactory.newXPath().compile("content")
+    private val linkPath = xPathFactory.newXPath().compile("link[not(@rel) or @rel='alternate']")
+    private val idPath = xPathFactory.newXPath().compile("id")
+    private val timestampPath = xPathFactory.newXPath().compile("updated")
+
+    // Feeds from YouTube use the following node for content description
+    private val mediaGroupDescription = xPathFactory.newXPath().compile("group/description")
+
     override fun parse(node: Node): Feed {
 
-        val title = xPathFactory.newXPath()
-                .compile("/feed/title")
-                .evaluate(node, XPathConstants.STRING) as String
+        val title = feedTitlePath.evaluate(node, XPathConstants.STRING) as String
 
-        val itemList = xPathFactory.newXPath()
-                .compile("/feed/entry")
-                .evaluate(node, XPathConstants.NODESET) as NodeList
+        val itemList = entryPath.evaluate(node, XPathConstants.NODESET) as NodeList
 
         val items = parseItems(title, itemList)
 
@@ -28,31 +35,26 @@ internal class AtomXMLFeedParser(private val xPathFactory: XPathFactory) : XMLFe
 
     private fun parseItems(feedTitle: String, nodeList: NodeList) = nodeList.asList().map { node ->
 
-        val title = xPathFactory.newXPath()
-                .compile("title")
-                .evaluate(node, XPathConstants.STRING) as String
+        val title = itemTitlePath.evaluate(node, XPathConstants.STRING) as String
 
-        val contentNode = xPathFactory.newXPath()
-                .compile("content[not(@type) or @type='xhtml']")
-                .evaluate(node, XPathConstants.NODE) as Node?
+        val contentNode = contentPath.evaluate(node, XPathConstants.NODE) as Node?
+        val description = mediaGroupDescription.evaluate(node, XPathConstants.STRING) as String?
 
-        val content = contentNode?.innerXml ?: ""
+        val content = when {
+            contentNode != null -> contentNode.innerXml
+            description != null -> description
+            else -> ""
+        }
 
-        val linkList = xPathFactory.newXPath()
-                .compile("link[not(@rel) or @rel='alternate']")
-                .evaluate(node, XPathConstants.NODESET) as NodeList
+        val linkList = linkPath.evaluate(node, XPathConstants.NODESET) as NodeList
 
         val linkNode = linkList.asList().firstOrNull()
 
         val link = linkNode?.attributes?.getNamedItem("href")?.nodeValue ?: ""
 
-        val guid = xPathFactory.newXPath()
-                .compile("id")
-                .evaluate(node, XPathConstants.STRING) as String
+        val guid = idPath.evaluate(node, XPathConstants.STRING) as String
 
-        val timestamp = xPathFactory.newXPath()
-                .compile("updated")
-                .evaluate(node, XPathConstants.STRING) as String
+        val timestamp = timestampPath.evaluate(node, XPathConstants.STRING) as String
 
         // TODO: parse enclosures
         val enclosures = emptyList<Enclosure>()

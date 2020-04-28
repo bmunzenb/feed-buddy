@@ -4,7 +4,10 @@ import com.munzenberger.feed.Enclosure
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.Item
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Ignore
 import org.junit.Test
+import java.net.URL
 
 class XMLFeedSourceTest {
 
@@ -67,5 +70,16 @@ class XMLFeedSourceTest {
         ))
 
         assertEquals(expected, feed)
+    }
+
+    @Test
+    @Ignore("Used to test real feeds.")
+    fun foo() {
+
+        val url = URL("http://www.example.com/feed.xml")
+        val source = XMLFeedSource(url)
+        val feed = source.read()
+
+        assertNotNull(feed)
     }
 }
