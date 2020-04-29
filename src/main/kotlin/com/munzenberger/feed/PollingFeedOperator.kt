@@ -41,8 +41,10 @@ class PollingFeedOperator(
             override fun run() {
                 if (configProvider.timestamp != timestamp) {
                     println("Detected configuration change.")
-                    cancel()
-                    start()
+                    this@PollingFeedOperator.run {
+                        cancel()
+                        start()
+                    }
                 }
             }
         }
