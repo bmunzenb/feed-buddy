@@ -1,5 +1,6 @@
 package com.munzenberger.feed.config
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
@@ -36,6 +37,7 @@ abstract class JacksonAppConfigAdapter : AppConfigAdapter {
 object JsonAppConfigAdapter : JacksonAppConfigAdapter() {
     override val objectMapper: ObjectMapper = jacksonObjectMapper().apply {
         enable(SerializationFeature.INDENT_OUTPUT)
+        setSerializationInclusion(JsonInclude.Include.NON_NULL)
     }
 }
 
@@ -52,5 +54,8 @@ object XmlAppConfigAdapter : JacksonAppConfigAdapter() {
 }
 
 object YamlAppConfigAdapter : JacksonAppConfigAdapter() {
-    override val objectMapper: ObjectMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
+    override val objectMapper: ObjectMapper = ObjectMapper(YAMLFactory()).apply {
+        setSerializationInclusion(JsonInclude.Include.NON_NULL)
+        registerKotlinModule()
+    }
 }

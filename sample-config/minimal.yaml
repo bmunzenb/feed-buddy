@@ -4,12 +4,8 @@ handlers: []
 filters: []
 feeds:
 - url: "http://www.example.com/feed.xml"
-  period: null
-  userAgent: null
   handlers:
-  - name: null
-    ref: null
-    type: "com.munzenberger.feed.handler.SendEmail"
+  - type: "com.munzenberger.feed.handler.SendEmail"
     properties:
       to: "example@mail.com"
       from: "feedbuddy@example.com"
