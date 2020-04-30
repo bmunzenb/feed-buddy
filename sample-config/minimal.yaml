@@ -1,7 +1,5 @@
 ---
 period: 360
-handlers: []
-filters: []
 feeds:
 - url: "http://www.example.com/feed.xml"
   handlers:
@@ -14,4 +12,3 @@ feeds:
       auth: true
       username: "feedbuddy"
       password: "fizzbuzz"
-  filters: []

@@ -1,7 +1,5 @@
 {
   "period" : 360,
-  "handlers" : [ ],
-  "filters" : [ ],
   "feeds" : [ {
     "url" : "http://www.example.com/feed.xml",
     "handlers" : [ {
@@ -15,7 +13,6 @@
         "username" : "feedbuddy",
         "password" : "fizzbuzz"
       }
-    } ],
-    "filters" : [ ]
+    } ]
   } ]
 }
