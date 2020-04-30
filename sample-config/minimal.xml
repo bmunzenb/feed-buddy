@@ -1,0 +1,15 @@
+<feeds period="360">
+  <feed url="http://www.example.com/feed.xml">
+    <handler type="com.munzenberger.feed.handler.SendEmail">
+      <properties>
+        <to>example@mail.com</to>
+        <from>feedbuddy@example.com</from>
+        <smtpHost>mail.smtp.com</smtpHost>
+        <smtpPort>23</smtpPort>
+        <auth>true</auth>
+        <username>feedbuddy</username>
+        <password>fizzbuzz</password>
+      </properties>
+    </handler>
+  </feed>
+</feeds>

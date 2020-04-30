@@ -1,48 +1,50 @@
 package com.munzenberger.feed.config
 
-import com.munzenberger.feed.handler.DownloadEnclosures
 import com.munzenberger.feed.handler.SendEmail
-import java.io.File
+import java.nio.file.Paths
 
 fun main(args: Array<String>) {
+    minimal()
+}
 
-    val handler1 = ItemProcessorConfig(
-            name = "Download Enclosures",
-            type = DownloadEnclosures::class.qualifiedName,
-            properties = mapOf("targetDirectory" to "C:\\Downloads")
-    )
+private fun write(config: AppConfig, name: String) {
 
-    val handler2 = ItemProcessorConfig(
-            name = "Send Email",
-            type = SendEmail::class.qualifiedName,
-            properties = mapOf(
-                    "to" to "recipient@email.com",
-                    "from" to "sender@email.com",
-                    "smtpHost" to "smtp.mail.com",
-                    "smtpPort" to 25
+    val jsonFile = Paths.get("sample-config", "$name.json").toFile()
+    JsonAppConfigAdapter.write(config, jsonFile)
+    println("Wrote JSON config to $jsonFile.")
+
+    val xmlFile = Paths.get("sample-config", "$name.xml").toFile()
+    XmlAppConfigAdapter.write(config, xmlFile)
+    println("Wrote XML config to $xmlFile.")
+
+    val yamlFile = Paths.get("sample-config", "$name.yaml").toFile()
+    YamlAppConfigAdapter.write(config, yamlFile)
+    println("Wrote YAML config to $yamlFile.")
+}
+
+private fun minimal() {
+
+    val config = AppConfig(
+            feeds = listOf(
+                    FeedConfig(
+                            url = "http://www.example.com/feed.xml",
+                            handlers = listOf(
+                                    ItemProcessorConfig(
+                                            type = SendEmail::class.java.name,
+                                            properties = mapOf(
+                                                    "to" to "example@mail.com",
+                                                    "from" to "feedbuddy@example.com",
+                                                    "smtpHost" to "mail.smtp.com",
+                                                    "smtpPort" to 23,
+                                                    "auth" to true,
+                                                    "username" to "feedbuddy",
+                                                    "password" to "fizzbuzz"
+                                            )
+                                    )
+                            )
+                    )
             )
     )
 
-    val feedConfig = FeedConfig(
-            url = "http://www.example.com/feed.xml",
-            handlers = listOf(handler1, handler2)
-    )
-
-    val config = AppConfig(
-            period = 480,
-            handlers = listOf(handler1, handler2),
-            feeds = listOf(feedConfig, feedConfig)
-    )
-
-    val jsonFile = File("D:\\config.json")
-    JsonAppConfigAdapter.write(config, jsonFile)
-    println("Wrote sample JSON config to $jsonFile.")
-
-    val xmlFile = File("D:\\config.xml")
-    XmlAppConfigAdapter.write(config, xmlFile)
-    println("Wrote sample XML config to $jsonFile.")
-
-    val yamlFile = File("D:\\config.yaml")
-    YamlAppConfigAdapter.write(config, yamlFile)
-    println("Wrote sample YAML config to $jsonFile.")
+    write(config, "minimal")
 }
