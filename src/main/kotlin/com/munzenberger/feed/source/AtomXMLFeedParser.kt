@@ -3,7 +3,6 @@ package com.munzenberger.feed.source
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.Item
 import org.apache.commons.lang.StringEscapeUtils
-import org.apache.commons.lang.StringUtils
 import java.io.StringWriter
 import javax.xml.stream.XMLEventReader
 import javax.xml.stream.events.Attribute
