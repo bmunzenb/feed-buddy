@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-stylesheet type="text/xsl" media="screen" href="/~d/styles/rss2full.xsl"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>RSS Title</title>
+        <description>This is an example of an RSS feed</description>
+        <link>http://www.example.com/main.html</link>
+        <lastBuildDate>Mon, 06 Sep 2010 00:01:00 +0000 </lastBuildDate>
+        <pubDate>Sun, 06 Sep 2009 16:20:00 +0000</pubDate>
+        <ttl>1800</ttl>
+
+        <item>
+            <title>Example entry</title>
+            <description>Here is some text containing an interesting description.</description>
+            <link>http://www.example.com/blog/post/1</link>
+            <guid isPermaLink="false">7bd204c6-1655-4c27-aeee-53f933c5395f</guid>
+            <pubDate>Sun, 06 Sep 2009 16:20:00 +0000</pubDate>
+        </item>
+
+        <item>
+            <title>Another entry</title>
+            <description><![CDATA[All good men come to the aid of their country.]]></description>
+            <link>http://www.example.com/blog/post/2</link>
+            <guid isPermaLink="false">2ea92767-ddf4-4696-a6fd-86d10d156a4c</guid>
+            <pubDate>Wed, 22 Apr 2020 04:01:00 +0000</pubDate>
+            <enclosure url="http://example.com/file1.mp3" />
+            <enclosure url="http://example.com/file2.mp3" />
+        </item>
+
+        <item>
+            <title>Encoded content</title>
+            <content:encoded>This is encoded content.</content:encoded>
+            <link>http://www.example.com/blog/post/3</link>
+            <guid isPermaLink="false">11fc01c0-7940-42b6-8bf5-df2730e46dfe</guid>
+            <pubDate>Thu, 23 Apr 2020 04:01:00 +0000</pubDate>
+        </item>
+
+    </channel>
+</rss>

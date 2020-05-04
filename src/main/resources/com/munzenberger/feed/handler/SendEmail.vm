@@ -1,5 +1,5 @@
 #**
- Copyright 2017 Brian Munzenberger
+ Copyright 2020 Brian Munzenberger
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -32,6 +32,6 @@
 				<p>Download: <a href="$enclosure.url">$enclosure.url</a></p>
 			#end
 		</em>
-		<p style="font-size:0.75em;text-align:right;opacity:0.5">[ID:${item.id}]</p>
 	</body>
 </html>
+<!-- ${item.id} -->

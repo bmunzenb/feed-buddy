@@ -1,0 +1,18 @@
+{
+  "period" : 360,
+  "feeds" : [ {
+    "url" : "http://www.example.com/feed.xml",
+    "handlers" : [ {
+      "type" : "com.munzenberger.feed.handler.SendEmail",
+      "properties" : {
+        "to" : "example@mail.com",
+        "from" : "feedbuddy@example.com",
+        "smtpHost" : "mail.smtp.com",
+        "smtpPort" : 23,
+        "auth" : true,
+        "username" : "feedbuddy",
+        "password" : "fizzbuzz"
+      }
+    } ]
+  } ]
+}
