@@ -34,9 +34,13 @@ class DownloadEnclosures : ItemHandler {
 
             val result = profile { download(response.inStream, target) }
 
-            // TODO set the last modified time on the local file
-
             println("${result.first.formatAsSize()} transferred in ${result.second.formatAsTime()}.")
+
+            item.timestampAsInstant?.let {
+                if (!target.setLastModified(it.toEpochMilli())) {
+                    System.err.println("Could not set last modified time on file: $target")
+                }
+            }
         }
     }
 

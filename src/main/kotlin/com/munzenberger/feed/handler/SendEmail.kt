@@ -9,6 +9,7 @@ import org.apache.velocity.app.Velocity
 import java.io.InputStreamReader
 import java.io.StringWriter
 import java.text.DecimalFormat
+import java.util.Date
 import java.util.Properties
 import javax.mail.Address
 import javax.mail.Session
@@ -53,6 +54,7 @@ class SendEmail : ItemHandler {
         val htmlEmail = HtmlEmail().apply {
             addTo(to)
             setFrom(from, context.feedTitle)
+            item.timestampAsInstant?.let { sentDate = Date.from(it) }
             subject = item.title
             setHtmlMsg(toHtmlMessage(item))
             mailSession = session

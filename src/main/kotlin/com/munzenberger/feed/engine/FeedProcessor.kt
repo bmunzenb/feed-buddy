@@ -24,7 +24,7 @@ class FeedProcessor(
     fun execute() {
         try {
 
-            print("$timestamp Reading from ${source.name}... ")
+            print("$timestamp Reading ${source.name}... ")
 
             val feed = source.read()
 
