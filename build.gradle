@@ -16,7 +16,7 @@ buildscript {
     }
 }
 
-version = '2.1'
+version = '2.1.1'
 
 repositories {
      jcenter()
@@ -35,7 +35,7 @@ dependencies {
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jackson_version"
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jackson_version"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
-    implementation "com.fasterxml.woodstox:woodstox-core:6.2.0"
+    implementation "com.fasterxml.woodstox:woodstox-core:6.2.1"
     implementation "com.github.ajalt:clikt:2.6.0"
 
     testImplementation 'junit:junit:4.13'

@@ -33,5 +33,10 @@ class FileItemRegistry(private val path: Path) : ItemRegistry {
     }
 }
 
-private val Item.persistableIdentity: String
-        get() = guid
+internal val Item.persistableIdentity: String
+        get() =
+            when {
+                guid.isNotBlank() -> guid
+                link.isNotBlank() -> link
+                else -> title
+            }
