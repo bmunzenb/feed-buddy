@@ -8,6 +8,8 @@ import java.util.zip.GZIPInputStream
 
 object URLClient {
 
+    var timeout = 30_000 // 30 seconds
+
     data class Response(
             val resolvedUrl: URL,
             val contentType: String?,
@@ -39,7 +41,10 @@ object URLClient {
 
     private fun connect(url: URL, requestProperties: Map<String, String>, locations: Set<String>): Response {
 
-        val connection = url.openConnection()
+        val connection = url.openConnection().apply {
+            connectTimeout = timeout
+            readTimeout = timeout
+        }
         requestProperties.forEach { (key, value) -> connection.setRequestProperty(key, value) }
 
         if (connection is HttpURLConnection) {

@@ -53,12 +53,11 @@ class App : CliktCommand(name = "feed-buddy") {
 
     private val timeout: Int by option("-t", "--timeout", help = "Sets the timeout in seconds")
             .int()
-            .default(value = 30000, defaultForHelp = "30")
+            .default(value = 30_000, defaultForHelp = "30")
 
     override fun run() {
 
-        System.setProperty("sun.net.client.defaultConnectTimeout", (timeout * 1000).toString())
-        System.setProperty("sun.net.client.defaultReadTimeout", (timeout * 1000).toString())
+        URLClient.timeout = timeout * 1000 // convert to millis
 
         val configFile = feeds.toFile()
 
