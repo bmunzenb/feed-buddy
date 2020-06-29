@@ -30,7 +30,7 @@ class XMLFeedSource(
         val parser = when (val type = firstElement.name.localPart) {
             "rss" -> RssXMLFeedParser
             "feed" -> AtomXMLFeedParser
-            else -> throw IllegalArgumentException("No parser available for feed type $type")
+            else -> throw IllegalArgumentException("No parser available for feed type '$type'")
         }
 
         return parser.parse(eventReader)

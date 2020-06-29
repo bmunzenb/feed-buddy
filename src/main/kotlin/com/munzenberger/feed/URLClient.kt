@@ -45,7 +45,7 @@ object URLClient {
             connectTimeout = timeout
             readTimeout = timeout
         }
-        requestProperties.forEach { (key, value) -> connection.setRequestProperty(key, value) }
+        requestProperties.forEach(connection::setRequestProperty)
 
         if (connection is HttpURLConnection) {
             connection.instanceFollowRedirects = false
