@@ -3,8 +3,6 @@ package com.munzenberger.feed.source
 import java.io.FilterReader
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.io.Reader
-import java.lang.UnsupportedOperationException
 
 class XMLFilterReader(
         inStream: InputStream,
@@ -74,7 +72,7 @@ class XMLFilterReader(
     }
 }
 
-private fun Char.isValidXML(): Boolean = toInt().let {
+private fun Char.isValidXML(): Boolean = code.let {
     // https://www.w3.org/TR/xml/#charsets
     it == 0x9 ||
             it == 0xA ||

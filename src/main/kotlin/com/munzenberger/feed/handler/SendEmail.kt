@@ -79,6 +79,7 @@ class SendEmail : ItemHandler {
         val context = VelocityContext().apply { put("item", mailItem) }
         val writer = StringWriter()
         val template = javaClass.getResourceAsStream("SendEmail.vm")
+                ?: throw IllegalStateException("Could not open SendEmail.vm")
         val reader = InputStreamReader(template)
         Velocity.evaluate(context, writer, "", reader)
         return writer.toString()
@@ -97,7 +98,7 @@ private fun String.encodeForEmail(): String {
     val df = DecimalFormat("0000")
 
     forEach { c ->
-        val i = c.toInt()
+        val i = c.code
         when {
             i >= 0x7F -> sb.append("&#${df.format(i)};")
             else -> sb.append(c)
