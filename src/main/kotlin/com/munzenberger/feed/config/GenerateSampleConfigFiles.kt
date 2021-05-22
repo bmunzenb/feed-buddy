@@ -3,7 +3,7 @@ package com.munzenberger.feed.config
 import com.munzenberger.feed.handler.SendEmail
 import java.nio.file.Paths
 
-fun main(args: Array<String>) {
+fun main() {
     minimal()
 }
 
