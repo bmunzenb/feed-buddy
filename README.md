@@ -10,7 +10,7 @@ This will produce ZIP and TAR archive files in the `build/distributions` directo
 
 ## Running
 
-You will need a [Java Virtual Machine (version 8 or higher)](https://www.java.com/) installed on the host device in order to run Feed Buddy.
+You will need a [Java Virtual Machine (version 11 or higher)](https://www.java.com/) installed on the host device in order to run Feed Buddy.
 
 Extract the distribution to a local directory on the device and execute the script file from the `bin` folder that is appropriate for your operating system, using the following arguments:
 
@@ -30,6 +30,7 @@ Arguments:
 You must specify a `FEEDS` argument as a path to a readable configuration file in XML, JSON, or YAML format.
 
 Feed Buddy runs in one of three operating modes:
+
 | Mode | Description |
 | ---- | ----------- |
 | POLL | Feed Buddy will poll the configured feeds and execute all item handlers on a schedule, marking the items as processed.  The application will run until the user force quits it.  This is the default operating mode.
@@ -84,6 +85,7 @@ There are three configuration block types that are used: `feed`, `handler`, and 
 
 #### `feed`
 A `feed` block is used to define a feed source, using the following properties:
+
 | Name | Type | Required | Description |
 | ---- | :--: | :------: | ----------- |
 | `url` | String | Yes | Source URL of the feed. |
@@ -123,6 +125,7 @@ The following example configurations in XML, JSON, and YAML are all equivalent:
 
 #### `handler`
 A `handler` block is used to define an operation to execute for a feed item.  Feeds can define any number of handlers to execute for its items.  Handlers may also be defined globally with a `name` and referenced by a handler in a feed, thus allowing multiple feeds to share a common handler. Handlers support the following properties:
+
 | Name | Type | Description |
 | ---- | :--: | ----------- |
 | `name` | String | The name of the handler, if intended to be shared by multiple feeds. |
@@ -134,6 +137,7 @@ Note that a `handler` must specify either a `type` for a local handler definitio
 
 #### `filter`
 A `filter` block is used to define rules for filtering items in a feed for processing.  Feeds can define any number of filters for its items.  If multiple filters are defined for a feed, then items in that feed must match all of the defined filters to be processed.  Filters may also be defined globally with a `name` and referenced by filter in a feed, thus allowing multiple feeds to share a common filter. Filters support the following properties:
+
 | Name | Type | Description |
 | ---- | :--: | ----------- |
 | `name` | String | The name of the filter, if intended to be shared by multiple feeds. |
@@ -147,6 +151,7 @@ Note that a `filter` must specify either a `type` for a local filter definition,
 
 ##### Send Email
 Use this handler to send an email containing the item's content. Set the handler's `type` property to `com.munzenberger.feed.handler.SendEmail` and configure with the following properties:
+
 | Name | Type | Required | Description |
 | ---- | :--: | :------: | ----------- |
 | `to` | String | Yes | Recipient email address. |
@@ -206,6 +211,7 @@ The following example configurations in XML, JSON, and YAML are all equivalent:
 
 ##### Download Enclosures
 Use this handler to download enclosures present in a feed's item. Set the handler's `type` property to `com.munzenberger.feed.handler.DownloadEnclosures` and configure with the following properties:
+
 | Name | Type | Required | Description |
 | ---- | :--: | :------: | ----------- |
 | `targetDirectory` | String | Yes | The target path to write downloaded files to. |
@@ -242,6 +248,7 @@ The following example configurations in XML, JSON, and YAML are all equivalent:
 
 ##### Regular Expression Evaluator
 Use this filter to match a feed item's title or content with a regular expression.  The item is only processed by the feed's handlers if all of the specified regular expressions match the item's properties.  Set the filter's `type` property to `com.munzenberger.feed.filter.RegexItemFilter` and configure with the following properties:
+
 | Name | Type | Required | Description |
 | ---- | :--: | :------: | ----------- |
 | `title` | String | No | If specified, matches with the item's title value. |
@@ -300,7 +307,7 @@ _Feed Buddy uses [Kotlin reflection](https://kotlinlang.org/docs/reference/refle
 
 ## License
 ```
-Copyright 2020 Brian Munzenberger
+Copyright 2021 Brian Munzenberger
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
