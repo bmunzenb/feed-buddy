@@ -10,7 +10,7 @@ This will produce ZIP and TAR archive files in the `build/distributions` directo
 
 ## Running
 
-You will need a [Java Virtual Machine (version 11 or higher)](https://www.java.com/) installed on the host device in order to run Feed Buddy.
+You will need a [Java Virtual Machine (version 8 or higher)](https://www.java.com/) installed on the host device in order to run Feed Buddy.
 
 Extract the distribution to a local directory on the device and execute the script file from the `bin` folder that is appropriate for your operating system, using the following arguments:
 

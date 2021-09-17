@@ -3,6 +3,7 @@ apply plugin: 'application'
 apply plugin: 'com.github.ben-manes.versions'
 
 buildscript {
+    ext.java_version = '1.8'
     ext.kotlin_version = '1.5.30'
     ext.jackson_version = '2.12.5'
 
@@ -43,21 +44,23 @@ dependencies {
     testImplementation "io.mockk:mockk:1.12.0"
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-    }
+compileJava   {
+    targetCompatibility = "$java_version"
+}
+
+compileTestJava   {
+    targetCompatibility = "$java_version"
 }
 
 compileKotlin {
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "$java_version"
     }
 }
 
 compileTestKotlin {
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "$java_version"
     }
 }
 
