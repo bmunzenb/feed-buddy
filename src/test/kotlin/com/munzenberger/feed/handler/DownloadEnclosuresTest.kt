@@ -3,51 +3,47 @@ package com.munzenberger.feed.handler
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
-import java.io.File
 import java.net.URL
 
 class DownloadEnclosuresTest {
 
     @Test
-    fun `it maps to a local file for a simple source URL`() {
+    fun `it extracts a file for a simple source URL`() {
 
-        val handler = DownloadEnclosures()
-        val localFile = handler.targetFileFor(URL("http://www.example.com/foo/bar/file.ext"))
+        val filename = URL("http://www.example.com/foo/bar/file.ext").filename
 
-        assertEquals(".${File.separator}file.ext", localFile.path)
+        assertEquals("file.ext", filename)
     }
 
     @Test
-    fun `it maps to a local file for a source URL with parameters`() {
+    fun `it extracts a file for a source URL with parameters`() {
 
-        val handler = DownloadEnclosures()
-        val localFile = handler.targetFileFor(URL("http://www.example.com/foo/bar/file.ext?abc=123"))
+        val filename = URL("http://www.example.com/foo/bar/file.ext?abc=123").filename
 
-        assertEquals(".${File.separator}file.ext", localFile.path)
+        assertEquals("file.ext", filename)
     }
 
     @Test
-    fun `it maps to a local file for a source URL with encoded characters`() {
+    fun `it extracts a file for a source URL with encoded characters`() {
 
-        val handler = DownloadEnclosures()
-        val localFile = handler.targetFileFor(URL("http://www.example.com/foo/bar/fizz+-%20buzz.ext"))
+        val filename = URL("http://www.example.com/foo/bar/fizz+-%20buzz.ext").filename
 
-        assertEquals(".${File.separator}fizz - buzz.ext", localFile.path)
+        assertEquals("fizz - buzz.ext", filename)
     }
 
     @Test
-    fun `it maps to a unique local file for a duplicate source URL`() {
+    fun `it maps to a unique local file for a duplicate file name`() {
 
         val handler = DownloadEnclosures()
-        val url = URL("http://www.example.com/foo/bar/duplicate.ext")
+        val filename = "duplicate.ext"
 
-        val localFile = handler.targetFileFor(url)
+        val localFile = handler.targetFileFor(filename)
 
         if (localFile.createNewFile()) {
             localFile.deleteOnExit()
         }
 
-        val dupFile = handler.targetFileFor(url)
+        val dupFile = handler.targetFileFor(filename)
 
         assertNotEquals(localFile.path, dupFile.path)
     }
@@ -55,9 +51,8 @@ class DownloadEnclosuresTest {
     @Test
     fun `it maps to a local file for encoded invalid characters`() {
 
-        val handler = DownloadEnclosures()
-        val localFile = handler.targetFileFor(URL("https://anchor.fm/s/10bb8090/podcast/play/10052621/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fproduction%2F2020-0-30%2F45841909-22050-1-24041a3ac9d8e.mp3"))
+        val localFile = URL("https://anchor.fm/s/10bb8090/podcast/play/10052621/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fproduction%2F2020-0-30%2F45841909-22050-1-24041a3ac9d8e.mp3").filename
 
-        assertEquals(".${File.separator}45841909-22050-1-24041a3ac9d8e.mp3", localFile.path)
+        assertEquals("45841909-22050-1-24041a3ac9d8e.mp3", localFile)
     }
 }

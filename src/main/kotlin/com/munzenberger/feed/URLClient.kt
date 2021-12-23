@@ -6,6 +6,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.zip.GZIPInputStream
 
+typealias ContentDisposition = String
+
 object URLClient {
 
     var timeout = 30_000 // 30 seconds
@@ -13,6 +15,7 @@ object URLClient {
     data class Response(
             val resolvedUrl: URL,
             val contentType: String?,
+            val contentDisposition: ContentDisposition?,
             val inStream: InputStream
     ) {
         val encoding: String
@@ -72,6 +75,18 @@ object URLClient {
             inStream = GZIPInputStream(inStream)
         }
 
-        return Response(url, connection.contentType, inStream)
+        return Response(
+                url,
+                connection.contentType,
+                connection.getHeaderField("Content-Disposition"),
+                inStream
+        )
     }
 }
+
+val ContentDisposition?.filename: String?
+    get() = this
+            ?.split(";")
+            ?.map { it.substringBefore('=').trim().lowercase() to it.substringAfter('=').replace("\"", "").trim() }
+            ?.firstOrNull { it.first == "filename" }
+            ?.second

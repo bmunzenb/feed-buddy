@@ -44,7 +44,7 @@ class FeedProcessorFactory(
     }
 }
 
-private fun String.filteredForPath(): String {
+fun String.filteredForPath(): String {
     val invalidChars = "<>:\"/\\|?*="
     val sb = StringBuilder(this)
     for (i in sb.indices) {

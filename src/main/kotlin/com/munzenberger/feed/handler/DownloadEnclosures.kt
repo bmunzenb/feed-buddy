@@ -3,6 +3,8 @@ package com.munzenberger.feed.handler
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
 import com.munzenberger.feed.URLClient
+import com.munzenberger.feed.config.filteredForPath
+import com.munzenberger.feed.filename
 import okio.buffer
 import okio.sink
 import okio.source
@@ -26,9 +28,7 @@ class DownloadEnclosures : ItemHandler {
 
             println(response.resolvedUrl)
 
-            // TODO can we determine the local filename by the 'content-disposition' response header?
-
-            val target = targetFileFor(response.resolvedUrl)
+            val target = targetFileFor(response.filename)
 
             print("Downloading to $target... ")
 
@@ -44,12 +44,7 @@ class DownloadEnclosures : ItemHandler {
         }
     }
 
-    internal fun targetFileFor(source: URL): File {
-
-        val filename = source.path
-                .urlDecode()
-                .split('/')
-                .last()
+    internal fun targetFileFor(filename: String): File {
 
         var path = targetDirectory + File.separator + filename
 
@@ -80,6 +75,13 @@ class DownloadEnclosures : ItemHandler {
         return targetFile
     }
 }
+
+internal val URLClient.Response.filename: String
+    // use the filename from the content disposition header, if present
+    get() = contentDisposition.filename?.filteredForPath() ?: resolvedUrl.filename
+
+internal val URL.filename: String
+    get() = this.path.urlDecode().split('/').last()
 
 private fun String.urlDecode(encoding: String = "UTF-8"): String {
     // handles nested URLs
