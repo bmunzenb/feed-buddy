@@ -85,6 +85,7 @@ object URLClient {
 }
 
 val ContentDisposition?.filename: String?
+    // TODO this is a naive parsing strategy that should be replaced with something more robust
     get() = this
             ?.split(";")
             ?.map { it.substringBefore('=').trim().lowercase() to it.substringAfter('=').replace("\"", "").trim() }
