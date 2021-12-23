@@ -42,14 +42,14 @@ class FeedProcessor(
                     .filter { itemFilter.evaluate(context, it) }
 
             items.forEachIndexed { index, item ->
-                println("--> Processing item ${index+1} of ${items.size}, \"${item.title}\" (${item.guid})")
+                println("Processing item ${index+1} of ${items.size}: \"${item.title}\" (${item.guid})")
                 try {
                     itemHandler.execute(context, item)
                     itemRegistry.add(item)
                     processed++
                 } catch (e: Throwable) {
-                    println("error [${e.javaClass.simpleName}] ${e.message}")
-                    e.printStackTrace()
+                    println("${e.javaClass.simpleName}: ${e.message}")
+                    e.printStackTrace(System.err)
                     errors++
                 }
             }
@@ -62,8 +62,8 @@ class FeedProcessor(
             }
 
         } catch (e: Throwable) {
-            println("error [${e.javaClass.simpleName}] ${e.message}")
-            e.printStackTrace()
+            println("${e.javaClass.simpleName}: ${e.message}")
+            e.printStackTrace(System.err)
         }
     }
 }
