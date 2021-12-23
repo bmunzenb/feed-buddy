@@ -10,13 +10,15 @@ interface AppConfigProvider {
 
 class FileAppConfigProvider(private val file: File) : AppConfigProvider {
 
-    override val name: String = file.path
+    override val name: String
+        get() = file.absolutePath
 
-    private val adapter = when {
-        file.path.endsWith(".json", true) -> JsonAppConfigAdapter
-        file.path.endsWith(".yaml", true) -> YamlAppConfigAdapter
-        else -> XmlAppConfigAdapter
-    }
+    private val adapter: JacksonAppConfigAdapter
+        get() = when {
+            file.path.endsWith(".json", true) -> JsonAppConfigAdapter
+            file.path.endsWith(".yaml", true) -> YamlAppConfigAdapter
+            else -> XmlAppConfigAdapter
+        }
 
     override val config: AppConfig
         get() = adapter.read(file)
