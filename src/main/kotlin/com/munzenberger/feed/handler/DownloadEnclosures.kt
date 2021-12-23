@@ -24,21 +24,26 @@ class DownloadEnclosures : ItemHandler {
 
             print("Resolving enclosure source... ")
 
-            val response = URLClient.connect(URL(enclosure.url))
+            URLClient.connect(URL(enclosure.url)).run {
 
-            println(response.resolvedUrl)
+                println(resolvedUrl)
 
-            val target = targetFileFor(response.filename)
+                contentDisposition?.let {
+                    println("Content-Disposition: $it")
+                }
 
-            print("Downloading to $target... ")
+                val target = targetFileFor(filename)
 
-            val result = profile { download(response.inStream, target) }
+                print("Downloading to $target... ")
 
-            println("${result.first.formatAsSize()} transferred in ${result.second.formatAsTime()}.")
+                val result = profile { download(inStream, target) }
 
-            item.timestampAsInstant?.let {
-                if (!target.setLastModified(it.toEpochMilli())) {
-                    System.err.println("Could not set last modified time on file: $target")
+                println("${result.first.formatAsSize()} transferred in ${result.second.formatAsTime()}.")
+
+                item.timestampAsInstant?.let {
+                    if (!target.setLastModified(it.toEpochMilli())) {
+                        System.err.println("Could not set last modified time on file: $target")
+                    }
                 }
             }
         }
