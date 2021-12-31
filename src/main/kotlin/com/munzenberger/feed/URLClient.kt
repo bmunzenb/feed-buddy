@@ -7,6 +7,7 @@ import java.net.URL
 import java.util.zip.GZIPInputStream
 
 typealias ContentDisposition = String
+typealias ContentType = String
 
 object URLClient {
 
@@ -14,17 +15,11 @@ object URLClient {
 
     data class Response(
             val resolvedUrl: URL,
-            val contentType: String?,
+            val contentType: ContentType?,
             val contentDisposition: ContentDisposition?,
             val inStream: InputStream
     ) {
-        val encoding: String
-            // TODO: better to parse the 'charset' from the content-type
-            get() = when {
-                contentType == null -> "UTF-8"
-                contentType.contains("UTF-16", true) -> "UTF-16"
-                else -> "UTF-8"
-            }
+        val encoding = contentType.charset
     }
 
     private val redirectCodes = setOf(
@@ -91,3 +86,11 @@ val ContentDisposition?.filename: String?
             ?.map { it.substringBefore('=').trim().lowercase() to it.substringAfter('=').replace("\"", "").trim() }
             ?.firstOrNull { it.first == "filename" }
             ?.second
+
+val ContentType?.charset: String
+    // TODO: better to parse the 'charset' from the content-type
+    get() = when {
+        this == null -> "UTF-8"
+        this.contains("UTF-16", true) -> "UTF-16"
+        else -> "UTF-8"
+    }
