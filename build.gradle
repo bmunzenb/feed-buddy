@@ -8,7 +8,7 @@ buildscript {
     ext.okio_version = '3.0.0'
     ext.jackson_version = '2.13.1'
     ext.woodstox_version = '6.2.8'
-    ext.mockk_version = '1.12.2'
+    ext.mockk_version = '1.12.3'
 
     repositories {
         mavenCentral()
@@ -17,11 +17,11 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.github.ben-manes:gradle-versions-plugin:0.41.0"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.42.0"
     }
 }
 
-version = '2.1.4'
+version = '2.1.5'
 
 repositories {
      mavenCentral()

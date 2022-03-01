@@ -25,11 +25,20 @@ fun main(args: Array<String>) {
         load(inStream)
     }
 
-    val version = versionProperties["version"]
+    versionProperties["version"].let {
+        println("Feed Buddy version $it (https://github.com/bmunzenb/feed-buddy)")
+        System.setProperty("http.agent", "Feed-Buddy/$it (+https://github.com/bmunzenb/feed-buddy)")
+    }
 
-    println("Feed Buddy version $version (https://github.com/bmunzenb/feed-buddy)")
+    System.getProperties().let {
+        val runtimeName = it["java.runtime.name"]
+        val runtimeVersion = it["java.runtime.version"]
+        println("$runtimeName version $runtimeVersion")
 
-    System.setProperty("http.agent", "Feed-Buddy/$version (+https://github.com/bmunzenb/feed-buddy)")
+        val jvmName = it["java.vm.name"]
+        val jvmVersion = it["java.vm.version"]
+        println("$jvmName version $jvmVersion")
+    }
 
     App().main(args)
 }
