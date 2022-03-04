@@ -42,7 +42,7 @@ class SendEmail : ItemHandler {
             put("mail.smtp.starttls.required", startTLSRequired)
         }
 
-        Session.getDefaultInstance(properties)
+        Session.getInstance(properties)
     }
 
     private val transport: Transport by lazy {

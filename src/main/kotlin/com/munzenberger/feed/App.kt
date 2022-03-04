@@ -33,11 +33,11 @@ fun main(args: Array<String>) {
     System.getProperties().let {
         val runtimeName = it["java.runtime.name"]
         val runtimeVersion = it["java.runtime.version"]
-        println("$runtimeName version $runtimeVersion")
+        println("$runtimeName $runtimeVersion")
 
         val jvmName = it["java.vm.name"]
         val jvmVersion = it["java.vm.version"]
-        println("$jvmName version $jvmVersion")
+        println("$jvmName $jvmVersion")
     }
 
     App().main(args)
