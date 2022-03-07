@@ -2,7 +2,6 @@ package com.munzenberger.feed
 
 import com.munzenberger.feed.config.AppConfig
 import com.munzenberger.feed.config.AppConfigProvider
-import com.munzenberger.feed.config.FeedConfig
 import com.munzenberger.feed.config.FeedProcessorFactory
 import com.munzenberger.feed.config.ItemProcessorFactory
 import com.munzenberger.feed.engine.pluralize

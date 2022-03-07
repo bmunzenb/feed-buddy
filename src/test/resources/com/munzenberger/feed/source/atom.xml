@@ -26,13 +26,15 @@
     </entry>
 
     <entry>
-        <title>Another entry</title>
+        <title>Another entry with enclosures</title>
         <link rel="edit" href="http://example.org/2003/12/13/atom03/edit"/>
         <link rel="alternate" type="text/html" href="http://example.org/2003/12/13/atom03.html"/>
         <id>urn:uuid:7dead42c-7506-4748-ad03-d2d893730975</id>
         <updated>2020-04-21T04:25:02Z</updated>
         <summary>Another summary</summary>
         <content>All good men come to the aid of their country.</content>
+        <link rel="enclosure" href="http://example.com/file1.mp3"/>
+        <link rel="enclosure" href="http://example.com/file2.mp3"/>
         <author>
             <name>John Doe</name>
             <email>johndoe@example.com</email>

@@ -2,7 +2,6 @@ package com.munzenberger.feed
 
 import java.time.Instant
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 
 data class Feed(
         val title: String,

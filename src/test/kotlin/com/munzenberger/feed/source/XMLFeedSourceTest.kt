@@ -14,7 +14,7 @@ class XMLFeedSourceTest {
     @Test
     fun `it can parse rss xml`() {
 
-        val url = javaClass.getResource("rss.xml")
+        val url = javaClass.getResource("rss.xml")!!
         val source = XMLFeedSource(url)
         val feed = source.read()
 
@@ -51,7 +51,7 @@ class XMLFeedSourceTest {
     @Test
     fun `it can parse atom xml`() {
 
-        val url = javaClass.getResource("atom.xml")
+        val url = javaClass.getResource("atom.xml")!!
         val source = XMLFeedSource(url)
         val feed = source.read()
 
@@ -63,12 +63,15 @@ class XMLFeedSourceTest {
                         timestamp = "2003-12-13T18:30:02Z",
                         enclosures = emptyList()
                 ),
-                Item(title = "Another entry",
+                Item(title = "Another entry with enclosures",
                         content = "All good men come to the aid of their country.",
                         link = "http://example.org/2003/12/13/atom03.html",
                         guid = "urn:uuid:7dead42c-7506-4748-ad03-d2d893730975",
                         timestamp = "2020-04-21T04:25:02Z",
-                        enclosures = emptyList()
+                        enclosures = listOf(
+                                Enclosure("http://example.com/file1.mp3"),
+                                Enclosure("http://example.com/file2.mp3")
+                        )
                 ),
                 Item(title = "HTML entry",
                         content = """<div style="info"><p>This is the entry content.</p></div>""",
