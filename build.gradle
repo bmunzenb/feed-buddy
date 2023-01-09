@@ -4,11 +4,12 @@ apply plugin: 'com.github.ben-manes.versions'
 
 buildscript {
     ext.java_version = '1.8'
-    ext.kotlin_version = '1.6.21'
-    ext.okio_version = '3.2.0'
-    ext.jackson_version = '2.13.4'
-    ext.woodstox_version = '6.3.1'
-    ext.mockk_version = '1.12.8'
+    ext.kotlin_version = '1.8.0'
+    ext.okio_version = '3.3.0'
+    ext.jackson_version = '2.14.1'
+    ext.woodstox_version = '6.4.0'
+    ext.mockk_version = '1.13.3'
+    ext.commons_text = '1.10.0'
 
     repositories {
         mavenCentral()
@@ -17,7 +18,7 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.github.ben-manes:gradle-versions-plugin:0.42.0"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.44.0"
     }
 }
 
@@ -33,7 +34,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     implementation "org.apache.commons:commons-email:1.5"
-    implementation "org.apache.commons:commons-text:1.9"
+    implementation "org.apache.commons:commons-text:$commons_text"
     implementation "org.apache.velocity:velocity:1.7"
     implementation "com.squareup.okio:okio:$okio_version"
     implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
