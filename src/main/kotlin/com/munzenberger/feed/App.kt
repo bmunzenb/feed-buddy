@@ -40,6 +40,8 @@ fun main(args: Array<String>) {
         println("$jvmName $jvmVersion")
     }
 
+    println()
+
     App().main(args)
 }
 
@@ -60,7 +62,7 @@ class App : CliktCommand(name = "feed-buddy") {
             .enum<OperatingMode>()
             .default(OperatingMode.POLL)
 
-    private val timeout: Int by option("-t", "--timeout", help = "Sets the timeout in seconds")
+    private val timeout: Int by option("-t", "--timeout", help = "Sets the read timeout in seconds")
             .int()
             .default(value = 30_000, defaultForHelp = "30")
 

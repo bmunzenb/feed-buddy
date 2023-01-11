@@ -12,7 +12,7 @@ This will produce ZIP and TAR archive files in the `build/distributions` directo
 
 You will need a [Java Virtual Machine (version 8 or higher)](https://www.java.com/) installed on the host device in order to run Feed Buddy.
 
-Extract the distribution to a local directory on the device and execute the script file from the `bin` folder that is appropriate for your operating system, using the following arguments:
+Extract the distribution archive to a local directory on the device and execute the script file from the `bin` folder that is appropriate for your operating system, using the following arguments:
 
 ```
 Usage: feed-buddy [OPTIONS] FEEDS
@@ -20,7 +20,7 @@ Usage: feed-buddy [OPTIONS] FEEDS
 Options:
   -r, --registry DIRECTORY     Path to processed items registry
   -m, --mode [POLL|ONCE|NOOP]  Sets the operating mode
-  -t, --timeout INT            Sets the timeout in seconds
+  -t, --timeout INT            Sets the read timeout in seconds
   -h, --help                   Show this message and exit
 
 Arguments:
@@ -50,9 +50,9 @@ The root of the configuration structure is a `<feeds>` element for XML, and a ha
 | Name | Type | Description |
 | ---- | :--: | ----------- |
 | `period` | Number | The default time in minutes between reads of a feed. Has a default value of `360` for 3 hours. |
-| `handlers` | List | Defines global handlers that may be shared by feeds. |
-| `filters` | List | Defines global filters that may be shared by feeds. |
-| `feeds` | List | Defines a list of feed sources. |
+| `handlers` | List | Defines global `handler`s that may be shared by feeds. |
+| `filters` | List | Defines global `filter`s that may be shared by feeds. |
+| `feeds` | List | Defines a list of `feed` sources. |
 
 The following example root configurations in XML, JSON, and YAML are all equivalent:
 
