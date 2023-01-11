@@ -48,27 +48,12 @@ dependencies {
     testImplementation "io.mockk:mockk:$mockk_version"
 }
 
-compileJava   {
-    targetCompatibility = "$java_version"
+tasks.withType(JavaCompile).configureEach {
+    targetCompatibility = java_version
 }
 
-compileTestJava   {
-    targetCompatibility = "$java_version"
-}
-
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "$java_version"
-    }
-}
-
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "$java_version"
-    }
-}
-
-task createProperties(dependsOn: processResources) {
+tasks.register('createProperties') {
+    dependsOn processResources
     doLast {
         new File("$buildDir/resources/main/version.properties").withWriter { w ->
             Properties p = new Properties()
