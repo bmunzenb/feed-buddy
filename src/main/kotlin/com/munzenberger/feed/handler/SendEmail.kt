@@ -56,7 +56,7 @@ class SendEmail : ItemHandler {
             setFrom(from, context.feedTitle)
             item.timestampAsInstant?.let { sentDate = Date.from(it) }
             subject = item.title
-            setHtmlMsg(toHtmlMessage(item))
+            setHtmlMsg(item.toHtmlMessage())
             mailSession = session
             buildMimeMessage()
         }
@@ -74,14 +74,14 @@ class SendEmail : ItemHandler {
         println("sent.")
     }
 
-    private fun toHtmlMessage(item: Item): String {
-        val mailItem = MailItem(item)
+    private fun Item.toHtmlMessage() : String {
+        val mailItem = MailItem(this)
         val context = VelocityContext().apply { put("item", mailItem) }
         val writer = StringWriter()
         val template = javaClass.getResourceAsStream("SendEmail.vm")
-                ?: throw IllegalStateException("Could not open SendEmail.vm")
+            ?: throw IllegalStateException("Could not open SendEmail.vm")
         val reader = InputStreamReader(template)
-        Velocity.evaluate(context, writer, "", reader)
+        Velocity.evaluate(context, writer, "SendEmail.vm", reader)
         return writer.toString()
     }
 }
