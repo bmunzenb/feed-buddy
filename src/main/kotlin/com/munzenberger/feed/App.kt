@@ -60,7 +60,7 @@ class App : CliktCommand(name = "feed-buddy") {
 
     private val mode: OperatingMode by option("-m", "--mode", help = "Sets the operating mode")
             .enum<OperatingMode>()
-            .default(OperatingMode.POLL)
+            .default(OperatingMode.POLL, defaultForHelp = "POLL")
 
     private val timeout: Int by option("-t", "--timeout", help = "Sets the read timeout in seconds")
             .int()
