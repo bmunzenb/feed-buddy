@@ -27,7 +27,7 @@ fun main(args: Array<String>) {
 
     versionProperties["version"].let {
         println("Feed Buddy version $it (https://github.com/bmunzenb/feed-buddy)")
-        System.setProperty("http.agent", "Feed-Buddy/$it (+https://github.com/bmunzenb/feed-buddy)")
+        URLClient.defaultUserAgent = "Feed-Buddy/$it (+https://github.com/bmunzenb/feed-buddy)"
     }
 
     System.getProperties().let {

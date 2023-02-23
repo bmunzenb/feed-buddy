@@ -11,8 +11,10 @@ typealias ContentType = String
 
 object URLClient {
 
+    private const val maxRedirects = 20
+
     var timeout = 30_000 // 30 seconds
-    var maxRedirects = 20
+    var defaultUserAgent = "FeedBuddy/SNAPSHOT (+https://github.com/bmunzenb/feed-buddy)"
 
     data class Response(
             val resolvedUrl: URL,
@@ -31,11 +33,12 @@ object URLClient {
             308) // Permanent Redirect (RFC 7538)
 
     fun connect(url: URL, userAgent: String? = null): Response {
-
-        val requestProperties = mutableMapOf<String, String>()
-        userAgent?.run { requestProperties["User-agent"] = this }
-
-        return connect(url, requestProperties, emptySet())
+        val resolvedUserAgent = userAgent ?: defaultUserAgent
+        return connect(
+            url = url,
+            requestProperties = mapOf("User-agent" to resolvedUserAgent),
+            locations = emptySet()
+        )
     }
 
     private fun connect(url: URL, requestProperties: Map<String, String>, locations: Set<String>): Response {
@@ -91,7 +94,7 @@ val ContentDisposition?.filename: String?
             ?.firstOrNull { it.first == "filename" }
             ?.second
 
-val ContentType?.charset: String
+internal val ContentType?.charset: String
     // TODO: better to parse the 'charset' from the content-type
     get() = when {
         this == null -> "UTF-8"

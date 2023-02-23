@@ -90,7 +90,7 @@ class XMLFeedSourceTest {
     fun `parse real feed`() {
 
         val url = URL("http://example.com/feed.xml")
-        val source = XMLFeedSource(source = url, userAgent = "Feed-Buddy/SNAPSHOT (+https://github.com/bmunzenb/feed-buddy)")
+        val source = XMLFeedSource(source = url)
         val feed = source.read()
 
         assertNotNull(feed)
