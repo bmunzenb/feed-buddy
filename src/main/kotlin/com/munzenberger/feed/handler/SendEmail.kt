@@ -8,6 +8,7 @@ import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.Velocity
 import java.io.InputStreamReader
 import java.io.StringWriter
+import java.net.URL
 import java.text.DecimalFormat
 import java.util.Date
 import java.util.Properties
@@ -17,6 +18,10 @@ import javax.mail.Transport
 import javax.mail.internet.InternetAddress
 
 class SendEmail : ItemHandler {
+
+    companion object {
+        val templateURL = SendEmail::class.java.getResource("SendEmail.vm")!!
+    }
 
     lateinit var to: String
     lateinit var from: String
@@ -56,7 +61,7 @@ class SendEmail : ItemHandler {
             setFrom(from, context.feedTitle)
             item.timestampAsInstant?.let { sentDate = Date.from(it) }
             subject = item.title
-            setHtmlMsg(item.toHtmlMessage())
+            setHtmlMsg(item.toHtmlMessage(templateURL))
             mailSession = session
             buildMimeMessage()
         }
@@ -73,17 +78,15 @@ class SendEmail : ItemHandler {
         transport.sendMessage(message, recipients)
         println("sent.")
     }
+}
 
-    private fun Item.toHtmlMessage() : String {
-        val mailItem = MailItem(this)
-        val context = VelocityContext().apply { put("item", mailItem) }
-        val writer = StringWriter()
-        val template = javaClass.getResourceAsStream("SendEmail.vm")
-            ?: throw IllegalStateException("Could not open SendEmail.vm")
-        val reader = InputStreamReader(template)
-        Velocity.evaluate(context, writer, "SendEmail.vm", reader)
-        return writer.toString()
-    }
+internal fun Item.toHtmlMessage(template: URL) : String {
+    val mailItem = MailItem(this)
+    val context = VelocityContext().apply { put("item", mailItem) }
+    val writer = StringWriter()
+    val reader = InputStreamReader(template.openStream())
+    Velocity.evaluate(context, writer, template.filename, reader)
+    return writer.toString()
 }
 
 class MailItem(item: Item) {
