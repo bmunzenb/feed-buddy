@@ -14,7 +14,7 @@ object URLClient {
     private const val maxRedirects = 20
 
     var timeout = 30_000 // 30 seconds
-    var defaultUserAgent = "FeedBuddy/SNAPSHOT (+https://github.com/bmunzenb/feed-buddy)"
+    var defaultUserAgent = "Feed-Buddy/SNAPSHOT (+https://github.com/bmunzenb/feed-buddy)"
 
     data class Response(
             val resolvedUrl: URL,
