@@ -12,6 +12,7 @@ typealias ContentType = String
 object URLClient {
 
     var timeout = 30_000 // 30 seconds
+    var maxRedirects = 20
 
     data class Response(
             val resolvedUrl: URL,
@@ -53,12 +54,15 @@ object URLClient {
                 return when (val location: String? = connection.getHeaderField("Location")) {
                     null ->
                         throw IOException("Redirect response $responseCode with no 'Location' in header: ${connection.headerFields}")
-                    else -> {
-                        if (locations.contains(location)) {
-                            throw IOException("Infinite redirect detected: $location -> $locations")
+                    else ->
+                        when {
+                            locations.contains(location) ->
+                                throw IOException("Infinite redirect detected: $location -> $locations")
+                            locations.size >= maxRedirects ->
+                                throw IOException("Server redirected too many times: ${locations.size}")
+                            else ->
+                                connect(URL(location), requestProperties, locations + location)
                         }
-                        connect(URL(location), requestProperties, locations + location)
-                    }
                 }
             }
         }
