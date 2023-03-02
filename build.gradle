@@ -11,6 +11,7 @@ buildscript {
         clikt = '2.8.0'
         junit = '4.13.2'
         mockk_version = '1.13.4'
+        beryx_runtime_version = '1.12.7'
     }
 
     repositories {
@@ -22,11 +23,8 @@ buildscript {
 plugins {
     id "com.github.ben-manes.versions" version "$versions_plugin_version"
     id "org.jetbrains.kotlin.jvm" version "$kotlin_version"
-    id "application"
+    id "org.beryx.runtime" version "$beryx_runtime_version"
 }
-
-version = '2.1.6-SNAPSHOT'
-mainClassName = 'com.munzenberger.feed.AppKt'
 
 repositories {
     mavenCentral()
@@ -53,6 +51,22 @@ kotlin {
     jvmToolchain {
         languageVersion = JavaLanguageVersion.of(11)
     }
+}
+
+application {
+    version = '2.1.6-SNAPSHOT'
+    mainClass = 'com.munzenberger.feed.AppKt'
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'feed-buddy',
+                'Main-Class': 'com.munzenberger.feed.AppKt'
+    }
+}
+
+runtime {
+    modules = ['java.naming', 'java.scripting', 'java.xml', 'java.sql', 'java.logging', 'java.desktop']
 }
 
 tasks.register('createProperties') {
