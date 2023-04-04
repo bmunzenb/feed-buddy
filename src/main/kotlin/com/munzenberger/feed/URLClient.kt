@@ -36,7 +36,10 @@ object URLClient {
         val resolvedUserAgent = userAgent ?: defaultUserAgent
         return connect(
             url = url,
-            requestProperties = mapOf("User-agent" to resolvedUserAgent),
+            requestProperties = mapOf(
+                "User-agent" to resolvedUserAgent,
+                "Accept" to "application/xml"
+            ),
             locations = emptySet()
         )
     }
@@ -63,8 +66,10 @@ object URLClient {
                                 throw IOException("Infinite redirect detected: $location -> $locations")
                             locations.size >= maxRedirects ->
                                 throw IOException("Server redirected too many times: ${locations.size}")
-                            else ->
+                            else -> {
+                                connection.disconnect()
                                 connect(URL(location), requestProperties, locations + location)
+                            }
                         }
                 }
             }
@@ -78,10 +83,10 @@ object URLClient {
         }
 
         return Response(
-                url,
-                connection.contentType,
-                connection.getHeaderField("Content-Disposition"),
-                inStream
+                resolvedUrl = url,
+                contentType = connection.contentType,
+                contentDisposition = connection.getHeaderField("Content-Disposition"),
+                inStream = inStream
         )
     }
 }
