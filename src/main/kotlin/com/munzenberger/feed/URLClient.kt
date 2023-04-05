@@ -50,11 +50,17 @@ object URLClient {
             connectTimeout = timeout
             readTimeout = timeout
         }
+
         requestProperties.forEach(connection::setRequestProperty)
 
         if (connection is HttpURLConnection) {
+
+            // HttpURLConnection will not follow redirects if the protocol changes (e.g. HTTP -> HTTPS)
+            // so we need to manually handle redirects
             connection.instanceFollowRedirects = false
+
             val responseCode = connection.responseCode
+
             // handle redirects
             if (responseCode in redirectCodes) {
                 return when (val location: String? = connection.getHeaderField("Location")) {
