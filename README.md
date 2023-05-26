@@ -1,16 +1,16 @@
 # Feed Buddy
 _Feed Buddy_ is a simple RSS and Atom feed processor written in Kotlin.
 
-## Building
+## Building from Source
 This project uses [Gradle](https://gradle.org/) with the [Application Plugin](https://docs.gradle.org/current/userguide/application_plugin.html).  To build distributable archives, execute the following command:
 
 `gradlew assemble`
 
 This will produce ZIP and TAR archive files in the `build/distributions` directory.
 
-## Running
+## Running Feed Buddy
 
-You will need a [Java Virtual Machine (version 11 or higher)](https://www.java.com/) installed on the host device in order to run Feed Buddy.
+You will need a [Java Virtual Machine (version 11 or higher)](https://www.oracle.com/java/technologies/java-se-glance.html) installed on the host device in order to run Feed Buddy.
 
 Extract the distribution archive to a local directory on the device and execute the script file from the `bin` folder that is appropriate for your operating system, using the following arguments:
 
@@ -307,7 +307,7 @@ _Feed Buddy uses [Kotlin reflection](https://kotlinlang.org/docs/reference/refle
 
 ## License
 ```
-Copyright 2021 Brian Munzenberger
+Copyright 2023 Brian Munzenberger
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
