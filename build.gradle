@@ -1,16 +1,16 @@
 buildscript {
     ext {
         versions_plugin_version = '0.46.0'
-        kotlin_version = '1.8.20'
+        kotlin_version = '1.8.21'
         okio_version = '3.3.0'
-        jackson_version = '2.14.2'
-        woodstox_version = '6.5.0'
+        jackson_version = '2.15.1'
+        woodstox_version = '6.5.1'
         commons_text = '1.10.0'
         commons_email = '1.5'
         velocity = '1.7'
         clikt = '2.8.0'
         junit = '4.13.2'
-        mockk_version = '1.13.4'
+        mockk_version = '1.13.5'
     }
 
     repositories {
@@ -68,4 +68,17 @@ tasks.register('createProperties') {
 
 classes {
     dependsOn createProperties
+}
+
+def isNonStable = { String version ->
+    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
+}
+
+tasks.named("dependencyUpdates").configure {
+    // disallow release candidates as upgradable versions from stable versions
+    rejectVersionIf {
+        isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)
+    }
 }
