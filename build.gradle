@@ -1,9 +1,9 @@
 buildscript {
     ext {
-        versions_plugin_version = '0.46.0'
-        kotlin_version = '1.8.21'
+        versions_plugin_version = '0.47.0'
+        kotlin_version = '1.8.22'
         okio_version = '3.3.0'
-        jackson_version = '2.15.1'
+        jackson_version = '2.15.2'
         woodstox_version = '6.5.1'
         commons_text = '1.10.0'
         commons_email = '1.5'
