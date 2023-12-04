@@ -1,5 +1,5 @@
 #**
- Copyright 2023 Brian Munzenberger
+ Copyright 2020 Brian Munzenberger
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,13 +14,9 @@
  limitations under the License.
 *#
 <html>
-	<head>
-	    <style>
-	        $item.stylesheet
-	    </style>
-	</head>
+	<head></head>
 	<body>
-		<div id="content">
+		<div>
 			#if ( $item.description )
 				$item.description
 			#else
@@ -28,14 +24,14 @@
 			#end
 		</div>
 		<hr>
-		<div id="links">
-            #if ( $item.link )
-                <p>Article: <a href="$item.link">$item.link</a></p>
-            #end
-            #foreach ( $enclosure in $item.enclosures )
-                <p>Download: <a href="$enclosure.url">$enclosure.url</a></p>
-            #end
-		</div>
+		<em>
+			#if ( $item.link )
+				<p>Article: <a href="$item.link">$item.link</a></p>
+			#end
+			#foreach ( $enclosure in $item.enclosures )
+				<p>Download: <a href="$enclosure.url">$enclosure.url</a></p>
+			#end
+		</em>
 	</body>
 </html>
 <!-- ${item.id} -->

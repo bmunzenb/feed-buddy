@@ -33,7 +33,6 @@ class SendEmail : ItemHandler {
     var startTLSRequired: Boolean = false
     var username: String = ""
     var password: String = ""
-    var stylesheet: String = ""
 
     private val session: Session by lazy {
 
@@ -62,7 +61,7 @@ class SendEmail : ItemHandler {
             setFrom(from, context.feedTitle)
             item.timestampAsInstant?.let { sentDate = Date.from(it) }
             subject = item.title
-            setHtmlMsg(item.toHtmlMessage(templateURL, stylesheet))
+            setHtmlMsg(item.toHtmlMessage(templateURL))
             mailSession = session
             buildMimeMessage()
         }
@@ -81,8 +80,8 @@ class SendEmail : ItemHandler {
     }
 }
 
-internal fun Item.toHtmlMessage(template: URL, stylesheet: String) : String {
-    val mailItem = MailItem(this, stylesheet)
+internal fun Item.toHtmlMessage(template: URL) : String {
+    val mailItem = MailItem(this)
     val context = VelocityContext().apply { put("item", mailItem) }
     val writer = StringWriter()
     val reader = InputStreamReader(template.openStream())
@@ -90,7 +89,7 @@ internal fun Item.toHtmlMessage(template: URL, stylesheet: String) : String {
     return writer.toString()
 }
 
-class MailItem(item: Item, val stylesheet: String) {
+class MailItem(item: Item) {
     val description: String = item.content.encodeForEmail()
     val link: String = item.link
     val id: String = item.guid
