@@ -163,6 +163,7 @@ Use this handler to send an email containing the item's content. Set the handler
 | `password` | String | No | The authentication password if the SMTP server requires authentication. |
 | `startTLSEnable` | Boolean | No | Set to `true` to enable the STARTTLS command. |
 | `startTLSRequired` | Boolean | No | Set to `true` if your SMTP server requires use of the STARTTLS command. |
+| `stylesheet` | String | No | Specify a custom stylesheet for the email that is sent. |
 
 The following example configurations in XML, JSON, and YAML are all equivalent:
 
