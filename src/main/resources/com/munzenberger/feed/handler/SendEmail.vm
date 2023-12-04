@@ -1,5 +1,5 @@
 #**
- Copyright 2020 Brian Munzenberger
+ Copyright 2023 Brian Munzenberger
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -24,14 +24,14 @@
 			#end
 		</div>
 		<hr>
-		<em>
+		<div>
 			#if ( $item.link )
 				<p>Article: <a href="$item.link">$item.link</a></p>
 			#end
 			#foreach ( $enclosure in $item.enclosures )
 				<p>Download: <a href="$enclosure.url">$enclosure.url</a></p>
 			#end
-		</em>
+		</div>
 	</body>
 </html>
 <!-- ${item.id} -->

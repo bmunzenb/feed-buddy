@@ -36,10 +36,8 @@ private fun RssItem.toItem() = Item(
         link = link,
         guid = guid,
         timestamp = pubDate,
-        enclosures = enclosures.map { it.toEnclosure() }
+        enclosures = enclosures.map { Enclosure(it.url) }
 )
-
-private fun RssEnclosure.toEnclosure() = Enclosure(url)
 
 internal object RssXMLFeedParser : XMLFeedParser {
 

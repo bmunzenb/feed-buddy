@@ -50,7 +50,9 @@ private fun AtomEntry.toItem() = Item(
         link = links.firstOrNull { it.rel.isEmpty() || it.rel == "alternate" }?.href ?: "",
         guid = id,
         timestamp = updated,
-        enclosures = links.filter { it.rel == "enclosure" }.map { Enclosure(it.href) }
+        enclosures = links
+            .filter { it.rel == "enclosure" }
+            .map { Enclosure(it.href) }
 )
 
 internal object AtomXMLFeedParser : XMLFeedParser {
