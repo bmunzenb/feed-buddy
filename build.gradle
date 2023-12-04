@@ -1,16 +1,16 @@
 buildscript {
     ext {
-        versions_plugin_version = '0.47.0'
-        kotlin_version = '1.8.22'
-        okio_version = '3.3.0'
-        jackson_version = '2.15.2'
+        versions_plugin_version = '0.50.0'
+        kotlin_version = '1.9.21'
+        okio_version = '3.6.0'
+        jackson_version = '2.16.0'
         woodstox_version = '6.5.1'
-        commons_text = '1.10.0'
+        commons_text = '1.11.0'
         commons_email = '1.5'
         velocity = '1.7'
         clikt = '2.8.0'
         junit = '4.13.2'
-        mockk_version = '1.13.5'
+        mockk_version = '1.13.8'
     }
 
     repositories {
@@ -26,7 +26,10 @@ plugins {
 }
 
 version = '2.1.7-SNAPSHOT'
-mainClassName = 'com.munzenberger.feed.AppKt'
+
+application {
+    mainClass = 'com.munzenberger.feed.AppKt'
+}
 
 repositories {
     mavenCentral()
