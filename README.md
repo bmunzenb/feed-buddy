@@ -307,7 +307,7 @@ _Feed Buddy uses [Kotlin reflection](https://kotlinlang.org/docs/reference/refle
 
 ## License
 ```
-Copyright 2023 Brian Munzenberger
+Copyright 2024 Brian Munzenberger
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
