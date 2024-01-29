@@ -63,18 +63,21 @@ object URLClient {
 
             // handle redirects
             if (responseCode in redirectCodes) {
-                return when (val location: String? = connection.getHeaderField("Location")) {
+                val location = connection.getHeaderField("Location")
+                return when (val resolvedLocation: String? = resolveLocationHeader(location, url)) {
                     null ->
                         throw IOException("Redirect response $responseCode with no 'Location' in header: ${connection.headerFields}")
                     else ->
                         when {
-                            locations.contains(location) ->
-                                throw IOException("Infinite redirect detected: $location -> $locations")
+                            locations.contains(resolvedLocation) ->
+                                throw IOException("Infinite redirect detected: $resolvedLocation -> $locations")
+
                             locations.size >= maxRedirects ->
                                 throw IOException("Server redirected too many times: ${locations.size}")
+
                             else -> {
                                 connection.disconnect()
-                                connect(URL(location), requestProperties, locations + location)
+                                connect(URL(resolvedLocation), requestProperties, locations + resolvedLocation)
                             }
                         }
                 }
@@ -94,6 +97,22 @@ object URLClient {
                 contentDisposition = connection.getHeaderField("Content-Disposition"),
                 inStream = inStream
         )
+    }
+
+    internal fun resolveLocationHeader(location: String?, originalUrl: URL): String? {
+        return when {
+            location == null ->
+                null
+
+            location.startsWith("http") -> // absolute URL
+                location
+
+            location.startsWith("/") -> // absolute path
+                originalUrl.protocol + "://" + originalUrl.authority + location
+
+            else -> // relative path
+                originalUrl.toExternalForm().substringBeforeLast('/') + "/" + location
+        }
     }
 }
 

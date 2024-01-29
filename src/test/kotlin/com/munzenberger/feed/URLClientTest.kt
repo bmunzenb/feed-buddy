@@ -3,6 +3,7 @@ package com.munzenberger.feed
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
+import java.net.URL
 
 class URLClientTest {
 
@@ -60,5 +61,45 @@ class URLClientTest {
         val contentType: ContentType = "text/plain; charset=utf-16"
 
         assertEquals("UTF-16", contentType.charset)
+    }
+
+    @Test
+    fun `location resolver handles null location`() {
+
+        val url = URL("https://test.com")
+
+        val resolved = URLClient.resolveLocationHeader(null, url)
+
+        assertNull(resolved)
+    }
+
+    @Test
+    fun `location resolver handles fully qualified url location`() {
+
+        val url = URL("https://test.com")
+
+        val resolved = URLClient.resolveLocationHeader("https://fullyqualified.com", url)
+
+        assertEquals("https://fullyqualified.com", resolved)
+    }
+
+    @Test
+    fun `location resolver handles absolute path location`() {
+
+        val url = URL("https://test.com/path/to/resource")
+
+        val resolved = URLClient.resolveLocationHeader("/alternate/path", url)
+
+        assertEquals("https://test.com/alternate/path", resolved)
+    }
+
+    @Test
+    fun `location resolver handles relative path location`() {
+
+        val url = URL("https://test.com/path/to/resource")
+
+        val resolved = URLClient.resolveLocationHeader("alternate/resource", url)
+
+        assertEquals("https://test.com/path/to/alternate/resource", resolved)
     }
 }
