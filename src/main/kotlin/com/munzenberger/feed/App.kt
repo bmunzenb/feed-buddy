@@ -115,7 +115,9 @@ class App : CliktCommand(name = "feed-buddy") {
 
         Runtime.getRuntime().addShutdownHook(object : Thread() {
             override fun run() {
+                print("Shutting down... ")
                 feedOperator.cancel()
+                println("done.")
             }
         })
 

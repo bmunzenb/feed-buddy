@@ -9,6 +9,7 @@ buildscript {
         commons_email = '1.6.0'
         velocity = '2.3'
         clikt = '2.8.0'
+        slf4j = '2.0.11'
         junit = '4.13.2'
         mockk_version = '1.13.9'
     }
@@ -47,6 +48,7 @@ dependencies {
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
     implementation "com.fasterxml.woodstox:woodstox-core:$woodstox_version"
     implementation "com.github.ajalt:clikt:$clikt"
+    implementation "org.slf4j:slf4j-nop:$slf4j" // needed to prevent messages from velocity
 
     testImplementation "junit:junit:$junit"
     testImplementation "io.mockk:mockk:$mockk_version"
