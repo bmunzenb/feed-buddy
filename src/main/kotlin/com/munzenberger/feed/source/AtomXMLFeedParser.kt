@@ -3,7 +3,7 @@ package com.munzenberger.feed.source
 import com.munzenberger.feed.Enclosure
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.Item
-import org.apache.commons.lang.StringEscapeUtils
+import org.apache.commons.text.StringEscapeUtils
 import java.io.StringWriter
 import javax.xml.stream.XMLEventReader
 import javax.xml.stream.events.Attribute
@@ -34,7 +34,7 @@ private class AtomContent {
     var value = ""
     val decodedValue: String
         get() = when (type) {
-            "html" -> StringEscapeUtils.unescapeHtml(value)
+            "html" -> StringEscapeUtils.unescapeHtml4(value)
             else -> value
         }
 }
