@@ -104,14 +104,24 @@ object URLClient {
             location == null ->
                 null
 
-            location.startsWith("http") -> // absolute URL
+            // absolute URL
+            location.startsWith("http://") || location.startsWith("https://") ->
                 location
 
-            location.startsWith("/") -> // absolute path
-                originalUrl.protocol + "://" + originalUrl.authority + location
-
-            else -> // relative path
-                originalUrl.toExternalForm().substringBeforeLast('/') + "/" + location
+            // absolute path
+            location.startsWith("/") ->
+                originalUrl.protocol +
+                        "://" +
+                        originalUrl.authority +
+                        location
+            // relative path
+            else ->
+                originalUrl.protocol +
+                        "://" +
+                        originalUrl.authority +
+                        originalUrl.path.substringBeforeLast('/') +
+                        "/" +
+                        location
         }
     }
 }

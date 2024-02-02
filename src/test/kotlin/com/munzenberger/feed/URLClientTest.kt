@@ -102,4 +102,14 @@ class URLClientTest {
 
         assertEquals("https://test.com/path/to/alternate/resource", resolved)
     }
+
+    @Test
+    fun `location resolver handles relative path with naked domain`() {
+
+        val url = URL("https://test.com")
+
+        val resolved = URLClient.resolveLocationHeader("alternate/resource", url)
+
+        assertEquals("https://test.com/alternate/resource", resolved)
+    }
 }
