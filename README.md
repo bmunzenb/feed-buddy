@@ -288,7 +288,7 @@ package com.example.feed
 
 class MyFilter : ItemFilter {
   var customProperty: String = "default"
-  override fun evaluate(context: FeedContext, item: Item): Boolean {
+  override fun evaluate(context: FeedContext, item: Item, logger: Logger): Boolean {
     // Implement your filter's logic and return true to process the item
     return true
   }
@@ -296,7 +296,7 @@ class MyFilter : ItemFilter {
 
 class MyHandler : ItemHandler {
   var customProperty: Int = 42
-  override fun execute(context: FeedContext, item: Item) {
+  override fun execute(context: FeedContext, item: Item, logger: Logger) {
     // Implement your handler's logic
   }
 }
