@@ -2,6 +2,7 @@ package com.munzenberger.feed.config
 
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
+import com.munzenberger.feed.Logger
 import com.munzenberger.feed.engine.FeedProcessor
 import com.munzenberger.feed.engine.FileItemRegistry
 import com.munzenberger.feed.filter.ItemFilter
@@ -13,7 +14,8 @@ import java.nio.file.Path
 class FeedProcessorFactory(
         private val registryDirectory: Path,
         private val itemFilterFactory: ItemProcessorFactory<ItemFilter> = DefaultItemProcessorFactory(),
-        private val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory()
+        private val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory(),
+        private val logger: Logger
 ) {
 
     fun getInstance(feedConfig: FeedConfig): FeedProcessor {
@@ -28,19 +30,19 @@ class FeedProcessorFactory(
 
         val itemFilter = object : ItemFilter {
             private val filters = feedConfig.filters.map(itemFilterFactory::getInstance)
-            override fun evaluate(context: FeedContext, item: Item): Boolean {
-                return filters.all { it.evaluate(context, item) }
+            override fun evaluate(context: FeedContext, item: Item, logger: Logger): Boolean {
+                return filters.all { it.evaluate(context, item, logger) }
             }
         }
 
         val itemHandler = object : ItemHandler {
             private val handlers = feedConfig.handlers.map(itemHandlerFactory::getInstance)
-            override fun execute(context: FeedContext, item: Item) {
-                handlers.forEach { it.execute(context, item) }
+            override fun execute(context: FeedContext, item: Item, logger: Logger) {
+                handlers.forEach { it.execute(context, item, logger) }
             }
         }
 
-        return FeedProcessor(source, itemRegistry, itemFilter, itemHandler)
+        return FeedProcessor(source, itemRegistry, itemFilter, itemHandler, logger)
     }
 }
 

@@ -12,8 +12,9 @@ class OnceFeedOperator(
         registryDirectory: Path,
         configProvider: AppConfigProvider,
         filterFactory: ItemProcessorFactory<ItemFilter>,
-        handlerFactory: ItemProcessorFactory<ItemHandler>
-) : BaseFeedOperator(registryDirectory, configProvider, filterFactory, handlerFactory) {
+        handlerFactory: ItemProcessorFactory<ItemHandler>,
+        logger: Logger
+) : BaseFeedOperator(registryDirectory, configProvider, filterFactory, handlerFactory, logger) {
 
     override fun start(config: AppConfig, processorFactory: FeedProcessorFactory) {
         config.feeds.map(processorFactory::getInstance).forEach { it.execute() }

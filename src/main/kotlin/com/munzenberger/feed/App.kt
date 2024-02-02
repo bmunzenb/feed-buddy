@@ -74,13 +74,17 @@ class App : CliktCommand(name = "feed-buddy") {
 
         when {
             !configFile.exists() -> {
-                println("Configuration file not found: $configFile")
+                System.err.println("Configuration file not found: $configFile")
                 exitProcess(1)
             }
             !configFile.canRead() -> {
-                println("Configuration file not readable: $configFile")
+                System.err.println("Configuration file not readable: $configFile")
                 exitProcess(1)
             }
+        }
+
+        val logger = CompositeLogger().apply {
+            add(ConsoleLogger)
         }
 
         val configProvider = FileAppConfigProvider(configFile)
@@ -90,11 +94,11 @@ class App : CliktCommand(name = "feed-buddy") {
         val handlerFactory: ItemProcessorFactory<ItemHandler> = when (mode) {
 
             OperatingMode.NOOP -> {
-                println("Executing in NOOP mode: items will be marked as processed but no handlers will execute.")
+                logger.println("Executing in NOOP mode: items will be marked as processed but no handlers will execute.")
                 object : ItemProcessorFactory<ItemHandler> {
                     override fun getInstance(config: ItemProcessorConfig): ItemHandler {
                         return object : ItemHandler {
-                            override fun execute(context: FeedContext, item: Item) {}
+                            override fun execute(context: FeedContext, item: Item, logger: Logger) {}
                         }
                     }
                 }
@@ -107,17 +111,17 @@ class App : CliktCommand(name = "feed-buddy") {
         val feedOperator: FeedOperator = when (mode) {
 
             OperatingMode.POLL ->
-                PollingFeedOperator(registry, configProvider, filterFactory, handlerFactory)
+                PollingFeedOperator(registry, configProvider, filterFactory, handlerFactory, logger)
 
             OperatingMode.ONCE, OperatingMode.NOOP ->
-                OnceFeedOperator(registry, configProvider, filterFactory, handlerFactory)
+                OnceFeedOperator(registry, configProvider, filterFactory, handlerFactory, logger)
         }
 
         Runtime.getRuntime().addShutdownHook(object : Thread() {
             override fun run() {
-                print("Shutting down... ")
+                logger.print("Shutting down... ")
                 feedOperator.cancel()
-                println("done.")
+                logger.println("done.")
             }
         })
 

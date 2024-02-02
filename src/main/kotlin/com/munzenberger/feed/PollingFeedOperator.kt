@@ -14,8 +14,9 @@ class PollingFeedOperator(
         registryDirectory: Path,
         private val configProvider: AppConfigProvider,
         filterFactory: ItemProcessorFactory<ItemFilter>,
-        handlerFactory: ItemProcessorFactory<ItemHandler>
-) : BaseFeedOperator(registryDirectory, configProvider, filterFactory, handlerFactory) {
+        handlerFactory: ItemProcessorFactory<ItemHandler>,
+        logger: Logger
+) : BaseFeedOperator(registryDirectory, configProvider, filterFactory, handlerFactory, logger) {
 
     private var timer: Timer? = null
 
@@ -40,7 +41,7 @@ class PollingFeedOperator(
             private val timestamp = configProvider.timestamp
             override fun run() {
                 if (configProvider.timestamp != timestamp) {
-                    println("Detected configuration change.")
+                    logger.println("Detected configuration change.")
                     this@PollingFeedOperator.run {
                         cancel()
                         start()

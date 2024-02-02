@@ -1,10 +1,8 @@
 package com.munzenberger.feed.handler
 
-import com.munzenberger.feed.FeedContext
-import com.munzenberger.feed.Item
-import com.munzenberger.feed.URLClient
+import com.munzenberger.feed.*
 import com.munzenberger.feed.config.filteredForPath
-import com.munzenberger.feed.filename
+import com.munzenberger.feed.handler.filename
 import okio.buffer
 import okio.sink
 import okio.source
@@ -19,30 +17,30 @@ class DownloadEnclosures : ItemHandler {
 
     var targetDirectory: String = "."
 
-    override fun execute(context: FeedContext, item: Item) {
+    override fun execute(context: FeedContext, item: Item, logger: Logger) {
         item.enclosures.forEach { enclosure ->
 
-            print("Resolving enclosure source... ")
+            logger.print("Resolving enclosure source... ")
 
             URLClient.connect(URL(enclosure.url)).run {
 
-                println(resolvedUrl)
+                logger.println(resolvedUrl)
 
                 contentDisposition?.let {
-                    println("Content-Disposition: $it")
+                    logger.println("Content-Disposition: $it")
                 }
 
                 val target = targetFileFor(filename)
 
-                print("Downloading to $target... ")
+                logger.print("Downloading to $target... ")
 
                 val result = profile { download(inStream, target) }
 
-                println("${result.first.formatAsSize()} transferred in ${result.second.formatAsTime()}.")
+                logger.println("${result.first.formatAsSize()} transferred in ${result.second.formatAsTime()}.")
 
                 item.timestampAsInstant?.let {
                     if (!target.setLastModified(it.toEpochMilli())) {
-                        System.err.println("Could not set last modified time on file: $target")
+                        logger.println("Could not set last modified time on file: $target")
                     }
                 }
             }

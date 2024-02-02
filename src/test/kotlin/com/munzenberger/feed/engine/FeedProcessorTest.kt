@@ -1,5 +1,6 @@
 package com.munzenberger.feed.engine
 
+import com.munzenberger.feed.ConsoleLogger
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
@@ -48,7 +49,9 @@ class FeedProcessorTest {
                 source = mockFeedSource,
                 itemRegistry = mockk(),
                 itemFilter = mockk(),
-                itemHandler = mockk())
+                itemHandler = mockk(),
+                logger = ConsoleLogger
+        )
 
         processor.execute()
     }
@@ -62,25 +65,27 @@ class FeedProcessorTest {
         }
 
         val mockItemFilter = mockk<ItemFilter>().apply {
-            every { evaluate(any(), any()) } returns true
+            every { evaluate(any(), any(), any()) } returns true
         }
 
         val mockItemHandler = mockk<ItemHandler>().apply {
-            every { execute(any(), any()) } returns Unit
+            every { execute(any(), any(), any()) } returns Unit
         }
 
         val processor = FeedProcessor(
                 source = source,
                 itemRegistry = mockItemRegistry,
                 itemFilter = mockItemFilter,
-                itemHandler = mockItemHandler)
+                itemHandler = mockItemHandler,
+                logger = ConsoleLogger
+        )
 
         processor.execute()
 
         verify(ordering = Ordering.SEQUENCE) {
             mockItemRegistry.contains(item)
-            mockItemFilter.evaluate(context, item)
-            mockItemHandler.execute(context, item)
+            mockItemFilter.evaluate(context, item, ConsoleLogger)
+            mockItemHandler.execute(context, item, ConsoleLogger)
             mockItemRegistry.add(item)
         }
     }
@@ -96,7 +101,9 @@ class FeedProcessorTest {
                 source = source,
                 itemRegistry = mockItemRegistry,
                 itemFilter = mockk(),
-                itemHandler = mockk())
+                itemHandler = mockk(),
+                logger = ConsoleLogger
+        )
 
         processor.execute()
 
@@ -113,24 +120,26 @@ class FeedProcessorTest {
         }
 
         val mockItemFilter = mockk<ItemFilter>().apply {
-            every { evaluate(any(), any()) } returns true
+            every { evaluate(any(), any(), any()) } returns true
         }
 
         val mockItemHandler = mockk<ItemHandler>().apply {
-            every { execute(any(), any()) } throws Exception("text exception")
+            every { execute(any(), any(), any()) } throws Exception("text exception")
         }
 
         val processor = FeedProcessor(
                 source = source,
                 itemRegistry = mockItemRegistry,
                 itemFilter = mockItemFilter,
-                itemHandler = mockItemHandler)
+                itemHandler = mockItemHandler,
+                logger = ConsoleLogger
+        )
 
         processor.execute()
 
         verify(ordering = Ordering.SEQUENCE) {
             mockItemRegistry.contains(item)
-            mockItemHandler.execute(context, item)
+            mockItemHandler.execute(context, item, ConsoleLogger)
         }
     }
 
@@ -142,20 +151,22 @@ class FeedProcessorTest {
         }
 
         val mockItemFilter = mockk<ItemFilter>().apply {
-            every { evaluate(any(), any()) } returns false
+            every { evaluate(any(), any(), any()) } returns false
         }
 
         val processor = FeedProcessor(
                 source = source,
                 itemRegistry = mockItemRegistry,
                 itemFilter = mockItemFilter,
-                itemHandler = mockk())
+                itemHandler = mockk(),
+                logger = ConsoleLogger
+        )
 
         processor.execute()
 
         verify(ordering = Ordering.SEQUENCE) {
             mockItemRegistry.contains(item)
-            mockItemFilter.evaluate(context, item)
+            mockItemFilter.evaluate(context, item, ConsoleLogger)
         }
     }
 }

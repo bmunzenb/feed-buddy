@@ -18,7 +18,8 @@ abstract class BaseFeedOperator(
         private val registryDirectory: Path,
         private val configProvider: AppConfigProvider,
         private val filterFactory: ItemProcessorFactory<ItemFilter>,
-        private val handlerFactory: ItemProcessorFactory<ItemHandler>
+        private val handlerFactory: ItemProcessorFactory<ItemHandler>,
+        protected val logger: Logger
 ) : FeedOperator {
 
     override fun start() {
@@ -33,10 +34,10 @@ abstract class BaseFeedOperator(
         config.handlers.map(handlerFactory::getInstance)
 
         with(config.feeds.size) {
-            println("Scheduling $this ${"feed".pluralize(this)} from ${configProvider.name}.")
+            logger.println("Scheduling $this ${"feed".pluralize(this)} from ${configProvider.name}.")
         }
 
-        val processorFactory = FeedProcessorFactory(registryDirectory, filterFactory, handlerFactory)
+        val processorFactory = FeedProcessorFactory(registryDirectory, filterFactory, handlerFactory, logger)
 
         start(config, processorFactory)
     }

@@ -3,6 +3,7 @@ package com.munzenberger.feed.handler
 import com.munzenberger.feed.Enclosure
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
+import com.munzenberger.feed.Logger
 import org.apache.commons.mail.HtmlEmail
 import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.Velocity
@@ -54,7 +55,7 @@ class SendEmail : ItemHandler {
         session.transport
     }
 
-    override fun execute(context: FeedContext, item: Item) {
+    override fun execute(context: FeedContext, item: Item, logger: Logger) {
 
         val htmlEmail = HtmlEmail().apply {
             addTo(to)
@@ -67,16 +68,16 @@ class SendEmail : ItemHandler {
         }
 
         if (!transport.isConnected) {
-            print("Connecting to mail transport $smtpHost:$smtpPort... ")
+            logger.print("Connecting to mail transport $smtpHost:$smtpPort... ")
             transport.connect(smtpHost, smtpPort, username, password)
-            println("connected.")
+            logger.println("connected.")
         }
 
         print("Sending email to $to... ")
         val message = htmlEmail.mimeMessage
         val recipients = arrayOf<Address>(InternetAddress(to))
         transport.sendMessage(message, recipients)
-        println("sent.")
+        logger.println("sent.")
     }
 }
 

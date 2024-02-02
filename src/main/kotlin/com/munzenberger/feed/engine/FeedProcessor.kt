@@ -1,6 +1,7 @@
 package com.munzenberger.feed.engine
 
 import com.munzenberger.feed.FeedContext
+import com.munzenberger.feed.Logger
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.FeedSource
@@ -12,7 +13,8 @@ class FeedProcessor(
         private val source: FeedSource,
         private val itemRegistry: ItemRegistry,
         private val itemFilter: ItemFilter,
-        private val itemHandler: ItemHandler
+        private val itemHandler: ItemHandler,
+        private val logger: Logger
 ) {
 
     companion object {
@@ -24,12 +26,12 @@ class FeedProcessor(
     fun execute() {
         try {
 
-            print("$timestamp Reading ${source.name}... ")
+            logger.print("$timestamp Reading ${source.name}... ")
 
             val feed = source.read()
 
             with(feed.items.size) {
-                println("${feed.title}, $this ${"item".pluralize(this)}.")
+                logger.println("${feed.title}, $this ${"item".pluralize(this)}.")
             }
 
             val context = FeedContext(source.name, feed.title)
@@ -39,31 +41,31 @@ class FeedProcessor(
 
             val items = feed.items
                     .filterNot(itemRegistry::contains)
-                    .filter { itemFilter.evaluate(context, it) }
+                    .filter { itemFilter.evaluate(context, it, logger) }
 
             items.forEachIndexed { index, item ->
-                println("Processing item ${index+1} of ${items.size}: \"${item.title}\" (${item.guid})")
+                logger.println("Processing item ${index+1} of ${items.size}: \"${item.title}\" (${item.guid})")
                 try {
-                    itemHandler.execute(context, item)
+                    itemHandler.execute(context, item, logger)
                     itemRegistry.add(item)
                     processed++
                 } catch (e: Throwable) {
-                    println("${e.javaClass.simpleName}: ${e.message}")
-                    e.printStackTrace(System.err)
+                    logger.println("${e.javaClass.simpleName}: ${e.message}")
+                    logger.printStackTrace(e)
                     errors++
                 }
             }
 
             if (items.isNotEmpty()) {
                 when (errors) {
-                    0 -> println("$processed ${"item".pluralize(processed)} processed.")
-                    else -> println("$processed ${"item".pluralize(processed)} processed successfully, $errors ${"failure".pluralize(errors)}.")
+                    0 -> logger.println("$processed ${"item".pluralize(processed)} processed.")
+                    else -> logger.println("$processed ${"item".pluralize(processed)} processed successfully, $errors ${"failure".pluralize(errors)}.")
                 }
             }
 
         } catch (e: Throwable) {
-            println("${e.javaClass.simpleName}: ${e.message}")
-            e.printStackTrace(System.err)
+            logger.println("${e.javaClass.simpleName}: ${e.message}")
+            logger.printStackTrace(e)
         }
     }
 }
