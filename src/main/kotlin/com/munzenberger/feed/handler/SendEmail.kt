@@ -73,7 +73,7 @@ class SendEmail : ItemHandler {
             logger.println("connected.")
         }
 
-        print("Sending email to $to... ")
+        logger.print("Sending email to $to... ")
         val message = htmlEmail.mimeMessage
         val recipients = arrayOf<Address>(InternetAddress(to))
         transport.sendMessage(message, recipients)
