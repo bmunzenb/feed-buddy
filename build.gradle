@@ -26,7 +26,7 @@ plugins {
     id "application"
 }
 
-version = '2.1.8-SNAPSHOT'
+version = '2.2-SNAPSHOT'
 
 application {
     mainClass = 'com.munzenberger.feed.AppKt'
