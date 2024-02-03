@@ -124,7 +124,7 @@ class FeedProcessorTest {
         }
 
         val mockItemHandler = mockk<ItemHandler>().apply {
-            every { execute(any(), any(), any()) } throws Exception("text exception")
+            every { execute(any(), any(), any()) } throws Exception("test exception")
         }
 
         val processor = FeedProcessor(

@@ -6,9 +6,18 @@ import java.io.StringWriter
 
 interface Logger {
     fun print(obj: Any)
-    fun println()
     fun println(obj: Any)
     fun printStackTrace(t: Throwable)
+
+    fun format(format: String, vararg params: Any) {
+        val str = String.format(format, *params)
+        print(str)
+    }
+
+    fun formatln(format: String, vararg params: Any) {
+        val str = String.format(format, *params)
+        println(str)
+    }
 }
 
 class CompositeLogger : Logger {
@@ -21,10 +30,6 @@ class CompositeLogger : Logger {
 
     override fun print(obj: Any) {
         loggers.forEach { it.print(obj) }
-    }
-
-    override fun println() {
-        loggers.forEach { it.println() }
     }
 
     override fun println(obj: Any) {
@@ -40,10 +45,6 @@ object ConsoleLogger : Logger {
 
     override fun print(obj: Any) {
         kotlin.io.print(obj)
-    }
-
-    override fun println() {
-        kotlin.io.println()
     }
 
     override fun println(obj: Any) {
@@ -63,10 +64,6 @@ class FileLogger(val file: File) : Logger {
 
     override fun print(obj: Any) {
         file.appendText(obj.toString())
-    }
-
-    override fun println() {
-        file.appendText(NEWLINE)
     }
 
     override fun println(obj: Any) {

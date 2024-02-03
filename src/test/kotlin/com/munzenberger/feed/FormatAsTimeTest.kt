@@ -1,4 +1,4 @@
-package com.munzenberger.feed.handler
+package com.munzenberger.feed
 
 import org.junit.Assert
 import org.junit.Test

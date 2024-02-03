@@ -36,7 +36,11 @@ class DownloadEnclosures : ItemHandler {
 
                 val result = profile { download(inStream, target) }
 
-                logger.println("${result.first.formatAsSize()} transferred in ${result.second.formatAsTime()}.")
+                logger.formatln(
+                    "%s transferred in %s.",
+                    result.first.formatAsSize(),
+                    result.second.formatAsTime()
+                )
 
                 item.timestampAsInstant?.let {
                     if (!target.setLastModified(it.toEpochMilli())) {
@@ -84,7 +88,7 @@ internal val URLClient.Response.filename: String
     get() = contentDisposition.filename?.filteredForPath() ?: resolvedUrl.filename
 
 internal val URL.filename: String
-    get() = this.path.urlDecode().split('/').last()
+    get() = this.path.urlDecode().substringAfterLast('/')
 
 private fun String.urlDecode(encoding: String = "UTF-8"): String {
     // handles nested URLs
@@ -111,18 +115,6 @@ private fun <T> profile(block: () -> T): Pair<T, Long> {
     val v = block.invoke()
     val time = System.currentTimeMillis() - start
     return v to time
-}
-
-fun Long.formatAsTime(): String {
-
-    val seconds = this / 1000 % 60
-    val minutes = this / 1000 / 60
-
-    return when {
-        minutes > 0 -> "$minutes min $seconds sec"
-        seconds > 0 -> "$seconds sec"
-        else -> "$this ms"
-    }
 }
 
 fun Long.formatAsSize(): String {
