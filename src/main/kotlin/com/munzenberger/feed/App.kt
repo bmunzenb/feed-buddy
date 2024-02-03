@@ -66,25 +66,21 @@ class App : CliktCommand(name = "feed-buddy") {
             .int()
             .default(value = 30_000, defaultForHelp = "30")
 
+    private val output: Path? by option("-o", "--output", help = "Path to output file")
+        .path(canBeDir = false)
+
     override fun run() {
 
         URLClient.timeout = timeout * 1000 // convert to millis
 
         val configFile = feeds.toFile()
 
-        when {
-            !configFile.exists() -> {
-                System.err.println("Configuration file not found: $configFile")
-                exitProcess(1)
-            }
-            !configFile.canRead() -> {
-                System.err.println("Configuration file not readable: $configFile")
-                exitProcess(1)
-            }
-        }
-
         val logger = CompositeLogger().apply {
             add(ConsoleLogger)
+            output?.toFile()?.let {
+                it.createNewFile()
+                add(FileLogger(it))
+            }
         }
 
         val configProvider = FileAppConfigProvider(configFile)

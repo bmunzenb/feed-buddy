@@ -21,6 +21,7 @@ Options:
   -r, --registry DIRECTORY     Path to processed items registry
   -m, --mode [POLL|ONCE|NOOP]  Sets the operating mode
   -t, --timeout INT            Sets the read timeout in seconds
+  -o, --output FILE            Path to output file
   -h, --help                   Show this message and exit
 
 Arguments:

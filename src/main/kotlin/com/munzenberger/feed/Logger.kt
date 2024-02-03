@@ -1,5 +1,9 @@
 package com.munzenberger.feed
 
+import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
+
 interface Logger {
     fun print(obj: Any)
     fun println()
@@ -48,5 +52,30 @@ object ConsoleLogger : Logger {
 
     override fun printStackTrace(t: Throwable) {
         t.printStackTrace(System.err)
+    }
+}
+
+class FileLogger(val file: File) : Logger {
+
+    companion object {
+        private val NEWLINE = System.lineSeparator()
+    }
+
+    override fun print(obj: Any) {
+        file.appendText(obj.toString())
+    }
+
+    override fun println() {
+        file.appendText(NEWLINE)
+    }
+
+    override fun println(obj: Any) {
+        file.appendText(obj.toString() + NEWLINE)
+    }
+
+    override fun printStackTrace(t: Throwable) {
+        val sw = StringWriter()
+        t.printStackTrace(PrintWriter(sw))
+        file.appendText(sw.toString() + NEWLINE)
     }
 }
