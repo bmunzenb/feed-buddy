@@ -1,17 +1,17 @@
 buildscript {
     ext {
         versions_plugin_version = '0.51.0'
-        kotlin_version = '1.9.22'
-        okio_version = '3.7.0'
-        jackson_version = '2.16.1'
-        woodstox_version = '6.6.0'
-        commons_text = '1.11.0'
+        kotlin_version = '2.0.0'
+        okio_version = '3.9.0'
+        jackson_version = '2.17.1'
+        woodstox_version = '6.6.2'
+        commons_text = '1.12.0'
         commons_email = '1.6.0'
         velocity = '2.3'
         clikt = '2.8.0'
-        slf4j = '2.0.11'
+        slf4j = '2.0.13'
         junit = '4.13.2'
-        mockk_version = '1.13.9'
+        mockk_version = '1.13.11'
     }
 
     repositories {
