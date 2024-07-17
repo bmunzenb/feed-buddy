@@ -9,6 +9,7 @@ import java.util.zip.GZIPInputStream
 typealias ContentDisposition = String
 typealias ContentType = String
 
+// TODO refactor this into a class and split logic (like location header resolver) into separate utilities
 object URLClient {
 
     private const val maxRedirects = 20
