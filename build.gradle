@@ -11,7 +11,7 @@ buildscript {
         clikt = '2.8.0'
         slf4j = '2.0.13'
         junit = '4.13.2'
-        mockk_version = '1.13.11'
+        mockk_version = '1.13.12'
     }
 
     repositories {
