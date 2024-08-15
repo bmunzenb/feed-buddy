@@ -9,7 +9,7 @@ buildscript {
         commons_email = '1.6.0'
         velocity = '2.3'
         clikt = '2.8.0'
-        slf4j = '2.0.13'
+        slf4j = '2.0.16'
         junit = '4.13.2'
         mockk_version = '1.13.12'
     }
