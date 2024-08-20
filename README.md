@@ -32,11 +32,11 @@ You must specify a `FEEDS` argument as a path to a readable configuration file i
 
 Feed Buddy runs in one of three operating modes:
 
-| Mode | Description |
-| ---- | ----------- |
-| POLL | Feed Buddy will poll the configured feeds and execute all item handlers on a schedule, marking the items as processed.  The application will run until the user force quits it.  This is the default operating mode.
-| ONCE | Feed Buddy will read the configured feeds and execute all item handlers once, marking the items as processed, and then exit. |
-| NOOP | Feed Buddy will read the configured feeds and mark the items as processed without executing any of the handlers, and then exit. |
+| Mode | Description                                                                                                                                                                                                          |
+|------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| POLL | Feed Buddy will poll the configured feeds and execute all item handlers on a schedule, marking the items as processed.  The application will run until the user force quits it.  This is the default operating mode. |
+| ONCE | Feed Buddy will read the configured feeds and execute all item handlers once, marking the items as processed, and then exit.                                                                                         |
+| NOOP | Feed Buddy will read the configured feeds and mark the items as processed without executing any of the handlers, and then exit.                                                                                      |
 
 By default, the registry of processed items is stored in the current working directory.  If you want to store the registry to a different location, specify its path using the `--registry` option.  The registry is stored as one file per feed.
 
@@ -48,12 +48,12 @@ The sophistication of the Feed Buddy configuration system can lead to long and/o
 
 The root of the configuration structure is a `<feeds>` element for XML, and a hash for JSON and YAML.  The following properties are supported at the root level:
 
-| Name | Type | Description |
-| ---- | :--: | ----------- |
-| `period` | Number | The default time in minutes between reads of a feed. Has a default value of `360` for 3 hours. |
-| `handlers` | List | Defines global `handler`s that may be shared by feeds. |
-| `filters` | List | Defines global `filter`s that may be shared by feeds. |
-| `feeds` | List | Defines a list of `feed` sources. |
+| Name       |  Type  | Description                                                                                    |
+|------------|:------:|------------------------------------------------------------------------------------------------|
+| `period`   | Number | The default time in minutes between reads of a feed. Has a default value of `360` for 3 hours. |
+| `handlers` |  List  | Defines global `handler`s that may be shared by feeds.                                         |
+| `filters`  |  List  | Defines global `filter`s that may be shared by feeds.                                          |
+| `feeds`    |  List  | Defines a list of `feed` sources.                                                              |
 
 The following example root configurations in XML, JSON, and YAML are all equivalent:
 
@@ -87,13 +87,13 @@ There are three configuration block types that are used: `feed`, `handler`, and 
 #### `feed`
 A `feed` block is used to define a feed source, using the following properties:
 
-| Name | Type | Required | Description |
-| ---- | :--: | :------: | ----------- |
-| `url` | String | Yes | Source URL of the feed. |
-| `period` | Number | No | The time in minutes between reads of the feed. If not specified, uses the globally defined period, which has a default value of `360` for 3 hours. |
-| `userAgent` | String | No | The value to use in the "User-Agent" HTTP request header when reading the feed. |
-| `handlers` | List | No | Defines the handlers to execute for each item in the feed. |
-| `filters` | List | No | Defines the filters to apply to items in the feed. An item is only processed if matches the criteria for all specified filters. |
+| Name        |  Type  | Required | Description                                                                                                                                        |
+|-------------|:------:|:--------:|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `url`       | String |   Yes    | Source URL of the feed.                                                                                                                            |
+| `period`    | Number |    No    | The time in minutes between reads of the feed. If not specified, uses the globally defined period, which has a default value of `360` for 3 hours. |
+| `userAgent` | String |    No    | The value to use in the "User-Agent" HTTP request header when reading the feed.                                                                    |
+| `handlers`  |  List  |    No    | Defines the handlers to execute for each item in the feed.                                                                                         |
+| `filters`   |  List  |    No    | Defines the filters to apply to items in the feed. An item is only processed if matches the criteria for all specified filters.                    |
 
 The following example configurations in XML, JSON, and YAML are all equivalent:
 
@@ -127,24 +127,24 @@ The following example configurations in XML, JSON, and YAML are all equivalent:
 #### `handler`
 A `handler` block is used to define an operation to execute for a feed item.  Feeds can define any number of handlers to execute for its items.  Handlers may also be defined globally with a `name` and referenced by a handler in a feed, thus allowing multiple feeds to share a common handler. Handlers support the following properties:
 
-| Name | Type | Description |
-| ---- | :--: | ----------- |
-| `name` | String | The name of the handler, if intended to be shared by multiple feeds. |
-| `ref` | String | The name of a shared handler. If specified, the properties for the referenced handler will be used. |
-| `type` | String | The fully-qualified class name of the handler implementation to execute for each item in the feed. See the section on supported handlers for possible values. |
-| `properties` | Hash | A hash of name to value pairs used to configure the handler. The contents depend on the `type` of the handler. See the section on supported handlers for possible values. |
+| Name         |  Type  | Description                                                                                                                                                               |
+|--------------|:------:|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `name`       | String | The name of the handler, if intended to be shared by multiple feeds.                                                                                                      |
+| `ref`        | String | The name of a shared handler. If specified, the properties for the referenced handler will be used.                                                                       |
+| `type`       | String | The fully-qualified class name of the handler implementation to execute for each item in the feed. See the section on supported handlers for possible values.             |
+| `properties` |  Hash  | A hash of name to value pairs used to configure the handler. The contents depend on the `type` of the handler. See the section on supported handlers for possible values. |
 
 Note that a `handler` must specify either a `type` for a local handler definition, or a `ref` if referencing a shared handler. Shared handlers must specify a `name` in order to be referenced.
 
 #### `filter`
-A `filter` block is used to define rules for filtering items in a feed for processing.  Feeds can define any number of filters for its items.  If multiple filters are defined for a feed, then items in that feed must match all of the defined filters to be processed.  Filters may also be defined globally with a `name` and referenced by filter in a feed, thus allowing multiple feeds to share a common filter. Filters support the following properties:
+A `filter` block is used to define rules for filtering items in a feed for processing.  Feeds can define any number of filters for its items.  If multiple filters are defined for a feed, then items in that feed must match all the defined filters to be processed.  Filters may also be defined globally with a `name` and referenced by filter in a feed, thus allowing multiple feeds to share a common filter. Filters support the following properties:
 
-| Name | Type | Description |
-| ---- | :--: | ----------- |
-| `name` | String | The name of the filter, if intended to be shared by multiple feeds. |
-| `ref` | String | The name of a shared filter. If specified, the properties for the referenced filter will be used. |
-| `type` | String | The fully-qualified class name of the filter implementation to match on for each item in the feed. See the section on supported filters for possible values. |
-| `properties` | Hash | A hash of name to value pairs used to configure the filter. The contents depend on the `type` of the filter. See the section on supported filters for possible values. |
+| Name         |  Type  | Description                                                                                                                                                            |
+|--------------|:------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `name`       | String | The name of the filter, if intended to be shared by multiple feeds.                                                                                                    |
+| `ref`        | String | The name of a shared filter. If specified, the properties for the referenced filter will be used.                                                                      |
+| `type`       | String | The fully-qualified class name of the filter implementation to match on for each item in the feed. See the section on supported filters for possible values.           |
+| `properties` |  Hash  | A hash of name to value pairs used to configure the filter. The contents depend on the `type` of the filter. See the section on supported filters for possible values. |
 
 Note that a `filter` must specify either a `type` for a local filter definition, or a `ref` if referencing a shared filter. Shared filters must specify a `name` in order to be referenced.
 
@@ -153,17 +153,17 @@ Note that a `filter` must specify either a `type` for a local filter definition,
 ##### Send Email
 Use this handler to send an email containing the item's content. Set the handler's `type` property to `com.munzenberger.feed.handler.SendEmail` and configure with the following properties:
 
-| Name | Type | Required | Description |
-| ---- | :--: | :------: | ----------- |
-| `to` | String | Yes | Recipient email address. |
-| `from` | String | Yes | From email address. |
-| `smtpHost` | String | Yes | The SMTP hostname of the mail server to send mail through. |
-| `smtpPort` | Number | Yes | The SMTP port of the mail server to send mail through. |
-| `auth` | Boolean | No | Set to `true` if your SMTP server requires authentication. |
-| `username` | String | No | The authentication username if the SMTP server requires authentication. |
-| `password` | String | No | The authentication password if the SMTP server requires authentication. |
-| `startTLSEnable` | Boolean | No | Set to `true` to enable the STARTTLS command. |
-| `startTLSRequired` | Boolean | No | Set to `true` if your SMTP server requires use of the STARTTLS command. |
+| Name               |  Type   | Required | Description                                                             |
+|--------------------|:-------:|:--------:|-------------------------------------------------------------------------|
+| `to`               | String  |   Yes    | Recipient email address.                                                |
+| `from`             | String  |   Yes    | From email address.                                                     |
+| `smtpHost`         | String  |   Yes    | The SMTP hostname of the mail server to send mail through.              |
+| `smtpPort`         | Number  |   Yes    | The SMTP port of the mail server to send mail through.                  |
+| `auth`             | Boolean |    No    | Set to `true` if your SMTP server requires authentication.              |
+| `username`         | String  |    No    | The authentication username if the SMTP server requires authentication. |
+| `password`         | String  |    No    | The authentication password if the SMTP server requires authentication. |
+| `startTLSEnable`   | Boolean |    No    | Set to `true` to enable the STARTTLS command.                           |
+| `startTLSRequired` | Boolean |    No    | Set to `true` if your SMTP server requires use of the STARTTLS command. |
 
 The following example configurations in XML, JSON, and YAML are all equivalent:
 
@@ -213,9 +213,9 @@ The following example configurations in XML, JSON, and YAML are all equivalent:
 ##### Download Enclosures
 Use this handler to download enclosures present in a feed's item. Set the handler's `type` property to `com.munzenberger.feed.handler.DownloadEnclosures` and configure with the following properties:
 
-| Name | Type | Required | Description |
-| ---- | :--: | :------: | ----------- |
-| `targetDirectory` | String | Yes | The target path to write downloaded files to. |
+| Name              |  Type  | Required | Description                                   |
+|-------------------|:------:|:--------:|-----------------------------------------------|
+| `targetDirectory` | String |   Yes    | The target path to write downloaded files to. |
 
 The following example configurations in XML, JSON, and YAML are all equivalent:
 
@@ -248,12 +248,12 @@ The following example configurations in XML, JSON, and YAML are all equivalent:
 #### Supported Filters
 
 ##### Regular Expression Evaluator
-Use this filter to match a feed item's title or content with a regular expression.  The item is only processed by the feed's handlers if all of the specified regular expressions match the item's properties.  Set the filter's `type` property to `com.munzenberger.feed.filter.RegexItemFilter` and configure with the following properties:
+Use this filter to match a feed item's title or content with a regular expression.  The item is only processed by the feed's handlers if all the specified regular expressions match the item's properties.  Set the filter's `type` property to `com.munzenberger.feed.filter.RegexItemFilter` and configure with the following properties:
 
-| Name | Type | Required | Description |
-| ---- | :--: | :------: | ----------- |
-| `title` | String | No | If specified, matches with the item's title value. |
-| `content` | String | No | If specified, matches with the item's content value. |
+| Name      |  Type  | Required | Description                                          |
+|-----------|:------:|:--------:|------------------------------------------------------|
+| `title`   | String |    No    | If specified, matches with the item's title value.   |
+| `content` | String |    No    | If specified, matches with the item's content value. |
 
 The following example configurations in XML, JSON, and YAML are all equivalent:
 
@@ -289,7 +289,7 @@ package com.example.feed
 
 class MyFilter : ItemFilter {
   var customProperty: String = "default"
-  override fun evaluate(context: FeedContext, item: Item, logger: Logger): Boolean {
+  override fun evaluate(context: FeedContext, item: Item, consumer: Consumer<FeedStatus>): Boolean {
     // Implement your filter's logic and return true to process the item
     return true
   }
@@ -297,7 +297,7 @@ class MyFilter : ItemFilter {
 
 class MyHandler : ItemHandler {
   var customProperty: Int = 42
-  override fun execute(context: FeedContext, item: Item, logger: Logger) {
+  override fun execute(context: FeedContext, item: Item, consumer: Consumer<FeedStatus>) {
     // Implement your handler's logic
   }
 }
