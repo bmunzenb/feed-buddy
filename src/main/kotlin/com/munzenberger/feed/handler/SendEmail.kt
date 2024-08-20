@@ -3,7 +3,7 @@ package com.munzenberger.feed.handler
 import com.munzenberger.feed.Enclosure
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
-import com.munzenberger.feed.Logger
+import com.munzenberger.feed.status.FeedStatus
 import org.apache.commons.mail.HtmlEmail
 import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.Velocity
@@ -13,6 +13,7 @@ import java.net.URL
 import java.text.DecimalFormat
 import java.util.Date
 import java.util.Properties
+import java.util.function.Consumer
 import javax.mail.Address
 import javax.mail.Session
 import javax.mail.Transport
@@ -55,7 +56,7 @@ class SendEmail : ItemHandler {
         session.transport
     }
 
-    override fun execute(context: FeedContext, item: Item, logger: Logger) {
+    override fun execute(context: FeedContext, item: Item, statusConsumer: Consumer<FeedStatus>) {
 
         val htmlEmail = HtmlEmail().apply {
             addTo(to)
@@ -68,16 +69,16 @@ class SendEmail : ItemHandler {
         }
 
         if (!transport.isConnected) {
-            logger.print("Connecting to mail transport $smtpHost:$smtpPort... ")
+            statusConsumer.accept(FeedStatus.HandlerMessage("Connecting to mail transport $smtpHost:$smtpPort... ", true))
             transport.connect(smtpHost, smtpPort, username, password)
-            logger.println("connected.")
+            statusConsumer.accept(FeedStatus.HandlerMessage("connected."))
         }
 
-        logger.print("Sending email to $to... ")
+        statusConsumer.accept(FeedStatus.HandlerMessage("Sending email to $to... ", true))
         val message = htmlEmail.mimeMessage
         val recipients = arrayOf<Address>(InternetAddress(to))
         transport.sendMessage(message, recipients)
-        logger.println("sent.")
+        statusConsumer.accept(FeedStatus.HandlerMessage("sent."))
     }
 }
 

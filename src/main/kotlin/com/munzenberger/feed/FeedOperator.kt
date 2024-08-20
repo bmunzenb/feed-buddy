@@ -4,10 +4,11 @@ import com.munzenberger.feed.config.AppConfig
 import com.munzenberger.feed.config.AppConfigProvider
 import com.munzenberger.feed.config.FeedProcessorFactory
 import com.munzenberger.feed.config.ItemProcessorFactory
-import com.munzenberger.feed.engine.pluralize
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
+import com.munzenberger.feed.status.FeedStatus
 import java.nio.file.Path
+import java.util.function.Consumer
 
 interface FeedOperator {
     fun start()
@@ -15,11 +16,11 @@ interface FeedOperator {
 }
 
 abstract class BaseFeedOperator(
-        private val registryDirectory: Path,
-        private val configProvider: AppConfigProvider,
-        private val filterFactory: ItemProcessorFactory<ItemFilter>,
-        private val handlerFactory: ItemProcessorFactory<ItemHandler>,
-        protected val logger: Logger
+    private val registryDirectory: Path,
+    private val configProvider: AppConfigProvider,
+    private val filterFactory: ItemProcessorFactory<ItemFilter>,
+    private val handlerFactory: ItemProcessorFactory<ItemHandler>,
+    private val statusConsumer: Consumer<FeedStatus>
 ) : FeedOperator {
 
     override fun start() {
@@ -33,11 +34,14 @@ abstract class BaseFeedOperator(
         config.filters.map(filterFactory::getInstance)
         config.handlers.map(handlerFactory::getInstance)
 
-        with(config.feeds.size) {
-            logger.println("Scheduling $this ${"feed".pluralize(this)} from ${configProvider.name}.")
-        }
+        statusConsumer.accept(FeedStatus.OperatorStart(config.feeds.size, configProvider.name))
 
-        val processorFactory = FeedProcessorFactory(registryDirectory, filterFactory, handlerFactory, logger)
+        val processorFactory = FeedProcessorFactory(
+            registryDirectory,
+            filterFactory,
+            handlerFactory,
+            statusConsumer
+        )
 
         start(config, processorFactory)
     }

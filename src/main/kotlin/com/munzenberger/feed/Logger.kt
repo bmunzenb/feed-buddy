@@ -4,7 +4,6 @@ import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 
-// TODO Refactor logger into a status callback
 interface Logger {
     fun print(obj: Any)
     fun println(obj: Any)

@@ -13,9 +13,12 @@ import com.munzenberger.feed.config.ItemProcessorConfig
 import com.munzenberger.feed.config.ItemProcessorFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
+import com.munzenberger.feed.status.FeedStatus
+import com.munzenberger.feed.status.LoggingStatusConsumer
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Properties
+import java.util.function.Consumer
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
@@ -94,7 +97,7 @@ class App : CliktCommand(name = "feed-buddy") {
                 object : ItemProcessorFactory<ItemHandler> {
                     override fun getInstance(config: ItemProcessorConfig): ItemHandler {
                         return object : ItemHandler {
-                            override fun execute(context: FeedContext, item: Item, logger: Logger) {}
+                            override fun execute(context: FeedContext, item: Item, statusConsumer: Consumer<FeedStatus>) {}
                         }
                     }
                 }
@@ -104,13 +107,15 @@ class App : CliktCommand(name = "feed-buddy") {
                 DefaultItemProcessorFactory()
         }
 
+        val statusConsumer = LoggingStatusConsumer(logger)
+
         val feedOperator: FeedOperator = when (mode) {
 
             OperatingMode.POLL ->
-                PollingFeedOperator(registry, configProvider, filterFactory, handlerFactory, logger)
+                PollingFeedOperator(registry, configProvider, filterFactory, handlerFactory, statusConsumer)
 
             OperatingMode.ONCE, OperatingMode.NOOP ->
-                OnceFeedOperator(registry, configProvider, filterFactory, handlerFactory, logger)
+                OnceFeedOperator(registry, configProvider, filterFactory, handlerFactory, statusConsumer)
         }
 
         Runtime.getRuntime().addShutdownHook(object : Thread() {

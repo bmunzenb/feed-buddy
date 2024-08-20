@@ -1,44 +1,28 @@
 package com.munzenberger.feed.engine
 
 import com.munzenberger.feed.FeedContext
-import com.munzenberger.feed.Logger
 import com.munzenberger.feed.filter.ItemFilter
-import com.munzenberger.feed.formatAsTime
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.FeedSource
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
+import com.munzenberger.feed.status.FeedStatus
+import java.util.function.Consumer
 
 class FeedProcessor(
         private val source: FeedSource,
         private val itemRegistry: ItemRegistry,
         private val itemFilter: ItemFilter,
         private val itemHandler: ItemHandler,
-        private val logger: Logger
+        private val statusConsumer: Consumer<FeedStatus>
 ) : Runnable {
-
-    companion object {
-        private val tf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
-        private val timestamp: String
-            get() = tf.format(LocalDateTime.now())
-    }
 
     override fun run() {
         try {
-
-            logger.print("[$timestamp] Reading ${source.name}... ")
+            statusConsumer.accept(FeedStatus.ProcessorFeedStart(source.name))
 
             val startTime = System.currentTimeMillis()
-
             val feed = source.read()
 
-            logger.formatln(
-                "%s, %d %s.",
-                feed.title,
-                feed.items.size,
-                "item".pluralize(feed.items.size)
-            )
+            statusConsumer.accept(FeedStatus.ProcessorFeedRead(feed.title, feed.items.size))
 
             val context = FeedContext(source.name, feed.title)
 
@@ -47,56 +31,27 @@ class FeedProcessor(
 
             val items = feed.items
                     .filterNot(itemRegistry::contains)
-                    .filter { itemFilter.evaluate(context, it, logger) }
+                    .filter { itemFilter.evaluate(context, it, statusConsumer) }
 
             items.forEachIndexed { index, item ->
-                logger.formatln(
-                    "[%d/%d] Processing \"%s\" (%s)...",
-                    index+1,
-                    items.size,
-                    item.title,
-                    item.guid
-                )
+
+                statusConsumer.accept(FeedStatus.ProcessorItemStart(index, items.size, item.title, item.guid))
 
                 try {
-                    itemHandler.execute(context, item, logger)
+                    itemHandler.execute(context, item, statusConsumer)
                     itemRegistry.add(item)
                     processed++
                 } catch (e: Throwable) {
-                    logger.println("${e.javaClass.simpleName}: ${e.message}")
-                    logger.printStackTrace(e)
+                    statusConsumer.accept(FeedStatus.ProcessorItemError(e))
                     errors++
                 }
             }
 
-            if (items.isNotEmpty()) {
-                val elapsed = System.currentTimeMillis() - startTime
-                when (errors) {
-                    0 -> logger.formatln(
-                        "%d %s processed in %s.",
-                        processed,
-                        "item".pluralize(processed),
-                        elapsed.formatAsTime()
-                    )
-                    else -> logger.formatln(
-                        "%d %s processed successfully, %d %s in %s.",
-                        processed,
-                        "item".pluralize(processed),
-                        errors,
-                        "failure".pluralize(errors),
-                        elapsed.formatAsTime()
-                    )
-                }
-            }
+            val elapsed = System.currentTimeMillis() - startTime
+            statusConsumer.accept(FeedStatus.ProcessorFeedComplete(items.size, processed, errors, elapsed))
 
         } catch (e: Throwable) {
-            logger.println("${e.javaClass.simpleName}: ${e.message}")
-            logger.printStackTrace(e)
+            statusConsumer.accept(FeedStatus.ProcessorFeedError(e))
         }
     }
-}
-
-fun String.pluralize(count: Int) = when (count) {
-    1 -> this
-    else -> this + "s"
 }

@@ -1,8 +1,12 @@
 package com.munzenberger.feed.handler
 
-import com.munzenberger.feed.*
+import com.munzenberger.feed.FeedContext
+import com.munzenberger.feed.Item
+import com.munzenberger.feed.URLClient
 import com.munzenberger.feed.config.filteredForPath
-import com.munzenberger.feed.handler.filename
+import com.munzenberger.feed.filename
+import com.munzenberger.feed.formatAsTime
+import com.munzenberger.feed.status.FeedStatus
 import okio.buffer
 import okio.sink
 import okio.source
@@ -12,39 +16,42 @@ import java.io.InputStream
 import java.net.URL
 import java.net.URLDecoder
 import java.text.NumberFormat
+import java.util.function.Consumer
 
 class DownloadEnclosures : ItemHandler {
 
     var targetDirectory: String = "."
 
-    override fun execute(context: FeedContext, item: Item, logger: Logger) {
+    override fun execute(context: FeedContext, item: Item, statusConsumer: Consumer<FeedStatus>) {
         item.enclosures.forEach { enclosure ->
 
-            logger.print("Resolving enclosure source... ")
+            statusConsumer.accept(FeedStatus.HandlerMessage("Resolving enclosure source... ", true))
 
             URLClient.connect(URL(enclosure.url)).run {
 
-                logger.println(resolvedUrl)
+                statusConsumer.accept(FeedStatus.HandlerMessage(resolvedUrl))
 
                 contentDisposition?.let {
-                    logger.println("Content-Disposition: $it")
+                    statusConsumer.accept(FeedStatus.HandlerMessage("Content-Disposition: $it"))
                 }
 
                 val target = targetFileFor(filename)
 
-                logger.print("Downloading to $target... ")
+                statusConsumer.accept(FeedStatus.HandlerMessage("Downloading to $target... ", true))
 
                 val result = profile { download(inStream, target) }
 
-                logger.formatln(
+                val resultString = String.format(
                     "%s transferred in %s.",
                     result.first.formatAsSize(),
                     result.second.formatAsTime()
                 )
 
+                statusConsumer.accept(FeedStatus.HandlerMessage(resultString))
+
                 item.timestampAsInstant?.let {
                     if (!target.setLastModified(it.toEpochMilli())) {
-                        logger.println("Could not set last modified time on file: $target")
+                        statusConsumer.accept(FeedStatus.HandlerMessage("Could not set last modified time on file: $target"))
                     }
                 }
             }

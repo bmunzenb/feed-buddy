@@ -1,20 +1,22 @@
 package com.munzenberger.feed.engine
 
-import com.munzenberger.feed.ConsoleLogger
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.FeedSource
+import com.munzenberger.feed.status.FeedStatus
 import io.mockk.Ordering
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
-import java.lang.Exception
+import java.util.function.Consumer
 
 class FeedProcessorTest {
+
+    private val consumer = Consumer<FeedStatus> { }
 
     private val item = Item(
             title = "item title",
@@ -50,7 +52,7 @@ class FeedProcessorTest {
                 itemRegistry = mockk(),
                 itemFilter = mockk(),
                 itemHandler = mockk(),
-                logger = ConsoleLogger
+                statusConsumer = consumer
         )
 
         processor.run()
@@ -73,19 +75,19 @@ class FeedProcessorTest {
         }
 
         val processor = FeedProcessor(
-                source = source,
-                itemRegistry = mockItemRegistry,
-                itemFilter = mockItemFilter,
-                itemHandler = mockItemHandler,
-                logger = ConsoleLogger
+            source = source,
+            itemRegistry = mockItemRegistry,
+            itemFilter = mockItemFilter,
+            itemHandler = mockItemHandler,
+            statusConsumer = consumer
         )
 
         processor.run()
 
         verify(ordering = Ordering.SEQUENCE) {
             mockItemRegistry.contains(item)
-            mockItemFilter.evaluate(context, item, ConsoleLogger)
-            mockItemHandler.execute(context, item, ConsoleLogger)
+            mockItemFilter.evaluate(context, item, consumer)
+            mockItemHandler.execute(context, item, consumer)
             mockItemRegistry.add(item)
         }
     }
@@ -98,11 +100,11 @@ class FeedProcessorTest {
         }
 
         val processor = FeedProcessor(
-                source = source,
-                itemRegistry = mockItemRegistry,
-                itemFilter = mockk(),
-                itemHandler = mockk(),
-                logger = ConsoleLogger
+            source = source,
+            itemRegistry = mockItemRegistry,
+            itemFilter = mockk(),
+            itemHandler = mockk(),
+            statusConsumer = consumer
         )
 
         processor.run()
@@ -128,18 +130,18 @@ class FeedProcessorTest {
         }
 
         val processor = FeedProcessor(
-                source = source,
-                itemRegistry = mockItemRegistry,
-                itemFilter = mockItemFilter,
-                itemHandler = mockItemHandler,
-                logger = ConsoleLogger
+            source = source,
+            itemRegistry = mockItemRegistry,
+            itemFilter = mockItemFilter,
+            itemHandler = mockItemHandler,
+            statusConsumer = consumer
         )
 
         processor.run()
 
         verify(ordering = Ordering.SEQUENCE) {
             mockItemRegistry.contains(item)
-            mockItemHandler.execute(context, item, ConsoleLogger)
+            mockItemHandler.execute(context, item, consumer)
         }
     }
 
@@ -155,18 +157,18 @@ class FeedProcessorTest {
         }
 
         val processor = FeedProcessor(
-                source = source,
-                itemRegistry = mockItemRegistry,
-                itemFilter = mockItemFilter,
-                itemHandler = mockk(),
-                logger = ConsoleLogger
+            source = source,
+            itemRegistry = mockItemRegistry,
+            itemFilter = mockItemFilter,
+            itemHandler = mockk(),
+            statusConsumer = consumer
         )
 
         processor.run()
 
         verify(ordering = Ordering.SEQUENCE) {
             mockItemRegistry.contains(item)
-            mockItemFilter.evaluate(context, item, ConsoleLogger)
+            mockItemFilter.evaluate(context, item, consumer)
         }
     }
 }

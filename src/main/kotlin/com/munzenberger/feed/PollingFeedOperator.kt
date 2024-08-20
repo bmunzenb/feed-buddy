@@ -6,9 +6,11 @@ import com.munzenberger.feed.config.FeedProcessorFactory
 import com.munzenberger.feed.config.ItemProcessorFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
+import com.munzenberger.feed.status.FeedStatus
 import java.nio.file.Path
 import java.util.Timer
 import java.util.TimerTask
+import java.util.function.Consumer
 import kotlin.time.Duration.Companion.seconds
 
 class PollingFeedOperator(
@@ -16,8 +18,8 @@ class PollingFeedOperator(
         private val configProvider: AppConfigProvider,
         filterFactory: ItemProcessorFactory<ItemFilter>,
         handlerFactory: ItemProcessorFactory<ItemHandler>,
-        logger: Logger
-) : BaseFeedOperator(registryDirectory, configProvider, filterFactory, handlerFactory, logger) {
+        private val statusConsumer: Consumer<FeedStatus>
+) : BaseFeedOperator(registryDirectory, configProvider, filterFactory, handlerFactory, statusConsumer) {
 
     private var timer: Timer? = null
 
@@ -42,7 +44,7 @@ class PollingFeedOperator(
             private val timestamp = configProvider.timestamp
             override fun run() {
                 if (configProvider.timestamp != timestamp) {
-                    logger.println("Detected configuration change.")
+                    statusConsumer.accept(FeedStatus.OperatorConfigurationChange)
                     this@PollingFeedOperator.run {
                         cancel()
                         start()
