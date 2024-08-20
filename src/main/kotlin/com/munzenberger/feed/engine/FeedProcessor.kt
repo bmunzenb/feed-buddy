@@ -16,7 +16,7 @@ class FeedProcessor(
         private val itemFilter: ItemFilter,
         private val itemHandler: ItemHandler,
         private val logger: Logger
-) {
+) : Runnable {
 
     companion object {
         private val tf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
@@ -24,7 +24,7 @@ class FeedProcessor(
             get() = tf.format(LocalDateTime.now())
     }
 
-    fun execute() {
+    override fun run() {
         try {
 
             logger.print("[$timestamp] Reading ${source.name}... ")

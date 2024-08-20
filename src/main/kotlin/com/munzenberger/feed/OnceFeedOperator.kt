@@ -17,6 +17,6 @@ class OnceFeedOperator(
 ) : BaseFeedOperator(registryDirectory, configProvider, filterFactory, handlerFactory, logger) {
 
     override fun start(config: AppConfig, processorFactory: FeedProcessorFactory) {
-        config.feeds.map(processorFactory::getInstance).forEach { it.execute() }
+        config.feeds.map(processorFactory::getInstance).forEach { it.run() }
     }
 }

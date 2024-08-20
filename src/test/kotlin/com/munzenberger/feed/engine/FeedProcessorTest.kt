@@ -53,7 +53,7 @@ class FeedProcessorTest {
                 logger = ConsoleLogger
         )
 
-        processor.execute()
+        processor.run()
     }
 
     @Test
@@ -80,7 +80,7 @@ class FeedProcessorTest {
                 logger = ConsoleLogger
         )
 
-        processor.execute()
+        processor.run()
 
         verify(ordering = Ordering.SEQUENCE) {
             mockItemRegistry.contains(item)
@@ -105,7 +105,7 @@ class FeedProcessorTest {
                 logger = ConsoleLogger
         )
 
-        processor.execute()
+        processor.run()
 
         verify(ordering = Ordering.SEQUENCE) {
             mockItemRegistry.contains(item)
@@ -135,7 +135,7 @@ class FeedProcessorTest {
                 logger = ConsoleLogger
         )
 
-        processor.execute()
+        processor.run()
 
         verify(ordering = Ordering.SEQUENCE) {
             mockItemRegistry.contains(item)
@@ -162,7 +162,7 @@ class FeedProcessorTest {
                 logger = ConsoleLogger
         )
 
-        processor.execute()
+        processor.run()
 
         verify(ordering = Ordering.SEQUENCE) {
             mockItemRegistry.contains(item)

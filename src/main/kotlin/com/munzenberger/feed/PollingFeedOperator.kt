@@ -9,6 +9,7 @@ import com.munzenberger.feed.handler.ItemHandler
 import java.nio.file.Path
 import java.util.Timer
 import java.util.TimerTask
+import kotlin.time.Duration.Companion.seconds
 
 class PollingFeedOperator(
         registryDirectory: Path,
@@ -24,17 +25,17 @@ class PollingFeedOperator(
 
         val tasks: List<Pair<TimerTask, Long>> = config.feeds.map {
 
-            val feed = processorFactory.getInstance(it)
+            val processor = processorFactory.getInstance(it)
 
             val task = object : TimerTask() {
                 override fun run() {
-                    feed.execute()
+                    processor.run()
                 }
             }
 
-            val period = (it.period ?: config.period).toLong() * 60 * 1000 // convert from minutes to millis
+            val period = (it.period ?: config.period).seconds
 
-            task to period
+            task to period.inWholeMilliseconds
         }
 
         val configurationChangeTask = object : TimerTask() {
@@ -57,7 +58,8 @@ class PollingFeedOperator(
             }
 
             // check for configuration changes every 5 seconds
-            schedule(configurationChangeTask, 5000, 5000)
+            val delayAndPeriod = 5.seconds.inWholeMilliseconds
+            schedule(configurationChangeTask, delayAndPeriod, delayAndPeriod)
         }
     }
 
