@@ -11,6 +11,7 @@ import java.nio.file.Path
 import java.util.Timer
 import java.util.TimerTask
 import java.util.function.Consumer
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 class PollingFeedOperator(
@@ -35,7 +36,7 @@ class PollingFeedOperator(
                 }
             }
 
-            val period = (it.period ?: config.period).seconds
+            val period = (it.period ?: config.period).minutes
 
             task to period.inWholeMilliseconds
         }
