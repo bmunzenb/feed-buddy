@@ -86,7 +86,7 @@ class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
                 }
             }
 
-            is FeedStatus.HandlerMessage -> {
+            is FeedStatus.ItemProcessorMessage -> {
                 if (status.isPartialMessage) {
                     logger.print(status.message)
                 } else {
@@ -94,7 +94,7 @@ class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
                 }
             }
 
-            is FeedStatus.HandlerError -> {
+            is FeedStatus.ItemProcessorError -> {
                 logger.println("${status.error.javaClass.simpleName}: ${status.error.message}")
                 logger.printStackTrace(status.error)
             }

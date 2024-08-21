@@ -7,10 +7,10 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
-import com.munzenberger.feed.config.DefaultItemProcessorFactory
+import com.munzenberger.feed.engine.DefaultItemProcessorFactory
 import com.munzenberger.feed.config.FileAppConfigProvider
 import com.munzenberger.feed.config.ItemProcessorConfig
-import com.munzenberger.feed.config.ItemProcessorFactory
+import com.munzenberger.feed.engine.ItemProcessorFactory
 import com.munzenberger.feed.engine.FileItemRegistryFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
@@ -19,6 +19,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Properties
 
+// TODO Move App into a separate gradle module
 fun main(args: Array<String>) {
 
     val versionProperties = Properties().apply {

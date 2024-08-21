@@ -1,9 +1,12 @@
-package com.munzenberger.feed.config
+package com.munzenberger.feed.engine
 
+import com.munzenberger.feed.config.ItemProcessorConfig
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.memberProperties
 
-class DefaultItemProcessorFactory<T>(private val registry: MutableMap<String, T> = mutableMapOf()) : ItemProcessorFactory<T> {
+class DefaultItemProcessorFactory<T : ItemProcessor>(
+    private val registry: MutableMap<String, T> = mutableMapOf()
+) : ItemProcessorFactory<T> {
 
     override fun getInstance(config: ItemProcessorConfig): T = when {
 

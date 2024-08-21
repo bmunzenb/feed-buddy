@@ -64,14 +64,14 @@ private class ConsumerLogger(
 ) : Logger {
 
     override fun print(obj: Any) {
-        consumer.accept(FeedStatus.HandlerMessage(obj, true))
+        consumer.accept(FeedStatus.ItemProcessorMessage(obj, true))
     }
 
     override fun println(obj: Any) {
-        consumer.accept(FeedStatus.HandlerMessage(obj))
+        consumer.accept(FeedStatus.ItemProcessorMessage(obj))
     }
 
     override fun printStackTrace(t: Throwable) {
-        consumer.accept(FeedStatus.HandlerError(t))
+        consumer.accept(FeedStatus.ItemProcessorError(t))
     }
 }

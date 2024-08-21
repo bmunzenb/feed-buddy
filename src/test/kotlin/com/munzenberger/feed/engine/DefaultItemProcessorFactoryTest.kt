@@ -1,12 +1,13 @@
-package com.munzenberger.feed.config
+package com.munzenberger.feed.engine
 
+import com.munzenberger.feed.config.ItemProcessorConfig
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class DefaultItemProcessorFactoryTest {
 
-    class TestItemProcessor {
+    class TestItemProcessor : ItemProcessor {
         var stringProperty: String = "default"
         var booleanProperty: Boolean = false
         var integerProperty: Int = 0
@@ -90,7 +91,7 @@ class DefaultItemProcessorFactoryTest {
     }
 
     @Test
-    fun `it retrieves processes with refs from global registry`() {
+    fun `it retrieves processor with refs from global registry`() {
 
         val config = ItemProcessorConfig(
                 ref = "global"
@@ -102,8 +103,8 @@ class DefaultItemProcessorFactoryTest {
 
         val factory = DefaultItemProcessorFactory(registry)
 
-        val process = factory.getInstance(config)
+        val processor = factory.getInstance(config)
 
-        assertEquals(global, process)
+        assertEquals(global, processor)
     }
 }

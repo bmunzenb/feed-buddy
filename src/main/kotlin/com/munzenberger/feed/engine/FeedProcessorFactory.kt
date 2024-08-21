@@ -1,10 +1,9 @@
-package com.munzenberger.feed.config
+package com.munzenberger.feed.engine
 
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
 import com.munzenberger.feed.Logger
-import com.munzenberger.feed.engine.FeedProcessor
-import com.munzenberger.feed.engine.ItemRegistryFactory
+import com.munzenberger.feed.config.FeedConfig
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.XMLFeedSource
@@ -13,10 +12,10 @@ import java.net.URL
 import java.util.function.Consumer
 
 class FeedProcessorFactory(
-        private val registryFactory: ItemRegistryFactory,
-        private val itemFilterFactory: ItemProcessorFactory<ItemFilter> = DefaultItemProcessorFactory(),
-        private val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory(),
-        private val statusConsumer: Consumer<FeedStatus>
+    private val registryFactory: ItemRegistryFactory,
+    private val itemFilterFactory: ItemProcessorFactory<ItemFilter> = DefaultItemProcessorFactory(),
+    private val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory(),
+    private val statusConsumer: Consumer<FeedStatus>
 ) {
 
     fun getInstance(feedConfig: FeedConfig): FeedProcessor {

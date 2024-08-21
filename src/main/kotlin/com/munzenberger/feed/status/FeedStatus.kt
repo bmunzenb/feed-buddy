@@ -40,12 +40,12 @@ sealed class FeedStatus {
         val elapsedTime: Long
     ) : FeedStatus()
 
-    data class HandlerMessage(
+    data class ItemProcessorMessage(
         val message: Any,
         val isPartialMessage: Boolean = false
     ) : FeedStatus()
 
-    data class HandlerError(
+    data class ItemProcessorError(
         val error: Throwable
     ) : FeedStatus()
 }
