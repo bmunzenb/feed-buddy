@@ -86,8 +86,8 @@ class FeedProcessorTest {
 
         verify(ordering = Ordering.SEQUENCE) {
             mockItemRegistry.contains(item)
-            mockItemFilter.evaluate(context, item, consumer)
-            mockItemHandler.execute(context, item, consumer)
+            mockItemFilter.evaluate(context, item, any())
+            mockItemHandler.execute(context, item, any())
             mockItemRegistry.add(item)
         }
     }
@@ -141,7 +141,7 @@ class FeedProcessorTest {
 
         verify(ordering = Ordering.SEQUENCE) {
             mockItemRegistry.contains(item)
-            mockItemHandler.execute(context, item, consumer)
+            mockItemHandler.execute(context, item, any())
         }
     }
 
@@ -168,7 +168,7 @@ class FeedProcessorTest {
 
         verify(ordering = Ordering.SEQUENCE) {
             mockItemRegistry.contains(item)
-            mockItemFilter.evaluate(context, item, consumer)
+            mockItemFilter.evaluate(context, item, any())
         }
     }
 }

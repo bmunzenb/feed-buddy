@@ -6,7 +6,8 @@ import com.munzenberger.feed.URLClient
 import com.munzenberger.feed.config.filteredForPath
 import com.munzenberger.feed.filename
 import com.munzenberger.feed.formatAsTime
-import com.munzenberger.feed.status.FeedStatus
+import com.munzenberger.feed.Logger
+import com.munzenberger.feed.formatAsSize
 import okio.buffer
 import okio.sink
 import okio.source
@@ -16,42 +17,39 @@ import java.io.InputStream
 import java.net.URL
 import java.net.URLDecoder
 import java.text.NumberFormat
-import java.util.function.Consumer
 
 class DownloadEnclosures : ItemHandler {
 
     var targetDirectory: String = "."
 
-    override fun execute(context: FeedContext, item: Item, statusConsumer: Consumer<FeedStatus>) {
+    override fun execute(context: FeedContext, item: Item, logger: Logger) {
         item.enclosures.forEach { enclosure ->
 
-            statusConsumer.accept(FeedStatus.HandlerMessage("Resolving enclosure source... ", true))
+            logger.print("Resolving enclosure source... ")
 
             URLClient.connect(URL(enclosure.url)).run {
 
-                statusConsumer.accept(FeedStatus.HandlerMessage(resolvedUrl))
+                logger.println(resolvedUrl)
 
                 contentDisposition?.let {
-                    statusConsumer.accept(FeedStatus.HandlerMessage("Content-Disposition: $it"))
+                    logger.println("Content-Disposition: $it")
                 }
 
                 val target = targetFileFor(filename)
 
-                statusConsumer.accept(FeedStatus.HandlerMessage("Downloading to $target... ", true))
+                logger.print("Downloading to $target... ")
 
                 val result = profile { download(inStream, target) }
 
-                val resultString = String.format(
+                logger.formatln(
                     "%s transferred in %s.",
                     result.first.formatAsSize(),
                     result.second.formatAsTime()
                 )
 
-                statusConsumer.accept(FeedStatus.HandlerMessage(resultString))
-
                 item.timestampAsInstant?.let {
                     if (!target.setLastModified(it.toEpochMilli())) {
-                        statusConsumer.accept(FeedStatus.HandlerMessage("Could not set last modified time on file: $target"))
+                        logger.println("Could not set last modified time on file: $target")
                     }
                 }
             }
@@ -124,14 +122,4 @@ private fun <T> profile(block: () -> T): Pair<T, Long> {
     return v to time
 }
 
-fun Long.formatAsSize(): String {
 
-    val format = NumberFormat.getInstance().apply {
-        minimumFractionDigits = 1
-        maximumFractionDigits = 2
-    }
-
-    val mbs = this.toDouble() / 1024.0 / 1024.0
-
-    return format.format(mbs) + " MB"
-}

@@ -13,13 +13,10 @@ import com.munzenberger.feed.config.ItemProcessorConfig
 import com.munzenberger.feed.config.ItemProcessorFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
-import com.munzenberger.feed.status.FeedStatus
 import com.munzenberger.feed.status.LoggingStatusConsumer
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Properties
-import java.util.function.Consumer
-import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
 
@@ -97,7 +94,7 @@ class App : CliktCommand(name = "feed-buddy") {
                 object : ItemProcessorFactory<ItemHandler> {
                     override fun getInstance(config: ItemProcessorConfig): ItemHandler {
                         return object : ItemHandler {
-                            override fun execute(context: FeedContext, item: Item, statusConsumer: Consumer<FeedStatus>) {}
+                            override fun execute(context: FeedContext, item: Item, logger: Logger) {}
                         }
                     }
                 }

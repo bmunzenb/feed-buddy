@@ -8,6 +8,7 @@ import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.XMLFeedSource
 import com.munzenberger.feed.status.FeedStatus
+import com.munzenberger.feed.Logger
 import java.net.URL
 import java.nio.file.Path
 import java.util.function.Consumer
@@ -32,15 +33,15 @@ class FeedProcessorFactory(
 
         val itemFilter = object : ItemFilter {
             private val filters = feedConfig.filters.map(itemFilterFactory::getInstance)
-            override fun evaluate(context: FeedContext, item: Item, statusConsumer: Consumer<FeedStatus>): Boolean {
-                return filters.all { it.evaluate(context, item, statusConsumer) }
+            override fun evaluate(context: FeedContext, item: Item, logger: Logger): Boolean {
+                return filters.all { it.evaluate(context, item, logger) }
             }
         }
 
         val itemHandler = object : ItemHandler {
             private val handlers = feedConfig.handlers.map(itemHandlerFactory::getInstance)
-            override fun execute(context: FeedContext, item: Item, statusConsumer: Consumer<FeedStatus>) {
-                handlers.forEach { it.execute(context, item, statusConsumer) }
+            override fun execute(context: FeedContext, item: Item, logger: Logger) {
+                handlers.forEach { it.execute(context, item, logger) }
             }
         }
 

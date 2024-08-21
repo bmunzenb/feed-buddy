@@ -44,4 +44,8 @@ sealed class FeedStatus {
         val message: Any,
         val isPartialMessage: Boolean = false
     ) : FeedStatus()
+
+    data class HandlerError(
+        val error: Throwable
+    ) : FeedStatus()
 }

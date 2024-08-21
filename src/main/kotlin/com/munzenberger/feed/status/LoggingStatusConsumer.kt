@@ -93,6 +93,11 @@ class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
                     logger.println(status.message)
                 }
             }
+
+            is FeedStatus.HandlerError -> {
+                logger.println("${status.error.javaClass.simpleName}: ${status.error.message}")
+                logger.printStackTrace(status.error)
+            }
         }
     }
 }
