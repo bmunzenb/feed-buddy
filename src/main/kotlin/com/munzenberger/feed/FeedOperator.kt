@@ -16,6 +16,7 @@ interface FeedOperator {
 }
 
 abstract class BaseFeedOperator(
+    // TODO replace with an item registry factory
     private val registryDirectory: Path,
     private val configProvider: AppConfigProvider,
     private val filterFactory: ItemProcessorFactory<ItemFilter>,
