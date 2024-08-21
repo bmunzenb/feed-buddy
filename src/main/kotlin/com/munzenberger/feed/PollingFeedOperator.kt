@@ -4,6 +4,7 @@ import com.munzenberger.feed.config.AppConfig
 import com.munzenberger.feed.config.AppConfigProvider
 import com.munzenberger.feed.config.FeedProcessorFactory
 import com.munzenberger.feed.config.ItemProcessorFactory
+import com.munzenberger.feed.engine.ItemRegistryFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.status.FeedStatus
@@ -15,12 +16,12 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 class PollingFeedOperator(
-        registryDirectory: Path,
+        registryFactory: ItemRegistryFactory,
         private val configProvider: AppConfigProvider,
         filterFactory: ItemProcessorFactory<ItemFilter>,
         handlerFactory: ItemProcessorFactory<ItemHandler>,
         private val statusConsumer: Consumer<FeedStatus>
-) : BaseFeedOperator(registryDirectory, configProvider, filterFactory, handlerFactory, statusConsumer) {
+) : BaseFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer) {
 
     private var timer: Timer? = null
 

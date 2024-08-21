@@ -11,6 +11,7 @@ import com.munzenberger.feed.config.DefaultItemProcessorFactory
 import com.munzenberger.feed.config.FileAppConfigProvider
 import com.munzenberger.feed.config.ItemProcessorConfig
 import com.munzenberger.feed.config.ItemProcessorFactory
+import com.munzenberger.feed.engine.FileItemRegistryFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.status.LoggingStatusConsumer
@@ -83,6 +84,8 @@ class App : CliktCommand(name = "feed-buddy") {
             }
         }
 
+        val registryFactory = FileItemRegistryFactory(registry)
+
         val configProvider = FileAppConfigProvider(configFile)
 
         val filterFactory = DefaultItemProcessorFactory<ItemFilter>()
@@ -109,10 +112,10 @@ class App : CliktCommand(name = "feed-buddy") {
         val feedOperator: FeedOperator = when (mode) {
 
             OperatingMode.POLL ->
-                PollingFeedOperator(registry, configProvider, filterFactory, handlerFactory, statusConsumer)
+                PollingFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer)
 
             OperatingMode.ONCE, OperatingMode.NOOP ->
-                OnceFeedOperator(registry, configProvider, filterFactory, handlerFactory, statusConsumer)
+                OnceFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer)
         }
 
         Runtime.getRuntime().addShutdownHook(object : Thread() {

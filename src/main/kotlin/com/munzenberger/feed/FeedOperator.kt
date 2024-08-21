@@ -4,6 +4,7 @@ import com.munzenberger.feed.config.AppConfig
 import com.munzenberger.feed.config.AppConfigProvider
 import com.munzenberger.feed.config.FeedProcessorFactory
 import com.munzenberger.feed.config.ItemProcessorFactory
+import com.munzenberger.feed.engine.ItemRegistryFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.status.FeedStatus
@@ -16,7 +17,7 @@ interface FeedOperator {
 }
 
 abstract class BaseFeedOperator(
-    private val registryDirectory: Path,
+    private val registryFactory: ItemRegistryFactory,
     private val configProvider: AppConfigProvider,
     private val filterFactory: ItemProcessorFactory<ItemFilter>,
     private val handlerFactory: ItemProcessorFactory<ItemHandler>,
@@ -37,7 +38,7 @@ abstract class BaseFeedOperator(
         statusConsumer.accept(FeedStatus.OperatorStart(config.feeds.size, configProvider.name))
 
         val processorFactory = FeedProcessorFactory(
-            registryDirectory,
+            registryFactory,
             filterFactory,
             handlerFactory,
             statusConsumer

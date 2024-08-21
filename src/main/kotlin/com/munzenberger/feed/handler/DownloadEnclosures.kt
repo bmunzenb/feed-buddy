@@ -3,10 +3,10 @@ package com.munzenberger.feed.handler
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
 import com.munzenberger.feed.URLClient
-import com.munzenberger.feed.config.filteredForPath
 import com.munzenberger.feed.filename
 import com.munzenberger.feed.formatAsTime
 import com.munzenberger.feed.Logger
+import com.munzenberger.feed.filterForPath
 import com.munzenberger.feed.formatAsSize
 import okio.buffer
 import okio.sink
@@ -90,7 +90,7 @@ class DownloadEnclosures : ItemHandler {
 
 internal val URLClient.Response.filename: String
     // use the filename from the content disposition header, if present
-    get() = contentDisposition.filename?.filteredForPath() ?: resolvedUrl.filename
+    get() = contentDisposition.filename?.filterForPath() ?: resolvedUrl.filename
 
 internal val URL.filename: String
     get() = this.path.urlDecode().substringAfterLast('/')

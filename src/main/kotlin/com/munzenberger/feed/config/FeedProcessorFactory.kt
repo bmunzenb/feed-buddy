@@ -2,19 +2,18 @@ package com.munzenberger.feed.config
 
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
+import com.munzenberger.feed.Logger
 import com.munzenberger.feed.engine.FeedProcessor
-import com.munzenberger.feed.engine.FileItemRegistry
+import com.munzenberger.feed.engine.ItemRegistryFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.XMLFeedSource
 import com.munzenberger.feed.status.FeedStatus
-import com.munzenberger.feed.Logger
 import java.net.URL
-import java.nio.file.Path
 import java.util.function.Consumer
 
 class FeedProcessorFactory(
-        private val registryDirectory: Path,
+        private val registryFactory: ItemRegistryFactory,
         private val itemFilterFactory: ItemProcessorFactory<ItemFilter> = DefaultItemProcessorFactory(),
         private val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory(),
         private val statusConsumer: Consumer<FeedStatus>
@@ -29,7 +28,7 @@ class FeedProcessorFactory(
             userAgent = feedConfig.userAgent
         )
 
-        val itemRegistry = FileItemRegistry(registryDirectory.resolve(url.registryFilename))
+        val itemRegistry = registryFactory.getInstance(url)
 
         val itemFilter = object : ItemFilter {
             private val filters = feedConfig.filters.map(itemFilterFactory::getInstance)
@@ -54,17 +53,3 @@ class FeedProcessorFactory(
         )
     }
 }
-
-fun String.filteredForPath(): String {
-    val invalidChars = "<>:\"/\\|?*="
-    val sb = StringBuilder(this)
-    for (i in sb.indices) {
-        if (sb[i] in invalidChars) {
-            sb[i] = '-'
-        }
-    }
-    return sb.toString()
-}
-
-private val URL.registryFilename: String
-    get() = host.filteredForPath() + file.filteredForPath() + ".processed"
