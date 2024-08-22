@@ -7,20 +7,19 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
-import com.munzenberger.feed.config.DefaultItemProcessorFactory
+import com.munzenberger.feed.engine.DefaultItemProcessorFactory
 import com.munzenberger.feed.config.FileAppConfigProvider
 import com.munzenberger.feed.config.ItemProcessorConfig
-import com.munzenberger.feed.config.ItemProcessorFactory
+import com.munzenberger.feed.engine.ItemProcessorFactory
+import com.munzenberger.feed.engine.FileItemRegistryFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
-import com.munzenberger.feed.status.FeedStatus
 import com.munzenberger.feed.status.LoggingStatusConsumer
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Properties
-import java.util.function.Consumer
-import kotlin.system.exitProcess
 
+// TODO Move App into a separate gradle module
 fun main(args: Array<String>) {
 
     val versionProperties = Properties().apply {
@@ -86,6 +85,8 @@ class App : CliktCommand(name = "feed-buddy") {
             }
         }
 
+        val registryFactory = FileItemRegistryFactory(registry)
+
         val configProvider = FileAppConfigProvider(configFile)
 
         val filterFactory = DefaultItemProcessorFactory<ItemFilter>()
@@ -97,7 +98,7 @@ class App : CliktCommand(name = "feed-buddy") {
                 object : ItemProcessorFactory<ItemHandler> {
                     override fun getInstance(config: ItemProcessorConfig): ItemHandler {
                         return object : ItemHandler {
-                            override fun execute(context: FeedContext, item: Item, statusConsumer: Consumer<FeedStatus>) {}
+                            override fun execute(context: FeedContext, item: Item, logger: Logger) {}
                         }
                     }
                 }
@@ -112,10 +113,10 @@ class App : CliktCommand(name = "feed-buddy") {
         val feedOperator: FeedOperator = when (mode) {
 
             OperatingMode.POLL ->
-                PollingFeedOperator(registry, configProvider, filterFactory, handlerFactory, statusConsumer)
+                PollingFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer)
 
             OperatingMode.ONCE, OperatingMode.NOOP ->
-                OnceFeedOperator(registry, configProvider, filterFactory, handlerFactory, statusConsumer)
+                OnceFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer)
         }
 
         Runtime.getRuntime().addShutdownHook(object : Thread() {

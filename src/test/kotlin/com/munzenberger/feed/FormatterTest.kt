@@ -1,9 +1,10 @@
 package com.munzenberger.feed
 
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class FormatAsTimeTest {
+class FormatterTest {
 
     @Test
     fun `it can format milliseconds`() {
@@ -18,5 +19,10 @@ class FormatAsTimeTest {
     @Test
     fun `it can format minutes`() {
         Assert.assertEquals("5 min 20 sec", 320_100L.formatAsTime())
+    }
+
+    @Test
+    fun `it can format megabytes`() {
+        assertEquals("2.5 MB", 2_621_440L.formatAsSize())
     }
 }

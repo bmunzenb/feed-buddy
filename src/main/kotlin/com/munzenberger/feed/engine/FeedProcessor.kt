@@ -5,6 +5,7 @@ import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.FeedSource
 import com.munzenberger.feed.status.FeedStatus
+import com.munzenberger.feed.Logger
 import java.util.function.Consumer
 
 class FeedProcessor(
@@ -29,16 +30,18 @@ class FeedProcessor(
             var processed = 0
             var errors = 0
 
+            val consumerLogger = ConsumerLogger(statusConsumer)
+
             val items = feed.items
                     .filterNot(itemRegistry::contains)
-                    .filter { itemFilter.evaluate(context, it, statusConsumer) }
+                    .filter { itemFilter.evaluate(context, it, consumerLogger) }
 
             items.forEachIndexed { index, item ->
 
                 statusConsumer.accept(FeedStatus.ProcessorItemStart(index, items.size, item.title, item.guid))
 
                 try {
-                    itemHandler.execute(context, item, statusConsumer)
+                    itemHandler.execute(context, item, consumerLogger)
                     itemRegistry.add(item)
                     processed++
                 } catch (e: Throwable) {
@@ -53,5 +56,22 @@ class FeedProcessor(
         } catch (e: Throwable) {
             statusConsumer.accept(FeedStatus.ProcessorFeedError(e))
         }
+    }
+}
+
+private class ConsumerLogger(
+    private val consumer: Consumer<FeedStatus>
+) : Logger {
+
+    override fun print(obj: Any) {
+        consumer.accept(FeedStatus.ItemProcessorMessage(obj, true))
+    }
+
+    override fun println(obj: Any) {
+        consumer.accept(FeedStatus.ItemProcessorMessage(obj))
+    }
+
+    override fun printStackTrace(t: Throwable) {
+        consumer.accept(FeedStatus.ItemProcessorError(t))
     }
 }

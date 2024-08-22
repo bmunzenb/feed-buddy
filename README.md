@@ -287,9 +287,13 @@ You can create your own custom handlers and filters by implementing the `com.mun
 ```kotlin
 package com.example.feed
 
+import com.munzenberger.feed.FeedContext
+import com.munzenberger.feed.Item
+import com.munzenberger.feed.Logger
+
 class MyFilter : ItemFilter {
   var customProperty: String = "default"
-  override fun evaluate(context: FeedContext, item: Item, consumer: Consumer<FeedStatus>): Boolean {
+  override fun evaluate(context: FeedContext, item: Item, logger: Logger): Boolean {
     // Implement your filter's logic and return true to process the item
     return true
   }
@@ -297,7 +301,7 @@ class MyFilter : ItemFilter {
 
 class MyHandler : ItemHandler {
   var customProperty: Int = 42
-  override fun execute(context: FeedContext, item: Item, consumer: Consumer<FeedStatus>) {
+  override fun execute(context: FeedContext, item: Item, logger: Logger) {
     // Implement your handler's logic
   }
 }

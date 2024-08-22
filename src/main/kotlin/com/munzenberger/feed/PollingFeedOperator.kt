@@ -2,12 +2,12 @@ package com.munzenberger.feed
 
 import com.munzenberger.feed.config.AppConfig
 import com.munzenberger.feed.config.AppConfigProvider
-import com.munzenberger.feed.config.FeedProcessorFactory
-import com.munzenberger.feed.config.ItemProcessorFactory
+import com.munzenberger.feed.engine.FeedProcessorFactory
+import com.munzenberger.feed.engine.ItemProcessorFactory
+import com.munzenberger.feed.engine.ItemRegistryFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.status.FeedStatus
-import java.nio.file.Path
 import java.util.Timer
 import java.util.TimerTask
 import java.util.function.Consumer
@@ -15,12 +15,12 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 class PollingFeedOperator(
-        registryDirectory: Path,
-        private val configProvider: AppConfigProvider,
-        filterFactory: ItemProcessorFactory<ItemFilter>,
-        handlerFactory: ItemProcessorFactory<ItemHandler>,
-        private val statusConsumer: Consumer<FeedStatus>
-) : BaseFeedOperator(registryDirectory, configProvider, filterFactory, handlerFactory, statusConsumer) {
+    registryFactory: ItemRegistryFactory,
+    private val configProvider: AppConfigProvider,
+    filterFactory: ItemProcessorFactory<ItemFilter>,
+    handlerFactory: ItemProcessorFactory<ItemHandler>,
+    private val statusConsumer: Consumer<FeedStatus>
+) : BaseFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer) {
 
     private var timer: Timer? = null
 
