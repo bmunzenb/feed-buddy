@@ -27,6 +27,7 @@ class FeedProcessor(
 
             val context = FeedContext(source.name, feed.title)
 
+            // TODO move all of this data tracking to the logging consumer
             var processed = 0
             var errors = 0
 
