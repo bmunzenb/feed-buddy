@@ -9,54 +9,46 @@ import com.munzenberger.feed.Logger
 import java.util.function.Consumer
 
 class FeedProcessor(
-        private val source: FeedSource,
-        private val itemRegistry: ItemRegistry,
-        private val itemFilter: ItemFilter,
-        private val itemHandler: ItemHandler,
-        private val statusConsumer: Consumer<FeedStatus>
+    private val source: FeedSource,
+    private val itemRegistry: ItemRegistry,
+    private val itemFilter: ItemFilter,
+    private val itemHandler: ItemHandler,
+    private val statusConsumer: Consumer<FeedStatus>
 ) : Runnable {
 
     override fun run() {
+        statusConsumer.accept(FeedStatus.ProcessorFeedStart(source.name))
         try {
-            statusConsumer.accept(FeedStatus.ProcessorFeedStart(source.name))
-
-            val startTime = System.currentTimeMillis()
             val feed = source.read()
 
             statusConsumer.accept(FeedStatus.ProcessorFeedRead(feed.title, feed.items.size))
 
             val context = FeedContext(source.name, feed.title)
 
-            // TODO move all of this data tracking to the logging consumer
-            var processed = 0
-            var errors = 0
-
             val consumerLogger = ConsumerLogger(statusConsumer)
 
             val items = feed.items
-                    .filterNot(itemRegistry::contains)
-                    .filter { itemFilter.evaluate(context, it, consumerLogger) }
+                .filterNot(itemRegistry::contains)
+                .filter { itemFilter.evaluate(context, it, consumerLogger) }
 
-            items.forEachIndexed { index, item ->
+            statusConsumer.accept(FeedStatus.ProcessorFeedFilter(items.size))
 
-                statusConsumer.accept(FeedStatus.ProcessorItemStart(index, items.size, item.title, item.guid))
+            items.forEach { item ->
+                statusConsumer.accept(FeedStatus.ProcessorItemStart(item.title, item.guid))
 
                 try {
                     itemHandler.execute(context, item, consumerLogger)
                     itemRegistry.add(item)
-                    processed++
                 } catch (e: Throwable) {
                     statusConsumer.accept(FeedStatus.ProcessorItemError(e))
-                    errors++
                 }
+
+                statusConsumer.accept(FeedStatus.ProcessorItemComplete)
             }
-
-            val elapsed = System.currentTimeMillis() - startTime
-            statusConsumer.accept(FeedStatus.ProcessorFeedComplete(items.size, processed, errors, elapsed))
-
         } catch (e: Throwable) {
             statusConsumer.accept(FeedStatus.ProcessorFeedError(e))
         }
+        statusConsumer.accept(FeedStatus.ProcessorFeedComplete)
     }
 }
 

@@ -18,12 +18,16 @@ sealed class FeedStatus {
         val itemCount: Int
     ) : FeedStatus()
 
+    data class ProcessorFeedFilter(
+        val itemCount: Int
+    ) : FeedStatus()
+
     data class ProcessorItemStart(
-        val itemIndex: Int,
-        val itemCount: Int,
         val itemTitle: String,
         val itemGuid: String
     ) : FeedStatus()
+
+    data object ProcessorItemComplete : FeedStatus()
 
     data class ProcessorItemError(
         val error: Throwable
@@ -33,12 +37,7 @@ sealed class FeedStatus {
         val error: Throwable
     ) : FeedStatus()
 
-    data class ProcessorFeedComplete(
-        val itemCount: Int,
-        val itemsProcessed: Int,
-        val errors: Int,
-        val elapsedTime: Long
-    ) : FeedStatus()
+    data object ProcessorFeedComplete: FeedStatus()
 
     data class ItemProcessorMessage(
         val message: Any,

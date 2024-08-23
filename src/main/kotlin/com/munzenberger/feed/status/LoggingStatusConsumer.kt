@@ -20,6 +20,12 @@ class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
         else -> this + "s"
     }
 
+    // statistics
+    private var startTime = 0L
+    private var count = 0
+    private var processed = 0
+    private var errors = 0
+
     override fun accept(status: FeedStatus) {
         when (status) {
 
@@ -34,53 +40,67 @@ class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
                 "Detected configuration change."
             )
 
-            is FeedStatus.ProcessorFeedStart -> logger.format(
-                "[%s] Reading %s... ",
-                timestamp,
-                status.sourceName
-            )
+            is FeedStatus.ProcessorFeedStart -> {
+                startTime = System.currentTimeMillis()
+                count = 0
+                processed = 0
+                errors = 0
+
+                logger.format(
+                    "[%s] Reading %s... ",
+                    timestamp,
+                    status.sourceName
+                )
+            }
 
             is FeedStatus.ProcessorFeedRead -> logger.formatln(
                 "%s, %d %s.",
                 status.feedTitle,
                 status.itemCount,
-                "item".pluralize(status.itemCount)
+                "item".pluralize(count)
             )
 
-            is FeedStatus.ProcessorItemStart -> logger.formatln(
-                "[%d/%d] Processing \"%s\" (%s)...",
-                status.itemIndex+1,
-                status.itemCount,
-                status.itemTitle,
-                status.itemGuid
-            )
+            is FeedStatus.ProcessorFeedFilter -> {
+                count = status.itemCount
+            }
+
+            is FeedStatus.ProcessorItemStart -> {
+                processed++
+                logger.formatln(
+                    "[%d/%d] Processing \"%s\" (%s)...",
+                    processed,
+                    count,
+                    status.itemTitle,
+                    status.itemGuid
+                )
+            }
 
             is FeedStatus.ProcessorItemError -> {
-                logger.println("${status.error.javaClass.simpleName}: ${status.error.message}")
-                logger.printStackTrace(status.error)
+                errors++
+                onError(status.error)
             }
 
-            is FeedStatus.ProcessorFeedError -> {
-                logger.println("${status.error.javaClass.simpleName}: ${status.error.message}")
-                logger.printStackTrace(status.error)
-            }
+            is FeedStatus.ProcessorItemComplete -> Unit
+
+            is FeedStatus.ProcessorFeedError -> onError(status.error)
 
             is FeedStatus.ProcessorFeedComplete -> {
-                if (status.itemCount > 0) {
-                    when (status.errors) {
+                val elapsed = System.currentTimeMillis() - startTime
+                if (count > 0) {
+                    when (errors) {
                         0 -> logger.formatln(
                             "%d %s processed in %s.",
-                            status.itemsProcessed,
-                            "item".pluralize(status.itemsProcessed),
-                            status.elapsedTime.formatAsTime()
+                            processed,
+                            "item".pluralize(processed),
+                            elapsed.formatAsTime()
                         )
                         else -> logger.formatln(
                             "%d %s processed successfully, %d %s in %s.",
-                            status.itemsProcessed,
-                            "item".pluralize(status.itemsProcessed),
-                            status.errors,
-                            "failure".pluralize(status.errors),
-                            status.elapsedTime.formatAsTime()
+                            processed,
+                            "item".pluralize(processed),
+                            errors,
+                            "failure".pluralize(errors),
+                            elapsed.formatAsTime()
                         )
                     }
                 }
@@ -94,10 +114,12 @@ class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
                 }
             }
 
-            is FeedStatus.ItemProcessorError -> {
-                logger.println("${status.error.javaClass.simpleName}: ${status.error.message}")
-                logger.printStackTrace(status.error)
-            }
+            is FeedStatus.ItemProcessorError -> onError(status.error)
         }
+    }
+
+    private fun onError(error: Throwable) {
+        logger.println("${error.javaClass.simpleName}: ${error.message}")
+        logger.printStackTrace(error)
     }
 }
