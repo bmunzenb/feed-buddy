@@ -17,14 +17,14 @@ class FeedProcessor(
 ) : Runnable {
 
     override fun run() {
-        statusConsumer.accept(FeedStatus.ProcessorFeedStart(source.name))
         try {
+            statusConsumer.accept(FeedStatus.ProcessorFeedStart(source.name))
+
             val feed = source.read()
 
             statusConsumer.accept(FeedStatus.ProcessorFeedRead(feed.title, feed.items.size))
 
             val context = FeedContext(source.name, feed.title)
-
             val consumerLogger = ConsumerLogger(statusConsumer)
 
             val items = feed.items
@@ -34,21 +34,21 @@ class FeedProcessor(
             statusConsumer.accept(FeedStatus.ProcessorFeedFilter(items.size))
 
             items.forEach { item ->
-                statusConsumer.accept(FeedStatus.ProcessorItemStart(item.title, item.guid))
-
                 try {
+                    statusConsumer.accept(FeedStatus.ProcessorItemStart(item.title, item.guid))
                     itemHandler.execute(context, item, consumerLogger)
                     itemRegistry.add(item)
                 } catch (e: Throwable) {
                     statusConsumer.accept(FeedStatus.ProcessorItemError(e))
+                } finally {
+                    statusConsumer.accept(FeedStatus.ProcessorItemComplete)
                 }
-
-                statusConsumer.accept(FeedStatus.ProcessorItemComplete)
             }
         } catch (e: Throwable) {
             statusConsumer.accept(FeedStatus.ProcessorFeedError(e))
+        } finally {
+            statusConsumer.accept(FeedStatus.ProcessorFeedComplete)
         }
-        statusConsumer.accept(FeedStatus.ProcessorFeedComplete)
     }
 }
 

@@ -96,7 +96,7 @@ class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
                         )
                         else -> logger.formatln(
                             "%d %s processed successfully, %d %s in %s.",
-                            processed,
+                            processed - errors,
                             "item".pluralize(processed),
                             errors,
                             "failure".pluralize(errors),
