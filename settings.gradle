@@ -4,4 +4,4 @@ plugins {
 
 rootProject.name = "feed-buddy"
 
-include 'app'
+include 'core'
