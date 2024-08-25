@@ -1,0 +1,13 @@
+plugins {
+    id "application"
+}
+
+application {
+    mainClass = 'com.munzenberger.feed.app.AppKt'
+    applicationName = 'Feed-Buddy'
+}
+
+dependencies {
+    implementation project(':core')
+    implementation "com.github.ajalt:clikt:$clikt"
+}

@@ -1,4 +1,4 @@
-package com.munzenberger.feed
+package com.munzenberger.feed.app
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -7,6 +7,13 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
+import com.munzenberger.feed.FeedContext
+import com.munzenberger.feed.FeedOperator
+import com.munzenberger.feed.Item
+import com.munzenberger.feed.Logger
+import com.munzenberger.feed.OnceFeedOperator
+import com.munzenberger.feed.PollingFeedOperator
+import com.munzenberger.feed.URLClient
 import com.munzenberger.feed.engine.DefaultItemProcessorFactory
 import com.munzenberger.feed.config.FileAppConfigProvider
 import com.munzenberger.feed.config.ItemProcessorConfig
@@ -14,7 +21,6 @@ import com.munzenberger.feed.engine.ItemProcessorFactory
 import com.munzenberger.feed.engine.FileItemRegistryFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
-import com.munzenberger.feed.status.LoggingStatusConsumer
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Properties

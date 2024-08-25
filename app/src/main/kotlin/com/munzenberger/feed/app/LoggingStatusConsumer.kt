@@ -1,7 +1,8 @@
-package com.munzenberger.feed.status
+package com.munzenberger.feed.app
 
 import com.munzenberger.feed.Logger
 import com.munzenberger.feed.formatAsTime
+import com.munzenberger.feed.status.FeedStatus
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
