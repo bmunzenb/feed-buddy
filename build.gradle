@@ -23,56 +23,32 @@ buildscript {
 plugins {
     id "com.github.ben-manes.versions" version "$versions_plugin_version"
     id "org.jetbrains.kotlin.jvm" version "$kotlin_version"
-    id "application"
 }
 
-version = '2.2-SNAPSHOT'
-
-application {
-    mainClass = 'com.munzenberger.feed.AppKt'
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    implementation "org.apache.commons:commons-email:$commons_email"
-    implementation "org.apache.commons:commons-text:$commons_text"
-    implementation "org.apache.velocity:velocity-engine-core:$velocity"
-    implementation "com.squareup.okio:okio:$okio_version"
-    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jackson_version"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jackson_version"
-    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
-    implementation "com.fasterxml.woodstox:woodstox-core:$woodstox_version"
-    implementation "com.github.ajalt:clikt:$clikt"
-    implementation "org.slf4j:slf4j-nop:$slf4j" // needed to prevent messages from velocity
-
-    testImplementation "junit:junit:$junit"
-    testImplementation "io.mockk:mockk:$mockk_version"
-}
-
-kotlin {
-    jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+allprojects {
+    repositories {
+        mavenCentral()
     }
 }
 
-tasks.register('createProperties') {
-    dependsOn processResources
-    doLast {
-        new File("$buildDir/resources/main/version.properties").withWriter { w ->
-            Properties p = new Properties()
-            p.put 'version', project.version.toString()
-            p.store w, null
+subprojects {
+    apply plugin: 'org.jetbrains.kotlin.jvm'
+
+    version = '2.2-SNAPSHOT'
+
+    base {
+        archivesName = "${rootProject.name}-${project.name}"
+    }
+
+    kotlin {
+        jvmToolchain {
+            languageVersion = JavaLanguageVersion.of(11)
         }
     }
-}
 
-classes {
-    dependsOn createProperties
+    dependencies {
+        testImplementation "junit:junit:$junit"
+    }
 }
 
 def isNonStable = { String version ->
