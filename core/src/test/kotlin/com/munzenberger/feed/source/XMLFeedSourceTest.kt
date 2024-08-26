@@ -7,6 +7,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Ignore
 import org.junit.Test
+import java.net.URI
 import java.net.URL
 
 class XMLFeedSourceTest {
@@ -89,7 +90,7 @@ class XMLFeedSourceTest {
     @Ignore("Used to test real feeds.")
     fun `parse real feed`() {
 
-        val url = URL("http://example.com/feed.xml")
+        val url = URI("http://example.com/feed.xml").toURL()
         val source = XMLFeedSource(source = url)
         val feed = source.read()
 

@@ -3,15 +3,20 @@ package com.munzenberger.feed.engine
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
+import com.munzenberger.feed.Logger
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.FeedSource
+import com.munzenberger.feed.source.XMLFeedSource
 import com.munzenberger.feed.status.FeedStatus
 import io.mockk.Ordering
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.Assert.fail
+import org.junit.Ignore
 import org.junit.Test
+import java.net.URI
 import java.util.function.Consumer
 
 class FeedProcessorTest {
@@ -170,5 +175,40 @@ class FeedProcessorTest {
             mockItemRegistry.contains(item)
             mockItemFilter.evaluate(context, item, any())
         }
+    }
+
+    @Test
+    @Ignore("Used to test real feeds.")
+    fun `process real feed`() {
+
+        val url = URI("http://example.com/feed.xml").toURL()
+
+        val itemRegistry = mockk<ItemRegistry>()
+        every { itemRegistry.contains(any()) } returns false
+        every { itemRegistry.add(any()) } returns Unit
+
+        val itemFilter = mockk<ItemFilter>()
+        every { itemFilter.evaluate(any(), any(), any()) } returns true
+
+        val itemHandler = mockk<ItemHandler>()
+        every { itemHandler.execute(any(), any(), any()) } returns Unit
+
+        val consumer = Consumer<FeedStatus> {
+            when (it) {
+                is FeedStatus.ProcessorFeedError -> throw it.error
+                is FeedStatus.ProcessorFeedRead -> println(it)
+                else -> Unit
+            }
+        }
+
+        val processor = FeedProcessor(
+            source = XMLFeedSource(url),
+            itemRegistry = itemRegistry,
+            itemFilter = itemFilter,
+            itemHandler = itemHandler,
+            statusConsumer = consumer
+        )
+
+        processor.run()
     }
 }
