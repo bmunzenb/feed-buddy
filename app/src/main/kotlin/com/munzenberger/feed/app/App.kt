@@ -25,7 +25,6 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Properties
 
-// TODO Move App into a separate gradle module
 fun main(args: Array<String>) {
 
     val versionProperties = Properties().apply {
