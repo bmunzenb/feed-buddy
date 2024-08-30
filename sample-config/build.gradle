@@ -1,0 +1,12 @@
+plugins {
+    id "application"
+}
+
+application {
+    mainClass = 'com.munzenberger.feed.sample.config.GenerateSamplesKt'
+    applicationName = 'Generate-Sample-Configs'
+}
+
+dependencies {
+    implementation project(':core')
+}

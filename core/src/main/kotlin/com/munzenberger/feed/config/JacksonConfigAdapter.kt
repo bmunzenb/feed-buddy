@@ -13,35 +13,35 @@ import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
-abstract class JacksonAppConfigAdapter : AppConfigAdapter {
+abstract class JacksonConfigAdapter : ConfigAdapter {
 
     protected abstract val objectMapper: ObjectMapper
 
-    override fun read(file: File): AppConfig {
+    override fun read(file: File): OperatorConfig {
         return objectMapper.readValue(file)
     }
 
-    override fun read(inStream: InputStream): AppConfig {
+    override fun read(inStream: InputStream): OperatorConfig {
         return inStream.use { objectMapper.readValue(it) }
     }
 
-    override fun write(config: AppConfig, file: File) {
+    override fun write(config: OperatorConfig, file: File) {
         objectMapper.writeValue(file, config)
     }
 
-    override fun write(config: AppConfig, outStream: OutputStream) {
+    override fun write(config: OperatorConfig, outStream: OutputStream) {
         outStream.use { objectMapper.writeValue(it, config) }
     }
 }
 
-object JsonAppConfigAdapter : JacksonAppConfigAdapter() {
+object JsonConfigAdapter : JacksonConfigAdapter() {
     override val objectMapper: ObjectMapper = jacksonObjectMapper().apply {
         enable(SerializationFeature.INDENT_OUTPUT)
         setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
     }
 }
 
-object XmlAppConfigAdapter : JacksonAppConfigAdapter() {
+object XmlConfigAdapter : JacksonConfigAdapter() {
     override val objectMapper: ObjectMapper
     init {
         val module = JacksonXmlModule().apply {
@@ -53,7 +53,7 @@ object XmlAppConfigAdapter : JacksonAppConfigAdapter() {
     }
 }
 
-object YamlAppConfigAdapter : JacksonAppConfigAdapter() {
+object YamlConfigAdapter : JacksonConfigAdapter() {
     override val objectMapper: ObjectMapper = ObjectMapper(YAMLFactory()).apply {
         setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
         registerKotlinModule()

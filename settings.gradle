@@ -6,3 +6,4 @@ rootProject.name = "feed-buddy"
 
 include 'core'
 include 'app'
+include 'sample-config'

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 
 @JacksonXmlRootElement(localName = "feeds")
-data class AppConfig(
+data class OperatorConfig(
         @JacksonXmlProperty(isAttribute = true)
         val period: Int = 360, // default 3 hours
         @JacksonXmlProperty(localName = "handler")

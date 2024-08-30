@@ -1,7 +1,7 @@
 package com.munzenberger.feed
 
-import com.munzenberger.feed.config.AppConfig
-import com.munzenberger.feed.config.AppConfigProvider
+import com.munzenberger.feed.config.OperatorConfig
+import com.munzenberger.feed.config.ConfigProvider
 import com.munzenberger.feed.engine.FeedProcessorFactory
 import com.munzenberger.feed.engine.ItemProcessorFactory
 import com.munzenberger.feed.engine.ItemRegistryFactory
@@ -12,13 +12,13 @@ import java.util.function.Consumer
 
 class OnceFeedOperator(
     registryFactory: ItemRegistryFactory,
-    configProvider: AppConfigProvider,
+    configProvider: ConfigProvider,
     filterFactory: ItemProcessorFactory<ItemFilter>,
     handlerFactory: ItemProcessorFactory<ItemHandler>,
     statusConsumer: Consumer<FeedStatus>
 ) : BaseFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer) {
 
-    override fun start(config: AppConfig, processorFactory: FeedProcessorFactory) {
+    override fun start(config: OperatorConfig, processorFactory: FeedProcessorFactory) {
         config.feeds.map(processorFactory::getInstance).forEach { it.run() }
     }
 }

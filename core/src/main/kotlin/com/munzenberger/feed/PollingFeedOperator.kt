@@ -1,7 +1,7 @@
 package com.munzenberger.feed
 
-import com.munzenberger.feed.config.AppConfig
-import com.munzenberger.feed.config.AppConfigProvider
+import com.munzenberger.feed.config.OperatorConfig
+import com.munzenberger.feed.config.ConfigProvider
 import com.munzenberger.feed.engine.FeedProcessorFactory
 import com.munzenberger.feed.engine.ItemProcessorFactory
 import com.munzenberger.feed.engine.ItemRegistryFactory
@@ -16,7 +16,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class PollingFeedOperator(
     registryFactory: ItemRegistryFactory,
-    private val configProvider: AppConfigProvider,
+    private val configProvider: ConfigProvider,
     filterFactory: ItemProcessorFactory<ItemFilter>,
     handlerFactory: ItemProcessorFactory<ItemHandler>,
     private val statusConsumer: Consumer<FeedStatus>
@@ -24,7 +24,7 @@ class PollingFeedOperator(
 
     private var timer: Timer? = null
 
-    override fun start(config: AppConfig, processorFactory: FeedProcessorFactory) {
+    override fun start(config: OperatorConfig, processorFactory: FeedProcessorFactory) {
 
         val tasks: List<Pair<TimerTask, Long>> = config.feeds.map {
 

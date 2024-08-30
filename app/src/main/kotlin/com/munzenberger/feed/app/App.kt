@@ -15,7 +15,7 @@ import com.munzenberger.feed.OnceFeedOperator
 import com.munzenberger.feed.PollingFeedOperator
 import com.munzenberger.feed.URLClient
 import com.munzenberger.feed.engine.DefaultItemProcessorFactory
-import com.munzenberger.feed.config.FileAppConfigProvider
+import com.munzenberger.feed.config.FileConfigProvider
 import com.munzenberger.feed.config.ItemProcessorConfig
 import com.munzenberger.feed.engine.ItemProcessorFactory
 import com.munzenberger.feed.engine.FileItemRegistryFactory
@@ -92,7 +92,7 @@ class App : CliktCommand(name = "feed-buddy") {
 
         val registryFactory = FileItemRegistryFactory(registry)
 
-        val configProvider = FileAppConfigProvider(configFile)
+        val configProvider = FileConfigProvider(configFile)
 
         val filterFactory = DefaultItemProcessorFactory<ItemFilter>()
 

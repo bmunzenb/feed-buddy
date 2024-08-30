@@ -3,15 +3,15 @@ package com.munzenberger.feed.config
 import org.junit.Assert
 import org.junit.Test
 
-class XmlAppConfigAdapterTest {
+class XmlOperatorConfigAdapterTest {
 
     @Test
     fun `it can parse a config file`() {
 
         val source = javaClass.getResourceAsStream("config.xml")
-        val config = XmlAppConfigAdapter.read(source)
+        val config = XmlConfigAdapter.read(source)
 
-        val expected = AppConfig(
+        val expected = OperatorConfig(
                 period = 42,
                 handlers = listOf(
                         ItemProcessorConfig(
