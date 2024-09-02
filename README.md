@@ -9,7 +9,7 @@ that contains the command-line application via the following Gradle command:
 
 `gradlew build`
 
-The resulting `build/distributions` directory will contain the distribution archives.
+The resulting `app/build/distributions` directory will contain the distribution archives.
 
 ## License
 ```

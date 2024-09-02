@@ -8,7 +8,7 @@ import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.XMLFeedSource
 import com.munzenberger.feed.status.FeedStatus
-import java.net.URL
+import java.net.URI
 import java.util.function.Consumer
 
 class FeedProcessorFactory(
@@ -17,17 +17,16 @@ class FeedProcessorFactory(
     private val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory(),
     private val statusConsumer: Consumer<FeedStatus>
 ) {
-
     fun getInstance(feedConfig: FeedConfig): FeedProcessor {
 
-        val url = URL(feedConfig.url)
+        val url = URI(feedConfig.url).toURL()
 
         val source = XMLFeedSource(
             source = url,
             userAgent = feedConfig.userAgent
         )
 
-        val itemRegistry = registryFactory.getInstance(url)
+        val itemRegistry = registryFactory.getInstance(feedConfig)
 
         val itemFilter = object : ItemFilter {
             private val filters = feedConfig.filters.map(itemFilterFactory::getInstance)

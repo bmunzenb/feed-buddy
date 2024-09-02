@@ -1,7 +1,7 @@
 package com.munzenberger.feed.engine
 
 import com.munzenberger.feed.Item
-import java.net.URL
+import com.munzenberger.feed.config.FeedConfig
 
 interface ItemRegistry {
     fun contains(item: Item): Boolean
@@ -9,5 +9,5 @@ interface ItemRegistry {
 }
 
 interface ItemRegistryFactory {
-    fun getInstance(url: URL): ItemRegistry
+    fun getInstance(feedConfig: FeedConfig): ItemRegistry
 }

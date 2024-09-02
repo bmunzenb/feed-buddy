@@ -4,7 +4,7 @@ This is the command-line application used to run *Feed Buddy*.
 
 ## User Guide
 
-You will need a [Java Virtual Machine (version 11 or higher)](https://www.oracle.com/java/technologies/java-se-glance.html) installed on the host device in order to run
+You will need a modern [Java Virtual Machine](https://www.oracle.com/java/technologies/java-se-glance.html) installed on the host device in order to run
 Feed Buddy.
 
 Extract the distribution archive to a local directory on the device and execute the script file from the `bin` folder
@@ -90,20 +90,22 @@ There are three configuration block types that are used: `feed`, `handler`, and 
 #### `feed`
 A `feed` block is used to define a feed source, using the following properties:
 
-| Name        |  Type  | Required | Description                                                                                                                                        |
-|-------------|:------:|:--------:|----------------------------------------------------------------------------------------------------------------------------------------------------|
-| `url`       | String |   Yes    | Source URL of the feed.                                                                                                                            |
-| `period`    | Number |    No    | The time in minutes between reads of the feed. If not specified, uses the globally defined period, which has a default value of `360` for 3 hours. |
-| `userAgent` | String |    No    | The value to use in the "User-Agent" HTTP request header when reading the feed.                                                                    |
-| `handlers`  |  List  |    No    | Defines the handlers to execute for each item in the feed.                                                                                         |
-| `filters`   |  List  |    No    | Defines the filters to apply to items in the feed. An item is only processed if matches the criteria for all specified filters.                    |
+| Name          |  Type  | Required | Description                                                                                                                                        |
+|---------------|:------:|:--------:|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `url`         | String |   Yes    | Source URL of the feed.                                                                                                                            |
+| `period`      | Number |    No    | The time in minutes between reads of the feed. If not specified, uses the globally defined period, which has a default value of `360` for 3 hours. |
+| `userAgent`   | String |    No    | The value to use in the "User-Agent" HTTP request header when reading the feed.                                                                    |
+| `registryKey` | String |    No    | Key for accessing the processed items registry for this feed.  If not specified, defaults to the value of `url`.                                   |
+| `handlers`    |  List  |    No    | Defines the handlers to execute for each item in the feed.                                                                                         |
+| `filters`     |  List  |    No    | Defines the filters to apply to items in the feed. An item is only processed if matches the criteria for all specified filters.                    |
 
 The following example configurations in XML, JSON, and YAML are all equivalent:
 
 ```xml
 <feed url="http://www.example.com/feed.xml"
       period="480"
-      userAgent="Custom/1.0 (Custom User Agent)">
+      userAgent="Custom/1.0 (Custom User Agent)"
+      registryKey="Sample Feed">
   <!-- One or more <handler> elements -->
   <!-- One or more <filter> elements -->
 </feed>
@@ -114,6 +116,7 @@ The following example configurations in XML, JSON, and YAML are all equivalent:
   "url" : "http://www.example.com/feed.xml",
   "period" : 480,
   "userAgent" : "Custom/1.0 (Custom User Agent)",
+  "registryKey" : "Sample Feed",
   "handlers" : [],
   "filters" : []
 }
@@ -123,6 +126,7 @@ The following example configurations in XML, JSON, and YAML are all equivalent:
 - url: "http://www.example.com/feed.xml"
   period: 480
   userAgent: "Custom/1.0 (Custom User Agent)"
+  registryKey: "Sample Feed"
   handlers: []
   filters: []
 ```

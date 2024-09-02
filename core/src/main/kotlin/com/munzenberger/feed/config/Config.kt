@@ -22,6 +22,8 @@ data class FeedConfig(
         val period: Int? = null,
         @JacksonXmlProperty(isAttribute = true)
         val userAgent: String? = null,
+        @JacksonXmlProperty(isAttribute = true)
+        val registryKey: String? = null,
         @JacksonXmlProperty(localName = "handler")
         val handlers: List<ItemProcessorConfig> = emptyList(),
         @JacksonXmlProperty(localName = "filter")
