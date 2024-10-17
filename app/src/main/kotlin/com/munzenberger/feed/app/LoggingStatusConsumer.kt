@@ -58,7 +58,7 @@ class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
                 "%s, %d %s.",
                 status.feedTitle,
                 status.itemCount,
-                "item".pluralize(count)
+                "item".pluralize(status.itemCount)
             )
 
             is FeedStatus.ProcessorFeedFilter -> {
