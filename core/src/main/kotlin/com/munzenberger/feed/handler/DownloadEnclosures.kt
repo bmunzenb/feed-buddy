@@ -2,21 +2,21 @@ package com.munzenberger.feed.handler
 
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
+import com.munzenberger.feed.Logger
 import com.munzenberger.feed.URLClient
 import com.munzenberger.feed.filename
-import com.munzenberger.feed.formatAsTime
-import com.munzenberger.feed.Logger
 import com.munzenberger.feed.filterForPath
 import com.munzenberger.feed.formatAsSize
+import com.munzenberger.feed.formatAsTime
 import okio.buffer
 import okio.sink
 import okio.source
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.net.URI
 import java.net.URL
 import java.net.URLDecoder
-import java.text.NumberFormat
 
 class DownloadEnclosures : ItemHandler {
 
@@ -27,7 +27,7 @@ class DownloadEnclosures : ItemHandler {
 
             logger.print("Resolving enclosure source... ")
 
-            URLClient.connect(URL(enclosure.url)).run {
+            URLClient.connect(URI.create(enclosure.url).toURL()).run {
 
                 logger.println(resolvedUrl)
 

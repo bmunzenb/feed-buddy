@@ -3,7 +3,7 @@ package com.munzenberger.feed
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
-import java.net.URL
+import java.net.URI
 
 class URLClientTest {
 
@@ -66,7 +66,7 @@ class URLClientTest {
     @Test
     fun `location resolver handles null location`() {
 
-        val url = URL("https://test.com")
+        val url = URI("https://test.com").toURL()
 
         val resolved = URLClient.resolveLocationHeader(null, url)
 
@@ -76,7 +76,7 @@ class URLClientTest {
     @Test
     fun `location resolver handles fully qualified url location`() {
 
-        val url = URL("https://test.com")
+        val url = URI("https://test.com").toURL()
 
         val resolved = URLClient.resolveLocationHeader("https://fullyqualified.com", url)
 
@@ -86,7 +86,7 @@ class URLClientTest {
     @Test
     fun `location resolver handles absolute path location`() {
 
-        val url = URL("https://test.com/path/to/resource")
+        val url = URI("https://test.com/path/to/resource").toURL()
 
         val resolved = URLClient.resolveLocationHeader("/alternate/path", url)
 
@@ -96,7 +96,7 @@ class URLClientTest {
     @Test
     fun `location resolver handles relative path location`() {
 
-        val url = URL("https://test.com/path/to/resource")
+        val url = URI("https://test.com/path/to/resource").toURL()
 
         val resolved = URLClient.resolveLocationHeader("alternate/resource", url)
 
@@ -106,7 +106,7 @@ class URLClientTest {
     @Test
     fun `location resolver handles relative path with naked domain`() {
 
-        val url = URL("https://test.com")
+        val url = URI("https://test.com").toURL()
 
         val resolved = URLClient.resolveLocationHeader("alternate/resource", url)
 

@@ -3,6 +3,7 @@ package com.munzenberger.feed
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
+import java.net.URI
 import java.net.URL
 import java.util.zip.GZIPInputStream
 
@@ -78,7 +79,7 @@ object URLClient {
 
                             else -> {
                                 connection.disconnect()
-                                connect(URL(resolvedLocation), requestProperties, locations + resolvedLocation)
+                                connect(URI.create(resolvedLocation).toURL(), requestProperties, locations + resolvedLocation)
                             }
                         }
                 }
