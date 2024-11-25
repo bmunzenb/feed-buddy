@@ -2,7 +2,7 @@ package com.munzenberger.feed.source
 
 import com.ctc.wstx.stax.WstxInputFactory
 import com.munzenberger.feed.Feed
-import com.munzenberger.feed.URLClient
+import com.munzenberger.feed.client.URLClient
 import java.net.URL
 import javax.xml.stream.XMLEventReader
 import javax.xml.stream.events.StartElement
@@ -18,7 +18,7 @@ class XMLFeedSource(
 
     override fun read(): Feed {
 
-        val response = URLClient.connect(source, userAgent)
+        val response = URLClient(userAgent).connect(source)
 
         val reader = XMLFilterReader(response.inStream, response.encoding)
 

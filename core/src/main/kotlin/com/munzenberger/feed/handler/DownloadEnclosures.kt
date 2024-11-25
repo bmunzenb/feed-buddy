@@ -3,8 +3,8 @@ package com.munzenberger.feed.handler
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
 import com.munzenberger.feed.Logger
-import com.munzenberger.feed.URLClient
-import com.munzenberger.feed.filename
+import com.munzenberger.feed.client.URLClient
+import com.munzenberger.feed.client.Response
 import com.munzenberger.feed.filterForPath
 import com.munzenberger.feed.formatAsSize
 import com.munzenberger.feed.formatAsTime
@@ -27,11 +27,11 @@ class DownloadEnclosures : ItemHandler {
 
             logger.print("Resolving enclosure source... ")
 
-            URLClient.connect(URI.create(enclosure.url).toURL()).run {
+            URLClient().connect(URI.create(enclosure.url).toURL()).run {
 
                 logger.println(resolvedUrl)
 
-                contentDisposition?.let {
+                contentDisposition.value?.let {
                     logger.println("Content-Disposition: $it")
                 }
 
@@ -88,7 +88,7 @@ class DownloadEnclosures : ItemHandler {
     }
 }
 
-internal val URLClient.Response.filename: String
+internal val Response.filename: String
     // use the filename from the content disposition header, if present
     get() = contentDisposition.filename?.filterForPath() ?: resolvedUrl.filename
 

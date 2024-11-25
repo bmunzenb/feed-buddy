@@ -13,12 +13,12 @@ import com.munzenberger.feed.Item
 import com.munzenberger.feed.Logger
 import com.munzenberger.feed.OnceFeedOperator
 import com.munzenberger.feed.PollingFeedOperator
-import com.munzenberger.feed.URLClient
-import com.munzenberger.feed.engine.DefaultItemProcessorFactory
+import com.munzenberger.feed.client.URLClientDefaults
 import com.munzenberger.feed.config.FileConfigProvider
 import com.munzenberger.feed.config.ItemProcessorConfig
-import com.munzenberger.feed.engine.ItemProcessorFactory
+import com.munzenberger.feed.engine.DefaultItemProcessorFactory
 import com.munzenberger.feed.engine.FileItemRegistryFactory
+import com.munzenberger.feed.engine.ItemProcessorFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import java.nio.file.Path
@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
 
     versionProperties["version"].let {
         println("Feed Buddy version $it (https://github.com/bmunzenb/feed-buddy)")
-        URLClient.defaultUserAgent = "Feed-Buddy/$it (+https://github.com/bmunzenb/feed-buddy)"
+        URLClientDefaults.userAgent = "Feed-Buddy/$it (+https://github.com/bmunzenb/feed-buddy)"
     }
 
     System.getProperties().let {
@@ -78,7 +78,7 @@ class App : CliktCommand(name = "feed-buddy") {
 
     override fun run() {
 
-        URLClient.timeout = timeout * 1000 // convert to millis
+        URLClientDefaults.timeout = timeout * 1000 // convert to millis
 
         val configFile = feeds.toFile()
 
