@@ -16,12 +16,19 @@ dependencies {
 
 tasks.register('createProperties') {
     dependsOn processResources
+
+    inputs.property('version', project.version.toString())
+
+    def outputFile = layout.buildDirectory.file('generated/version.properties').get().asFile
+    outputs.file(outputFile)
+
     doLast {
-        new File("$buildDir/resources/main/version.properties").withWriter { w ->
+        outputFile.withWriter { w ->
             Properties p = new Properties()
-            p.put 'version', project.version.toString()
+            p.put 'version', inputs.properties['version']
             p.store w, null
         }
+        println "Generated version.properties at ${outputFile.absolutePath}"
     }
 }
 
