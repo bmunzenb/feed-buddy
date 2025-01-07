@@ -19,7 +19,7 @@ tasks.register('createProperties') {
 
     inputs.property('version', project.version.toString())
 
-    def outputFile = layout.buildDirectory.file('generated/version.properties').get().asFile
+    def outputFile = layout.buildDirectory.file('resources/main/version.properties').get().asFile
     outputs.file(outputFile)
 
     doLast {
