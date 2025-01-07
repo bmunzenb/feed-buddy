@@ -4,7 +4,7 @@ plugins {
 
 application {
     mainClass = 'com.munzenberger.feed.app.AppKt'
-    applicationName = 'Feed-Buddy'
+    applicationName = 'feed-buddy'
 }
 
 dependencies {
