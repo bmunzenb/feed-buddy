@@ -1,0 +1,39 @@
+name: Draft Release
+
+on:
+  workflow_dispatch: # allow manual execution
+  push:
+    tags:
+      - 'release-*'
+
+jobs:
+  build:
+    name: Build and Draft Release from Tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Test release
+        run: ./gradlew test
+
+      - name: Assemble release
+        run: ./gradlew assemble
+
+      - name: Publish executable archives
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: app/build/distributions/*
