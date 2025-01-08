@@ -26,14 +26,13 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Test release
-        run: ./gradlew test
+      - name: Build release
+        run: ./gradlew build
 
-      - name: Assemble release
-        run: ./gradlew assemble
-
-      - name: Publish executable archives
+      - name: Publish archives
         uses: softprops/action-gh-release@v2
         with:
           draft: true
-          files: app/build/distributions/*
+          files: |
+            app/build/distributions/*
+            core/build/libs/*
