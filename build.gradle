@@ -38,6 +38,7 @@ subprojects {
 
     base {
         archivesName = "${rootProject.name}-${project.name}"
+        group = "com.munzenberger"
     }
 
     kotlin {

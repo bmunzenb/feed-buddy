@@ -2,7 +2,7 @@
 
 This is the core module for *Feed Buddy* that contains the primary logic for reading, parsing, and processing feeds.
 
-## Developer Guide
+## User Guide
 
 ### Basic Use
 

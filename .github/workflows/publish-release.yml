@@ -1,4 +1,4 @@
-name: Draft Release
+name: Publish Release
 
 on:
   workflow_dispatch: # allow manual execution
@@ -29,10 +29,14 @@ jobs:
       - name: Build release
         run: ./gradlew build
 
-      - name: Publish archives
+      - name: Publish application
         uses: softprops/action-gh-release@v2
         with:
           draft: true
-          files: |
-            app/build/distributions/*
-            core/build/libs/*
+          files: app/build/distributions/*
+
+      - name: Publish package
+        run: ./gradlew publish
+        env:
+          GITHUB_USER: ${{ github.repository_owner }}
+          GITHUB_TOKEN: ${{ github.token }}
