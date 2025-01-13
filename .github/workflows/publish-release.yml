@@ -1,0 +1,42 @@
+name: Publish Release
+
+on:
+  workflow_dispatch: # allow manual execution
+  push:
+    tags:
+      - 'release-*'
+
+jobs:
+  build:
+    name: Build and Draft Release from Tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build release
+        run: ./gradlew build
+
+      - name: Publish application
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: app/build/distributions/*
+
+      - name: Publish package
+        run: ./gradlew publish
+        env:
+          GITHUB_USER: ${{ github.repository_owner }}
+          GITHUB_TOKEN: ${{ github.token }}

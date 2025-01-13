@@ -2,7 +2,7 @@
 
 This is the core module for *Feed Buddy* that contains the primary logic for reading, parsing, and processing feeds.
 
-## Developer Guide
+## User Guide
 
 ### Basic Use
 
@@ -102,13 +102,20 @@ have been processed.
 #### `ItemFilter`
 
 An `ItemFilter` is used to determine which unprocessed items are eligible for processing.  You must pass an object here,
-even if it does nothing but evaluate all items as eligible for processing.  The only implemented filter is the
-`RegexItemFilter`.
+even if it does nothing but evaluate all items as eligible for processing.  Provided implementations:
+
+- `RegexItemFilter` for filtering item title and/or content by regular expressions
+
+*Note that you can compose multiple filters together using the plus operator.*
 
 #### `ItemHandler`
 
-An `ItemHandler` is used to process eligible items.  Provided implementations include `DownloadEnclosures` and
-`SendEmail`.
+An `ItemHandler` is used to process eligible items.  Provided implementations:
+
+- `SendEmail` for sending an email with item content
+- `DownloadEnclosures` for downloading the contents of item enclosures
+
+*Note that you can compose multiple handlers together using the plus operator.*
 
 #### `Consumer<FeedStatus>`
 
