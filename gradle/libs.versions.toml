@@ -1,16 +1,15 @@
 [versions]
-kotlin = "2.1.0"
-versions-plugin = "0.51.0"
-okio = "3.10.2"
-jackson = "2.18.2"
-woodstox = "7.1.0"
-commons-text = "1.13.0"
-commons-email = "1.6.0"
-velocity = "2.4.1"
-clikt = "5.0.2"
-slf4j = "2.0.16"
-junit = "4.13.2"
-mockk = "1.13.16"
+kotlin = "2.+"
+okio = "3.+"
+jackson = "2.+"
+woodstox = "7.+"
+commons-text = "1.+"
+commons-email = "1.+"
+velocity = "2.+"
+clikt = "5.+"
+slf4j = "2.+"
+junit = "4.+"
+mockk = "1.+"
 
 [libraries]
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
@@ -29,4 +28,3 @@ junit = { module = "junit:junit", version.ref = "junit" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [plugins]
-versions = { id = "com.github.ben-manes.versions", version.ref = "versions-plugin" }

@@ -14,3 +14,7 @@ version = "2.2.1"
 base {
     archivesName = "${rootProject.name}-${project.name}"
 }
+
+dependencyLocking {
+    lockAllConfigurations()
+}
