@@ -11,16 +11,6 @@ that contains the command-line application via the following Gradle command:
 
 The resulting `app/build/distributions` directory will contain the distribution archives.
 
-## Dependency Management
-
-This project uses Gradle's [Dependency Locking](https://docs.gradle.org/current/userguide/dependency_locking.html).
-
-To update the dependency lock files with latest versions, execute the following command:
-
-```shell
-$ ./gradlew dependencies --write-locks
-```
-
 ## License
 ```
 Copyright 2024 Brian Munzenberger
