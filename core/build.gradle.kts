@@ -27,7 +27,6 @@ dependencies {
     testImplementation(libs.mockk)
 }
 
-// TODO move to plugin
 tasks.register("createProperties") {
     dependsOn(tasks.named("processResources"))
 
@@ -60,8 +59,6 @@ tasks.jar {
                 "Implementation-Version" to project.version
         )
     }
-
-    archiveBaseName = "${rootProject.name}-${project.name}"
 }
 
 java {
