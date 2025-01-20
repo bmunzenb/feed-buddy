@@ -1,0 +1,32 @@
+[versions]
+kotlin = "2.1.0"
+versions-plugin = "0.51.0"
+okio = "3.10.2"
+jackson = "2.18.2"
+woodstox = "7.1.0"
+commons-text = "1.13.0"
+commons-email = "1.6.0"
+velocity = "2.4.1"
+clikt = "2.8.0"
+slf4j = "2.0.16"
+junit = "4.13.2"
+mockk = "1.13.16"
+
+[libraries]
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+commons-text = { module = "org.apache.commons:commons-text", version.ref = "commons-text" }
+commons-email = { module = "org.apache.commons:commons-email", version.ref = "commons-email" }
+velocity = { module = "org.apache.velocity:velocity-engine-core", version.ref = "velocity" }
+jackson = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-xml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml", version.ref = "jackson" }
+jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
+jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+woodstox = { module = "com.fasterxml.woodstox:woodstox-core", version.ref = "woodstox" }
+slf4j-noop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j" }
+clikt = { module = "com.github.ajalt:clikt", version.ref = "clikt" }
+junit = { module = "junit:junit", version.ref = "junit" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+
+[plugins]
+versions = { id = "com.github.ben-manes.versions", version.ref = "versions-plugin" }
