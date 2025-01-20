@@ -9,7 +9,7 @@ kotlin {
 }
 
 group = "com.munzenberger"
-version = "2.2"
+version = "2.2.1"
 
 base {
     archivesName = "${rootProject.name}-${project.name}"
