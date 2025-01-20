@@ -27,6 +27,7 @@ class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
     private var processed = 0
     private var errors = 0
 
+    @Suppress("LongMethod", "CyclomaticComplexMethod")
     override fun accept(status: FeedStatus) {
         when (status) {
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>MagicNumber:App.kt$App$1000</ID>
+    <ID>MaxLineLength:App.kt$App$logger.println("Executing in NOOP mode: items will be marked as processed but no handlers will execute.")</ID>
+  </CurrentIssues>
+</SmellBaseline>
