@@ -15,21 +15,13 @@ class XMLFilterReader(
     private var firstChar: Boolean = true
     private var contentStarted: Boolean = false
 
-    override fun read(): Int {
-        throw UnsupportedOperationException()
-    }
+    override fun read(): Int = throw UnsupportedOperationException()
 
-    override fun reset() {
-        throw UnsupportedOperationException()
-    }
+    override fun reset(): Unit = throw UnsupportedOperationException()
 
-    override fun markSupported(): Boolean {
-        return false
-    }
+    override fun markSupported(): Boolean = false
 
-    override fun mark(readAheadLimit: Int) {
-        throw UnsupportedOperationException()
-    }
+    override fun mark(readAheadLimit: Int): Unit = throw UnsupportedOperationException()
 
     override fun read(
         cbuf: CharArray,

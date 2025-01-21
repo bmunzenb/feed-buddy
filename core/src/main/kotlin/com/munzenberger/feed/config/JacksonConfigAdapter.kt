@@ -16,13 +16,9 @@ import java.io.OutputStream
 abstract class JacksonConfigAdapter : ConfigAdapter {
     protected abstract val objectMapper: ObjectMapper
 
-    override fun read(file: File): OperatorConfig {
-        return objectMapper.readValue(file)
-    }
+    override fun read(file: File): OperatorConfig = objectMapper.readValue(file)
 
-    override fun read(inStream: InputStream): OperatorConfig {
-        return inStream.use { objectMapper.readValue(it) }
-    }
+    override fun read(inStream: InputStream): OperatorConfig = inStream.use { objectMapper.readValue(it) }
 
     override fun write(
         config: OperatorConfig,

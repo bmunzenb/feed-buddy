@@ -32,7 +32,11 @@ tasks.register("createProperties") {
 
     inputs.property("version", project.version.toString())
 
-    val outputFile = layout.buildDirectory.file("resources/main/version.properties").get().asFile
+    val outputFile =
+        layout.buildDirectory
+            .file("resources/main/version.properties")
+            .get()
+            .asFile
     outputs.file(outputFile)
 
     doLast {

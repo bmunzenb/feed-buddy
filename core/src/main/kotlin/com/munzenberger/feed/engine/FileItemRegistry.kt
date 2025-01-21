@@ -9,7 +9,9 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 
-class FileItemRegistryFactory(private val basePath: Path) : ItemRegistryFactory {
+class FileItemRegistryFactory(
+    private val basePath: Path,
+) : ItemRegistryFactory {
     override fun getInstance(feedConfig: FeedConfig): ItemRegistry {
         val key =
             feedConfig.registryKey?.filterForPath()
@@ -22,7 +24,9 @@ class FileItemRegistryFactory(private val basePath: Path) : ItemRegistryFactory 
         get() = host.filterForPath() + file.filterForPath() + ".processed"
 }
 
-class FileItemRegistry(private val path: Path) : ItemRegistry {
+class FileItemRegistry(
+    private val path: Path,
+) : ItemRegistry {
     private val registry = mutableSetOf<String>()
 
     init {

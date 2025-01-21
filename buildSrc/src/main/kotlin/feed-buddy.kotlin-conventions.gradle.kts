@@ -10,6 +10,10 @@ kotlin {
     }
 }
 
+ktlint {
+    version.set("1.5.0")
+}
+
 group = "com.munzenberger"
 version = "2.2.1"
 

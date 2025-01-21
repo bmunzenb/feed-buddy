@@ -94,7 +94,9 @@ internal fun Item.toHtmlMessage(template: URL): String {
     return writer.toString()
 }
 
-class MailItem(item: Item) {
+class MailItem(
+    item: Item,
+) {
     val description: String = item.content.encodeForEmail()
     val link: String = item.link
     val id: String = item.guid

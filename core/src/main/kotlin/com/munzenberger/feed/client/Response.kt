@@ -12,7 +12,9 @@ data class Response(
     val encoding by lazy { contentType.charset }
 }
 
-data class ContentDisposition(val value: String?) {
+data class ContentDisposition(
+    val value: String?,
+) {
     val filename: String?
         // TODO this is a naive parsing strategy that should be replaced with something more robust
         get() =
@@ -23,7 +25,9 @@ data class ContentDisposition(val value: String?) {
                 ?.second
 }
 
-data class ContentType(val value: String?) {
+data class ContentType(
+    val value: String?,
+) {
     val charset: String
         // TODO: better to parse the 'charset' from the content-type
         get() =

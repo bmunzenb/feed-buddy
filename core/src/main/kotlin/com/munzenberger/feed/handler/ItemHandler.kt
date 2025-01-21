@@ -15,7 +15,9 @@ fun interface ItemHandler : ItemProcessor {
     operator fun plus(other: ItemHandler): ItemHandler = CompositeItemHandler(listOf(this, other))
 }
 
-class CompositeItemHandler(private val handlers: List<ItemHandler>) : ItemHandler {
+class CompositeItemHandler(
+    private val handlers: List<ItemHandler>,
+) : ItemHandler {
     override fun execute(
         context: FeedContext,
         item: Item,

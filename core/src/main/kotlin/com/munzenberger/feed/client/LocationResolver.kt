@@ -2,9 +2,11 @@ package com.munzenberger.feed.client
 
 import java.net.URL
 
-class LocationResolver(private val url: URL) {
-    fun resolve(location: String?): String? {
-        return when {
+class LocationResolver(
+    private val url: URL,
+) {
+    fun resolve(location: String?): String? =
+        when {
             location == null ->
                 null
 
@@ -28,5 +30,4 @@ class LocationResolver(private val url: URL) {
                     "/" +
                     location
         }
-    }
 }

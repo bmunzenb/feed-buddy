@@ -15,12 +15,12 @@ fun interface ItemFilter : ItemProcessor {
     operator fun plus(other: ItemFilter): ItemFilter = CompositeItemFilter(listOf(this, other))
 }
 
-class CompositeItemFilter(private val filters: List<ItemFilter>) : ItemFilter {
+class CompositeItemFilter(
+    private val filters: List<ItemFilter>,
+) : ItemFilter {
     override fun evaluate(
         context: FeedContext,
         item: Item,
         logger: Logger,
-    ): Boolean {
-        return filters.all { it.evaluate(context, item, logger) }
-    }
+    ): Boolean = filters.all { it.evaluate(context, item, logger) }
 }

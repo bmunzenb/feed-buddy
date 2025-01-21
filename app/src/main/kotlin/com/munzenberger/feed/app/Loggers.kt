@@ -39,7 +39,9 @@ object ConsoleLogger : Logger {
     }
 }
 
-class FileLogger(val file: File) : Logger {
+class FileLogger(
+    val file: File,
+) : Logger {
     companion object {
         private val NEWLINE = System.lineSeparator()
     }

@@ -8,7 +8,9 @@ interface ConfigProvider {
     val timestamp: Long
 }
 
-class FileConfigProvider(private val file: File) : ConfigProvider {
+class FileConfigProvider(
+    private val file: File,
+) : ConfigProvider {
     override val name: String
         get() = file.absolutePath
 

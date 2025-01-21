@@ -8,7 +8,9 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.function.Consumer
 
-class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
+class LoggingStatusConsumer(
+    private val logger: Logger,
+) : Consumer<FeedStatus> {
     companion object {
         private val tf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
         private val timestamp: String

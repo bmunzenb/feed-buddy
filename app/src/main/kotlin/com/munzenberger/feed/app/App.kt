@@ -100,9 +100,7 @@ class App : CliktCommand(name = "feed-buddy") {
                 OperatingMode.NOOP -> {
                     logger.println("Executing in NOOP mode: items will be marked as processed but no handlers will execute.")
                     object : ItemProcessorFactory<ItemHandler> {
-                        override fun getInstance(config: ItemProcessorConfig): ItemHandler {
-                            return ItemHandler { _, _, _ -> }
-                        }
+                        override fun getInstance(config: ItemProcessorConfig): ItemHandler = ItemHandler { _, _, _ -> }
                     }
                 }
 
