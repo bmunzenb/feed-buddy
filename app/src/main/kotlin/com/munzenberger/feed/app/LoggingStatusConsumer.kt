@@ -9,17 +9,17 @@ import java.time.format.FormatStyle
 import java.util.function.Consumer
 
 class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
-
     companion object {
         private val tf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
         private val timestamp: String
             get() = tf.format(LocalDateTime.now())
     }
 
-    private fun String.pluralize(count: Int) = when (count) {
-        1 -> this
-        else -> this + "s"
-    }
+    private fun String.pluralize(count: Int) =
+        when (count) {
+            1 -> this
+            else -> this + "s"
+        }
 
     // statistics
     private var startTime = 0L
@@ -30,17 +30,18 @@ class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
     @Suppress("LongMethod", "CyclomaticComplexMethod")
     override fun accept(status: FeedStatus) {
         when (status) {
+            is FeedStatus.OperatorStart ->
+                logger.formatln(
+                    "Scheduling %d %s from %s.",
+                    status.feedCount,
+                    "feed".pluralize(status.feedCount),
+                    status.configProviderName,
+                )
 
-            is FeedStatus.OperatorStart -> logger.formatln(
-                "Scheduling %d %s from %s.",
-                status.feedCount,
-                "feed".pluralize(status.feedCount),
-                status.configProviderName
-            )
-
-            is FeedStatus.OperatorConfigurationChange -> logger.println(
-                "Detected configuration change."
-            )
+            is FeedStatus.OperatorConfigurationChange ->
+                logger.println(
+                    "Detected configuration change.",
+                )
 
             is FeedStatus.ProcessorFeedStart -> {
                 startTime = System.currentTimeMillis()
@@ -51,16 +52,17 @@ class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
                 logger.format(
                     "[%s] Reading %s... ",
                     timestamp,
-                    status.sourceName
+                    status.sourceName,
                 )
             }
 
-            is FeedStatus.ProcessorFeedRead -> logger.formatln(
-                "%s, %d %s.",
-                status.feedTitle,
-                status.itemCount,
-                "item".pluralize(status.itemCount)
-            )
+            is FeedStatus.ProcessorFeedRead ->
+                logger.formatln(
+                    "%s, %d %s.",
+                    status.feedTitle,
+                    status.itemCount,
+                    "item".pluralize(status.itemCount),
+                )
 
             is FeedStatus.ProcessorFeedFilter -> {
                 count = status.itemCount
@@ -73,7 +75,7 @@ class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
                     processed,
                     count,
                     status.itemTitle,
-                    status.itemGuid
+                    status.itemGuid,
                 )
             }
 
@@ -90,20 +92,22 @@ class LoggingStatusConsumer(private val logger: Logger) : Consumer<FeedStatus> {
                 val elapsed = System.currentTimeMillis() - startTime
                 if (count > 0) {
                     when (errors) {
-                        0 -> logger.formatln(
-                            "%d %s processed in %s.",
-                            processed,
-                            "item".pluralize(processed),
-                            elapsed.formatAsTime()
-                        )
-                        else -> logger.formatln(
-                            "%d %s processed successfully, %d %s in %s.",
-                            processed - errors,
-                            "item".pluralize(processed),
-                            errors,
-                            "failure".pluralize(errors),
-                            elapsed.formatAsTime()
-                        )
+                        0 ->
+                            logger.formatln(
+                                "%d %s processed in %s.",
+                                processed,
+                                "item".pluralize(processed),
+                                elapsed.formatAsTime(),
+                            )
+                        else ->
+                            logger.formatln(
+                                "%d %s processed successfully, %d %s in %s.",
+                                processed - errors,
+                                "item".pluralize(processed),
+                                errors,
+                                "failure".pluralize(errors),
+                                elapsed.formatAsTime(),
+                            )
                     }
                 }
             }

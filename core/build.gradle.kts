@@ -55,8 +55,8 @@ tasks.named("classes") {
 tasks.jar {
     manifest {
         attributes(
-                "Implementation-Title" to "${rootProject.name}-${project.name}",
-                "Implementation-Version" to project.version
+            "Implementation-Title" to "${rootProject.name}-${project.name}",
+            "Implementation-Version" to project.version,
         )
     }
 }

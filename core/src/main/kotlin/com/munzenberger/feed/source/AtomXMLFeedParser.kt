@@ -33,30 +33,33 @@ private class AtomContent {
     var type = ""
     var value = ""
     val decodedValue: String
-        get() = when (type) {
-            "html" -> StringEscapeUtils.unescapeHtml4(value)
-            else -> value
-        }
+        get() =
+            when (type) {
+                "html" -> StringEscapeUtils.unescapeHtml4(value)
+                else -> value
+            }
 }
 
-private fun AtomFeed.toFeed() = Feed(
+private fun AtomFeed.toFeed() =
+    Feed(
         title = title,
-        items = entries.map { it.toItem() }
-)
+        items = entries.map { it.toItem() },
+    )
 
-private fun AtomEntry.toItem() = Item(
+private fun AtomEntry.toItem() =
+    Item(
         title = title,
         content = contents.firstOrNull()?.decodedValue ?: summary,
         link = links.firstOrNull { it.rel.isEmpty() || it.rel == "alternate" }?.href ?: "",
         guid = id,
         timestamp = updated,
-        enclosures = links
-            .filter { it.rel == "enclosure" }
-            .map { Enclosure(it.href) }
-)
+        enclosures =
+            links
+                .filter { it.rel == "enclosure" }
+                .map { Enclosure(it.href) },
+    )
 
 internal object AtomXMLFeedParser : XMLFeedParser {
-
     private const val TITLE = "title"
     private const val ENTRY = "entry"
     private const val LINK = "link"
@@ -69,7 +72,6 @@ internal object AtomXMLFeedParser : XMLFeedParser {
     private const val CONTENT = "content"
 
     override fun parse(eventReader: XMLEventReader): Feed {
-
         val feed = AtomFeed()
 
         while (eventReader.hasNext()) {
@@ -86,8 +88,10 @@ internal object AtomXMLFeedParser : XMLFeedParser {
         return feed.toFeed()
     }
 
-    private fun parseEntry(entry: AtomEntry, eventReader: XMLEventReader) {
-
+    private fun parseEntry(
+        entry: AtomEntry,
+        eventReader: XMLEventReader,
+    ) {
         while (eventReader.hasNext()) {
             val event = eventReader.nextEvent()
 
@@ -108,8 +112,10 @@ internal object AtomXMLFeedParser : XMLFeedParser {
         }
     }
 
-    private fun parseLink(link: AtomLink, startElement: StartElement) {
-
+    private fun parseLink(
+        link: AtomLink,
+        startElement: StartElement,
+    ) {
         val attributes = startElement.attributes
 
         while (attributes.hasNext()) {
@@ -122,8 +128,11 @@ internal object AtomXMLFeedParser : XMLFeedParser {
         }
     }
 
-    private fun parseContent(content: AtomContent, startElement: StartElement, eventReader: XMLEventReader) {
-
+    private fun parseContent(
+        content: AtomContent,
+        startElement: StartElement,
+        eventReader: XMLEventReader,
+    ) {
         val attributes = startElement.attributes
 
         while (attributes.hasNext()) {

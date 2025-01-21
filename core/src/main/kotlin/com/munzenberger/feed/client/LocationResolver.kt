@@ -3,7 +3,6 @@ package com.munzenberger.feed.client
 import java.net.URL
 
 class LocationResolver(private val url: URL) {
-
     fun resolve(location: String?): String? {
         return when {
             location == null ->
@@ -16,18 +15,18 @@ class LocationResolver(private val url: URL) {
             // absolute path
             location.startsWith("/") ->
                 url.protocol +
-                        "://" +
-                        url.authority +
-                        location
+                    "://" +
+                    url.authority +
+                    location
 
             // relative path
             else ->
                 url.protocol +
-                        "://" +
-                        url.authority +
-                        url.path.substringBeforeLast('/') +
-                        "/" +
-                        location
+                    "://" +
+                    url.authority +
+                    url.path.substringBeforeLast('/') +
+                    "/" +
+                    location
         }
     }
 }

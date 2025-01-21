@@ -23,7 +23,6 @@ class FileItemRegistryFactory(private val basePath: Path) : ItemRegistryFactory 
 }
 
 class FileItemRegistry(private val path: Path) : ItemRegistry {
-
     private val registry = mutableSetOf<String>()
 
     init {
@@ -46,7 +45,7 @@ class FileItemRegistry(private val path: Path) : ItemRegistry {
             path,
             listOf(identity),
             StandardOpenOption.CREATE,
-            StandardOpenOption.APPEND
+            StandardOpenOption.APPEND,
         )
     }
 }

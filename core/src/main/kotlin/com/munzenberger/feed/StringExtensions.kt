@@ -3,10 +3,13 @@ package com.munzenberger.feed
 fun String.filterForPath() =
     replaceAll(
         replaceChars = "<>:\"/\\|?*=",
-        with = '-'
+        with = '-',
     )
 
-fun String.replaceAll(replaceChars: String, with: Char): String {
+fun String.replaceAll(
+    replaceChars: String,
+    with: Char,
+): String {
     val sb = StringBuilder(this)
     for (i in sb.indices) {
         if (sb[i] in replaceChars) {

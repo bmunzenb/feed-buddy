@@ -6,7 +6,6 @@ import java.io.PrintWriter
 import java.io.StringWriter
 
 class CompositeLogger : Logger {
-
     private val loggers = mutableListOf<Logger>()
 
     fun add(logger: Logger) {
@@ -27,7 +26,6 @@ class CompositeLogger : Logger {
 }
 
 object ConsoleLogger : Logger {
-
     override fun print(obj: Any) {
         kotlin.io.print(obj)
     }
@@ -42,7 +40,6 @@ object ConsoleLogger : Logger {
 }
 
 class FileLogger(val file: File) : Logger {
-
     companion object {
         private val NEWLINE = System.lineSeparator()
     }

@@ -14,7 +14,6 @@ import java.io.InputStream
 import java.io.OutputStream
 
 abstract class JacksonConfigAdapter : ConfigAdapter {
-
     protected abstract val objectMapper: ObjectMapper
 
     override fun read(file: File): OperatorConfig {
@@ -25,37 +24,48 @@ abstract class JacksonConfigAdapter : ConfigAdapter {
         return inStream.use { objectMapper.readValue(it) }
     }
 
-    override fun write(config: OperatorConfig, file: File) {
+    override fun write(
+        config: OperatorConfig,
+        file: File,
+    ) {
         objectMapper.writeValue(file, config)
     }
 
-    override fun write(config: OperatorConfig, outStream: OutputStream) {
+    override fun write(
+        config: OperatorConfig,
+        outStream: OutputStream,
+    ) {
         outStream.use { objectMapper.writeValue(it, config) }
     }
 }
 
 object JsonConfigAdapter : JacksonConfigAdapter() {
-    override val objectMapper: ObjectMapper = jacksonObjectMapper().apply {
-        enable(SerializationFeature.INDENT_OUTPUT)
-        setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
-    }
+    override val objectMapper: ObjectMapper =
+        jacksonObjectMapper().apply {
+            enable(SerializationFeature.INDENT_OUTPUT)
+            setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+        }
 }
 
 object XmlConfigAdapter : JacksonConfigAdapter() {
     override val objectMapper: ObjectMapper
+
     init {
-        val module = JacksonXmlModule().apply {
-            setDefaultUseWrapper(false)
-        }
-        objectMapper = XmlMapper(module).registerKotlinModule().apply {
-            enable(SerializationFeature.INDENT_OUTPUT)
-        }
+        val module =
+            JacksonXmlModule().apply {
+                setDefaultUseWrapper(false)
+            }
+        objectMapper =
+            XmlMapper(module).registerKotlinModule().apply {
+                enable(SerializationFeature.INDENT_OUTPUT)
+            }
     }
 }
 
 object YamlConfigAdapter : JacksonConfigAdapter() {
-    override val objectMapper: ObjectMapper = ObjectMapper(YAMLFactory()).apply {
-        setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
-        registerKotlinModule()
-    }
+    override val objectMapper: ObjectMapper =
+        ObjectMapper(YAMLFactory()).apply {
+            setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+            registerKotlinModule()
+        }
 }

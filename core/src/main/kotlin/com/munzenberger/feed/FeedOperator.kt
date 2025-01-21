@@ -1,7 +1,7 @@
 package com.munzenberger.feed
 
-import com.munzenberger.feed.config.OperatorConfig
 import com.munzenberger.feed.config.ConfigProvider
+import com.munzenberger.feed.config.OperatorConfig
 import com.munzenberger.feed.engine.FeedProcessorFactory
 import com.munzenberger.feed.engine.ItemProcessorFactory
 import com.munzenberger.feed.engine.ItemRegistryFactory
@@ -12,6 +12,7 @@ import java.util.function.Consumer
 
 interface FeedOperator {
     fun start()
+
     fun cancel() {}
 }
 
@@ -20,11 +21,9 @@ abstract class BaseFeedOperator(
     private val configProvider: ConfigProvider,
     private val filterFactory: ItemProcessorFactory<ItemFilter>,
     private val handlerFactory: ItemProcessorFactory<ItemHandler>,
-    private val statusConsumer: Consumer<FeedStatus>
+    private val statusConsumer: Consumer<FeedStatus>,
 ) : FeedOperator {
-
     override fun start() {
-
         val config = configProvider.config
 
         filterFactory.reset()
@@ -34,17 +33,21 @@ abstract class BaseFeedOperator(
         config.filters.map(filterFactory::getInstance)
         config.handlers.map(handlerFactory::getInstance)
 
-        val processorFactory = FeedProcessorFactory(
-            registryFactory,
-            filterFactory,
-            handlerFactory,
-            statusConsumer
-        )
+        val processorFactory =
+            FeedProcessorFactory(
+                registryFactory,
+                filterFactory,
+                handlerFactory,
+                statusConsumer,
+            )
 
         statusConsumer.accept(FeedStatus.OperatorStart(config.feeds.size, configProvider.name))
 
         start(config, processorFactory)
     }
 
-    abstract fun start(config: OperatorConfig, processorFactory: FeedProcessorFactory)
+    abstract fun start(
+        config: OperatorConfig,
+        processorFactory: FeedProcessorFactory,
+    )
 }

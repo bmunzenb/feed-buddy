@@ -13,7 +13,10 @@ fun main() {
     minimal()
 }
 
-private fun write(config: OperatorConfig, name: String) {
+private fun write(
+    config: OperatorConfig,
+    name: String,
+) {
     val jsonFile = Paths.get(".", "$name.json").toFile()
     print("Writing $name JSON config to $jsonFile ... ")
     JsonConfigAdapter.write(config, jsonFile)
@@ -31,27 +34,31 @@ private fun write(config: OperatorConfig, name: String) {
 }
 
 private fun minimal() {
-    val config = OperatorConfig(
-        feeds = listOf(
-            FeedConfig(
-                url = "http://www.example.com/feed.xml",
-                handlers = listOf(
-                    ItemProcessorConfig(
-                        type = SendEmail::class.java.name,
-                        properties = mapOf(
-                            "to" to "example@mail.com",
-                            "from" to "feedbuddy@example.com",
-                            "smtpHost" to "mail.smtp.com",
-                            "smtpPort" to 23,
-                            "auth" to true,
-                            "username" to "feedbuddy",
-                            "password" to "fizzbuzz"
-                        )
-                    )
-                )
-            )
+    val config =
+        OperatorConfig(
+            feeds =
+                listOf(
+                    FeedConfig(
+                        url = "http://www.example.com/feed.xml",
+                        handlers =
+                            listOf(
+                                ItemProcessorConfig(
+                                    type = SendEmail::class.java.name,
+                                    properties =
+                                        mapOf(
+                                            "to" to "example@mail.com",
+                                            "from" to "feedbuddy@example.com",
+                                            "smtpHost" to "mail.smtp.com",
+                                            "smtpPort" to 23,
+                                            "auth" to true,
+                                            "username" to "feedbuddy",
+                                            "password" to "fizzbuzz",
+                                        ),
+                                ),
+                            ),
+                    ),
+                ),
         )
-    )
 
     write(config, "minimal")
 }

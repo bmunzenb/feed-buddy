@@ -20,25 +20,22 @@
     <ID>MagicNumber:XMLFilterReader.kt$0xFFFD</ID>
     <ID>MaxLineLength:AtomXMLFeedParser.kt$AtomXMLFeedParser$CONTENT -&gt; entry.contents += AtomContent().apply { parseContent(this, event.asStartElement(), eventReader) }</ID>
     <ID>MaxLineLength:DefaultItemProcessorFactory.kt$DefaultItemProcessorFactory$registry[config.ref] ?: throw IllegalArgumentException("Item processor with name '${config.ref}' not found.")</ID>
+    <ID>MaxLineLength:DefaultItemProcessorFactory.kt$DefaultItemProcessorFactory.Companion$"Incompatible types: $value (${value::class}) cannot be set for property \"$name\" of type $propertyType."</ID>
+    <ID>MaxLineLength:DefaultItemProcessorFactory.kt$DefaultItemProcessorFactory.Companion$"[${config.type}] Could not set property \"$name\" to value \"$value\" of type ${value::class.simpleName}"</ID>
     <ID>MaxLineLength:DefaultItemProcessorFactory.kt$DefaultItemProcessorFactory.Companion$?:</ID>
-    <ID>MaxLineLength:DefaultItemProcessorFactory.kt$DefaultItemProcessorFactory.Companion$else -&gt; throw IllegalArgumentException("Incompatible types: $value (${value::class}) cannot be set for property \"$name\" of type $propertyType.")</ID>
-    <ID>MaxLineLength:DefaultItemProcessorFactory.kt$DefaultItemProcessorFactory.Companion$throw IllegalArgumentException("[${config.type}] Could not set property \"$name\" to value \"$value\" of type ${value::class.simpleName}", e)</ID>
-    <ID>MaxLineLength:DownloadEnclosuresTest.kt$DownloadEnclosuresTest$val localFile = URI("https://anchor.fm/s/10bb8090/podcast/play/10052621/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fproduction%2F2020-0-30%2F45841909-22050-1-24041a3ac9d8e.mp3").toURL().filename</ID>
+    <ID>MaxLineLength:DownloadEnclosuresTest.kt$DownloadEnclosuresTest$"https://anchor.fm/s/10bb8090/podcast/play/10052621/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fproduction%2F2020-0-30%2F45841909-22050-1-24041a3ac9d8e.mp3"</ID>
     <ID>MaxLineLength:URLClient.kt$URLClient$connect(URI.create(resolvedLocation).toURL(), requestProperties, locations + resolvedLocation)</ID>
     <ID>MaxLineLength:URLClient.kt$URLClient$throw IOException("Redirect response $responseCode with no 'Location' in header: ${connection.headerFields}")</ID>
     <ID>NestedBlockDepth:AtomXMLFeedParser.kt$AtomXMLFeedParser$override fun parse(eventReader: XMLEventReader): Feed</ID>
-    <ID>NestedBlockDepth:AtomXMLFeedParser.kt$AtomXMLFeedParser$private fun parseEntry(entry: AtomEntry, eventReader: XMLEventReader)</ID>
-    <ID>NestedBlockDepth:DownloadEnclosures.kt$DownloadEnclosures$override fun execute(context: FeedContext, item: Item, logger: Logger)</ID>
-    <ID>NestedBlockDepth:RssXMLFeedParser.kt$RssXMLFeedParser$private fun parseChannel(channel: RssChannel, eventReader: XMLEventReader)</ID>
-    <ID>NestedBlockDepth:RssXMLFeedParser.kt$RssXMLFeedParser$private fun parseItem(item: RssItem, eventReader: XMLEventReader)</ID>
-    <ID>NestedBlockDepth:URLClient.kt$URLClient$private fun connect(url: URL, requestProperties: Map&lt;String, String&gt;, locations: Set&lt;String&gt;): Response</ID>
-    <ID>NewLineAtEndOfFile:ContentDispositionTest.kt$com.munzenberger.feed.client.ContentDispositionTest.kt</ID>
-    <ID>NewLineAtEndOfFile:ContentTypeTest.kt$com.munzenberger.feed.client.ContentTypeTest.kt</ID>
-    <ID>NewLineAtEndOfFile:FeedOperatorTest.kt$com.munzenberger.feed.FeedOperatorTest.kt</ID>
+    <ID>NestedBlockDepth:AtomXMLFeedParser.kt$AtomXMLFeedParser$private fun parseEntry( entry: AtomEntry, eventReader: XMLEventReader, )</ID>
+    <ID>NestedBlockDepth:DownloadEnclosures.kt$DownloadEnclosures$override fun execute( context: FeedContext, item: Item, logger: Logger, )</ID>
+    <ID>NestedBlockDepth:RssXMLFeedParser.kt$RssXMLFeedParser$private fun parseChannel( channel: RssChannel, eventReader: XMLEventReader, )</ID>
+    <ID>NestedBlockDepth:RssXMLFeedParser.kt$RssXMLFeedParser$private fun parseItem( item: RssItem, eventReader: XMLEventReader, )</ID>
+    <ID>NestedBlockDepth:URLClient.kt$URLClient$private fun connect( url: URL, requestProperties: Map&lt;String, String&gt;, locations: Set&lt;String&gt;, ): Response</ID>
     <ID>ReturnCount:Feed.kt$internal fun String.toInstant(): Instant?</ID>
     <ID>SwallowedException:Feed.kt$e: Throwable</ID>
     <ID>ThrowsCount:DefaultItemProcessorFactory.kt$DefaultItemProcessorFactory.Companion$@Suppress("UNCHECKED_CAST") internal fun &lt;T&gt; newItemProcessor(config: ItemProcessorConfig): T</ID>
-    <ID>ThrowsCount:URLClient.kt$URLClient$private fun connect(url: URL, requestProperties: Map&lt;String, String&gt;, locations: Set&lt;String&gt;): Response</ID>
+    <ID>ThrowsCount:URLClient.kt$URLClient$private fun connect( url: URL, requestProperties: Map&lt;String, String&gt;, locations: Set&lt;String&gt;, ): Response</ID>
     <ID>TooGenericExceptionCaught:DefaultItemProcessorFactory.kt$DefaultItemProcessorFactory.Companion$e: Throwable</ID>
     <ID>TooGenericExceptionCaught:Feed.kt$e: Throwable</ID>
     <ID>TooGenericExceptionCaught:FeedProcessor.kt$FeedProcessor$e: Throwable</ID>

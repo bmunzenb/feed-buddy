@@ -6,5 +6,6 @@ interface ItemProcessor
 
 interface ItemProcessorFactory<out T : ItemProcessor> {
     fun getInstance(config: ItemProcessorConfig): T
+
     fun reset() {}
 }

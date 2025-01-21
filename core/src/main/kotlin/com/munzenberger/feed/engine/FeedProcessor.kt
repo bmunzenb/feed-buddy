@@ -1,11 +1,11 @@
 package com.munzenberger.feed.engine
 
 import com.munzenberger.feed.FeedContext
+import com.munzenberger.feed.Logger
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.FeedSource
 import com.munzenberger.feed.status.FeedStatus
-import com.munzenberger.feed.Logger
 import java.util.function.Consumer
 
 class FeedProcessor(
@@ -13,9 +13,8 @@ class FeedProcessor(
     private val itemRegistry: ItemRegistry,
     private val itemFilter: ItemFilter,
     private val itemHandler: ItemHandler,
-    private val statusConsumer: Consumer<FeedStatus>
+    private val statusConsumer: Consumer<FeedStatus>,
 ) : Runnable {
-
     override fun run() {
         try {
             statusConsumer.accept(FeedStatus.ProcessorFeedStart(source.name))
@@ -27,9 +26,10 @@ class FeedProcessor(
             val context = FeedContext(source.name, feed.title)
             val consumerLogger = ConsumerLogger(statusConsumer)
 
-            val items = feed.items
-                .filterNot(itemRegistry::contains)
-                .filter { itemFilter.evaluate(context, it, consumerLogger) }
+            val items =
+                feed.items
+                    .filterNot(itemRegistry::contains)
+                    .filter { itemFilter.evaluate(context, it, consumerLogger) }
 
             statusConsumer.accept(FeedStatus.ProcessorFeedFilter(items.size))
 
@@ -53,9 +53,8 @@ class FeedProcessor(
 }
 
 private class ConsumerLogger(
-    private val consumer: Consumer<FeedStatus>
+    private val consumer: Consumer<FeedStatus>,
 ) : Logger {
-
     override fun print(obj: Any) {
         consumer.accept(FeedStatus.ItemProcessorMessage(obj, true))
     }

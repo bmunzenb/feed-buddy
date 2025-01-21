@@ -8,16 +8,14 @@ import javax.xml.stream.XMLEventReader
 import javax.xml.stream.events.StartElement
 
 class XMLFeedSource(
-        private val source: URL,
-        private val userAgent: String? = null
+    private val source: URL,
+    private val userAgent: String? = null,
 ) : FeedSource {
-
     private val factory = WstxInputFactory.newFactory()
 
     override val name: String = source.toExternalForm()
 
     override fun read(): Feed {
-
         val response = URLClient(userAgent).connect(source)
 
         val reader = XMLFilterReader(response.inStream, response.encoding)
@@ -27,11 +25,12 @@ class XMLFeedSource(
         // inspect the first element to determine the feed type
         val firstElement = firstElement(eventReader)
 
-        val parser = when (val type = firstElement.name.localPart) {
-            "rss" -> RssXMLFeedParser
-            "feed" -> AtomXMLFeedParser
-            else -> throw IllegalArgumentException("No parser available for feed type '$type'")
-        }
+        val parser =
+            when (val type = firstElement.name.localPart) {
+                "rss" -> RssXMLFeedParser
+                "feed" -> AtomXMLFeedParser
+                else -> throw IllegalArgumentException("No parser available for feed type '$type'")
+            }
 
         return parser.parse(eventReader)
     }

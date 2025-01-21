@@ -1,8 +1,8 @@
 package com.munzenberger.feed
 
-import com.munzenberger.feed.config.OperatorConfig
 import com.munzenberger.feed.config.ConfigProvider
 import com.munzenberger.feed.config.FeedConfig
+import com.munzenberger.feed.config.OperatorConfig
 import com.munzenberger.feed.engine.DefaultItemProcessorFactory
 import com.munzenberger.feed.engine.ItemRegistry
 import com.munzenberger.feed.engine.ItemRegistryFactory
@@ -16,22 +16,23 @@ import org.junit.Test
 import java.util.function.Consumer
 
 class FeedOperatorTest {
-
     @Test
     @Ignore("Used to test real configs")
     fun `process real config`() {
-
-        val config = OperatorConfig(
-            feeds = listOf(
-                FeedConfig(url = "https://www.example.com/feed.xml")
+        val config =
+            OperatorConfig(
+                feeds =
+                    listOf(
+                        FeedConfig(url = "https://www.example.com/feed.xml"),
+                    ),
             )
-        )
 
-        val configProvider = object : ConfigProvider {
-            override val name = "FeedOperatorTest"
-            override val config = config
-            override val timestamp = 0L
-        }
+        val configProvider =
+            object : ConfigProvider {
+                override val name = "FeedOperatorTest"
+                override val config = config
+                override val timestamp = 0L
+            }
 
         val itemRegistry = mockk<ItemRegistry>()
         every { itemRegistry.contains(any()) } returns false
@@ -44,22 +45,24 @@ class FeedOperatorTest {
 
         val itemHandlerFactory = DefaultItemProcessorFactory<ItemHandler>()
 
-        val consumer = Consumer<FeedStatus> {
-            when (it) {
-                is FeedStatus.ProcessorFeedError -> throw it.error
-                is FeedStatus.ProcessorItemError -> throw it.error
-                is FeedStatus.ProcessorFeedRead -> println(it)
-                else -> Unit
+        val consumer =
+            Consumer<FeedStatus> {
+                when (it) {
+                    is FeedStatus.ProcessorFeedError -> throw it.error
+                    is FeedStatus.ProcessorItemError -> throw it.error
+                    is FeedStatus.ProcessorFeedRead -> println(it)
+                    else -> Unit
+                }
             }
-        }
 
-        val operator = OnceFeedOperator(
-            registryFactory = itemRegistryFactory,
-            configProvider = configProvider,
-            filterFactory = itemFilterFactory,
-            handlerFactory = itemHandlerFactory,
-            statusConsumer = consumer
-        )
+        val operator =
+            OnceFeedOperator(
+                registryFactory = itemRegistryFactory,
+                configProvider = configProvider,
+                filterFactory = itemFilterFactory,
+                handlerFactory = itemHandlerFactory,
+                statusConsumer = consumer,
+            )
 
         operator.start()
     }

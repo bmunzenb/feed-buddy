@@ -25,22 +25,23 @@ private class RssEnclosure {
     var url = ""
 }
 
-private fun RssChannel.toFeed() = Feed(
+private fun RssChannel.toFeed() =
+    Feed(
         title = title,
-        items = items.map { it.toItem() }
-)
+        items = items.map { it.toItem() },
+    )
 
-private fun RssItem.toItem() = Item(
+private fun RssItem.toItem() =
+    Item(
         title = title,
         content = description,
         link = link,
         guid = guid,
         timestamp = pubDate,
-        enclosures = enclosures.map { Enclosure(it.url) }
-)
+        enclosures = enclosures.map { Enclosure(it.url) },
+    )
 
 internal object RssXMLFeedParser : XMLFeedParser {
-
     private const val CHANNEL = "channel"
     private const val TITLE = "title"
     private const val ITEM = "item"
@@ -52,7 +53,6 @@ internal object RssXMLFeedParser : XMLFeedParser {
     private const val URL = "url"
 
     override fun parse(eventReader: XMLEventReader): Feed {
-
         val channel = RssChannel()
 
         while (eventReader.hasNext()) {
@@ -68,8 +68,10 @@ internal object RssXMLFeedParser : XMLFeedParser {
         return channel.toFeed()
     }
 
-    private fun parseChannel(channel: RssChannel, eventReader: XMLEventReader) {
-
+    private fun parseChannel(
+        channel: RssChannel,
+        eventReader: XMLEventReader,
+    ) {
         while (eventReader.hasNext()) {
             val event = eventReader.nextEvent()
 
@@ -86,8 +88,10 @@ internal object RssXMLFeedParser : XMLFeedParser {
         }
     }
 
-    private fun parseItem(item: RssItem, eventReader: XMLEventReader) {
-
+    private fun parseItem(
+        item: RssItem,
+        eventReader: XMLEventReader,
+    ) {
         while (eventReader.hasNext()) {
             val event = eventReader.nextEvent()
 
@@ -115,8 +119,10 @@ internal object RssXMLFeedParser : XMLFeedParser {
         }
     }
 
-    private fun parseEnclosure(enclosure: RssEnclosure, startElement: StartElement) {
-
+    private fun parseEnclosure(
+        enclosure: RssEnclosure,
+        startElement: StartElement,
+    ) {
         val attributes = startElement.attributes
 
         while (attributes.hasNext()) {

@@ -5,6 +5,7 @@ import com.munzenberger.feed.config.FeedConfig
 
 interface ItemRegistry {
     fun contains(item: Item): Boolean
+
     fun add(item: Item)
 }
 

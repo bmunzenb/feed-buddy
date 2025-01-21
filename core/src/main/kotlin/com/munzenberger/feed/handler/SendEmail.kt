@@ -19,7 +19,6 @@ import javax.mail.Transport
 import javax.mail.internet.InternetAddress
 
 class SendEmail : ItemHandler {
-
     companion object {
         val templateURL = SendEmail::class.java.getResource("SendEmail.vm")!!
     }
@@ -37,16 +36,17 @@ class SendEmail : ItemHandler {
 
     private val session: Session by lazy {
 
-        val properties = Properties().apply {
-            put("mail.transport.protocol", "smtp")
-            put("mail.smtp.host", smtpHost)
-            put("mail.smtp.port", smtpPort)
-            put("mail.smtp.auth", auth)
-            put("mail.smtp.user", username)
-            put("mail.smtp.password", password)
-            put("mail.smtp.starttls.enable", startTLSEnable)
-            put("mail.smtp.starttls.required", startTLSRequired)
-        }
+        val properties =
+            Properties().apply {
+                put("mail.transport.protocol", "smtp")
+                put("mail.smtp.host", smtpHost)
+                put("mail.smtp.port", smtpPort)
+                put("mail.smtp.auth", auth)
+                put("mail.smtp.user", username)
+                put("mail.smtp.password", password)
+                put("mail.smtp.starttls.enable", startTLSEnable)
+                put("mail.smtp.starttls.required", startTLSRequired)
+            }
 
         Session.getInstance(properties)
     }
@@ -55,17 +55,21 @@ class SendEmail : ItemHandler {
         session.transport
     }
 
-    override fun execute(context: FeedContext, item: Item, logger: Logger) {
-
-        val htmlEmail = HtmlEmail().apply {
-            addTo(to)
-            setFrom(from, context.feedTitle)
-            item.timestampAsInstant?.let { sentDate = Date.from(it) }
-            subject = item.title
-            setHtmlMsg(item.toHtmlMessage(templateURL))
-            mailSession = session
-            buildMimeMessage()
-        }
+    override fun execute(
+        context: FeedContext,
+        item: Item,
+        logger: Logger,
+    ) {
+        val htmlEmail =
+            HtmlEmail().apply {
+                addTo(to)
+                setFrom(from, context.feedTitle)
+                item.timestampAsInstant?.let { sentDate = Date.from(it) }
+                subject = item.title
+                setHtmlMsg(item.toHtmlMessage(templateURL))
+                mailSession = session
+                buildMimeMessage()
+            }
 
         if (!transport.isConnected) {
             logger.print("Connecting to mail transport $smtpHost:$smtpPort... ")
@@ -81,7 +85,7 @@ class SendEmail : ItemHandler {
     }
 }
 
-internal fun Item.toHtmlMessage(template: URL) : String {
+internal fun Item.toHtmlMessage(template: URL): String {
     val mailItem = MailItem(this)
     val context = VelocityContext().apply { put("item", mailItem) }
     val writer = StringWriter()

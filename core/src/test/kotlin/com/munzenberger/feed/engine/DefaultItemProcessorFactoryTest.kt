@@ -6,7 +6,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class DefaultItemProcessorFactoryTest {
-
     class TestItemProcessor : ItemProcessor {
         var stringProperty: String = "default"
         var booleanProperty: Boolean = false
@@ -15,36 +14,37 @@ class DefaultItemProcessorFactoryTest {
 
     @Test(expected = ClassNotFoundException::class)
     fun `it throws an exception when the type does not exist`() {
-
-        val config = ItemProcessorConfig(
-                type = "does.not.exist"
-        )
+        val config =
+            ItemProcessorConfig(
+                type = "does.not.exist",
+            )
 
         DefaultItemProcessorFactory.newItemProcessor<TestItemProcessor>(config)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun `it throws an exception when a property does not exist`() {
-
-        val config = ItemProcessorConfig(
+        val config =
+            ItemProcessorConfig(
                 type = TestItemProcessor::class.java.name,
-                properties = mapOf("invalidProperty" to "testValue")
-        )
+                properties = mapOf("invalidProperty" to "testValue"),
+            )
 
         DefaultItemProcessorFactory.newItemProcessor<TestItemProcessor>(config)
     }
 
     @Test
     fun `it can construct a new item handler`() {
-
-        val config = ItemProcessorConfig(
+        val config =
+            ItemProcessorConfig(
                 type = TestItemProcessor::class.java.name,
-                properties = mapOf(
+                properties =
+                    mapOf(
                         "stringProperty" to "testValue",
                         "booleanProperty" to true,
-                        "integerProperty" to 42
-                )
-        )
+                        "integerProperty" to 42,
+                    ),
+            )
 
         val handler = DefaultItemProcessorFactory.newItemProcessor<TestItemProcessor>(config)
 
@@ -55,15 +55,16 @@ class DefaultItemProcessorFactoryTest {
 
     @Test
     fun `it can construct a new item handler with coerced types`() {
-
-        val config = ItemProcessorConfig(
+        val config =
+            ItemProcessorConfig(
                 type = TestItemProcessor::class.java.name,
-                properties = mapOf(
+                properties =
+                    mapOf(
                         "stringProperty" to "testValue",
                         "booleanProperty" to "true",
-                        "integerProperty" to "42"
-                )
-        )
+                        "integerProperty" to "42",
+                    ),
+            )
 
         val handler = DefaultItemProcessorFactory.newItemProcessor<TestItemProcessor>(config)
 
@@ -74,11 +75,11 @@ class DefaultItemProcessorFactoryTest {
 
     @Test
     fun `it saves newly created handlers with names in global registry`() {
-
-        val config = ItemProcessorConfig(
+        val config =
+            ItemProcessorConfig(
                 name = "global",
-                type = TestItemProcessor::class.java.name
-        )
+                type = TestItemProcessor::class.java.name,
+            )
 
         val registry = mutableMapOf<String, TestItemProcessor>()
 
@@ -92,10 +93,10 @@ class DefaultItemProcessorFactoryTest {
 
     @Test
     fun `it retrieves processor with refs from global registry`() {
-
-        val config = ItemProcessorConfig(
-                ref = "global"
-        )
+        val config =
+            ItemProcessorConfig(
+                ref = "global",
+            )
 
         val global = TestItemProcessor()
 

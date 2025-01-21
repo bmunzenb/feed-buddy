@@ -1,7 +1,7 @@
 package com.munzenberger.feed
 
-import com.munzenberger.feed.config.OperatorConfig
 import com.munzenberger.feed.config.ConfigProvider
+import com.munzenberger.feed.config.OperatorConfig
 import com.munzenberger.feed.engine.FeedProcessorFactory
 import com.munzenberger.feed.engine.ItemProcessorFactory
 import com.munzenberger.feed.engine.ItemRegistryFactory
@@ -15,10 +15,12 @@ class OnceFeedOperator(
     configProvider: ConfigProvider,
     filterFactory: ItemProcessorFactory<ItemFilter>,
     handlerFactory: ItemProcessorFactory<ItemHandler>,
-    statusConsumer: Consumer<FeedStatus>
+    statusConsumer: Consumer<FeedStatus>,
 ) : BaseFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer) {
-
-    override fun start(config: OperatorConfig, processorFactory: FeedProcessorFactory) {
+    override fun start(
+        config: OperatorConfig,
+        processorFactory: FeedProcessorFactory,
+    ) {
         config.feeds.map(processorFactory::getInstance).forEach { it.run() }
     }
 }

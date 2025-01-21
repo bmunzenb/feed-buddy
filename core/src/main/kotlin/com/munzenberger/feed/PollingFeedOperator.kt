@@ -1,7 +1,7 @@
 package com.munzenberger.feed
 
-import com.munzenberger.feed.config.OperatorConfig
 import com.munzenberger.feed.config.ConfigProvider
+import com.munzenberger.feed.config.OperatorConfig
 import com.munzenberger.feed.engine.FeedProcessorFactory
 import com.munzenberger.feed.engine.ItemProcessorFactory
 import com.munzenberger.feed.engine.ItemRegistryFactory
@@ -19,51 +19,55 @@ class PollingFeedOperator(
     private val configProvider: ConfigProvider,
     filterFactory: ItemProcessorFactory<ItemFilter>,
     handlerFactory: ItemProcessorFactory<ItemHandler>,
-    private val statusConsumer: Consumer<FeedStatus>
+    private val statusConsumer: Consumer<FeedStatus>,
 ) : BaseFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer) {
-
     private var timer: Timer? = null
 
-    override fun start(config: OperatorConfig, processorFactory: FeedProcessorFactory) {
+    override fun start(
+        config: OperatorConfig,
+        processorFactory: FeedProcessorFactory,
+    ) {
+        val tasks: List<Pair<TimerTask, Long>> =
+            config.feeds.map {
+                val processor = processorFactory.getInstance(it)
 
-        val tasks: List<Pair<TimerTask, Long>> = config.feeds.map {
+                val task =
+                    object : TimerTask() {
+                        override fun run() {
+                            processor.run()
+                        }
+                    }
 
-            val processor = processorFactory.getInstance(it)
+                val period = (it.period ?: config.period).minutes
 
-            val task = object : TimerTask() {
-                override fun run() {
-                    processor.run()
-                }
+                task to period.inWholeMilliseconds
             }
 
-            val period = (it.period ?: config.period).minutes
+        val configurationChangeTask =
+            object : TimerTask() {
+                private val timestamp = configProvider.timestamp
 
-            task to period.inWholeMilliseconds
-        }
-
-        val configurationChangeTask = object : TimerTask() {
-            private val timestamp = configProvider.timestamp
-            override fun run() {
-                if (configProvider.timestamp != timestamp) {
-                    statusConsumer.accept(FeedStatus.OperatorConfigurationChange)
-                    this@PollingFeedOperator.run {
-                        cancel()
-                        start()
+                override fun run() {
+                    if (configProvider.timestamp != timestamp) {
+                        statusConsumer.accept(FeedStatus.OperatorConfigurationChange)
+                        this@PollingFeedOperator.run {
+                            cancel()
+                            start()
+                        }
                     }
                 }
             }
-        }
 
-        timer = Timer().apply {
+        timer =
+            Timer().apply {
+                tasks.forEach {
+                    schedule(it.first, 0, it.second)
+                }
 
-            tasks.forEach {
-                schedule(it.first, 0, it.second)
+                // check for configuration changes every 5 seconds
+                val delayAndPeriod = 5.seconds.inWholeMilliseconds
+                schedule(configurationChangeTask, delayAndPeriod, delayAndPeriod)
             }
-
-            // check for configuration changes every 5 seconds
-            val delayAndPeriod = 5.seconds.inWholeMilliseconds
-            schedule(configurationChangeTask, delayAndPeriod, delayAndPeriod)
-        }
     }
 
     override fun cancel() {

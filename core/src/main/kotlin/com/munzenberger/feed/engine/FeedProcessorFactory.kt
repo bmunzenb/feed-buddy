@@ -14,16 +14,16 @@ class FeedProcessorFactory(
     private val registryFactory: ItemRegistryFactory,
     private val itemFilterFactory: ItemProcessorFactory<ItemFilter> = DefaultItemProcessorFactory(),
     private val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory(),
-    private val statusConsumer: Consumer<FeedStatus>
+    private val statusConsumer: Consumer<FeedStatus>,
 ) {
     fun getInstance(feedConfig: FeedConfig): FeedProcessor {
-
         val url = URI(feedConfig.url).toURL()
 
-        val source = XMLFeedSource(
-            source = url,
-            userAgent = feedConfig.userAgent
-        )
+        val source =
+            XMLFeedSource(
+                source = url,
+                userAgent = feedConfig.userAgent,
+            )
 
         val itemRegistry = registryFactory.getInstance(feedConfig)
 
@@ -36,7 +36,7 @@ class FeedProcessorFactory(
             itemRegistry,
             itemFilter,
             itemHandler,
-            statusConsumer
+            statusConsumer,
         )
     }
 }

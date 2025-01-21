@@ -3,8 +3,8 @@ package com.munzenberger.feed.handler
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
 import com.munzenberger.feed.Logger
-import com.munzenberger.feed.client.URLClient
 import com.munzenberger.feed.client.Response
+import com.munzenberger.feed.client.URLClient
 import com.munzenberger.feed.filterForPath
 import com.munzenberger.feed.formatAsSize
 import com.munzenberger.feed.formatAsTime
@@ -19,16 +19,18 @@ import java.net.URL
 import java.net.URLDecoder
 
 class DownloadEnclosures : ItemHandler {
-
     var targetDirectory: String = "."
 
-    override fun execute(context: FeedContext, item: Item, logger: Logger) {
+    override fun execute(
+        context: FeedContext,
+        item: Item,
+        logger: Logger,
+    ) {
         item.enclosures.forEach { enclosure ->
 
             logger.print("Resolving enclosure source... ")
 
             URLClient().connect(URI.create(enclosure.url).toURL()).run {
-
                 logger.println(resolvedUrl)
 
                 contentDisposition.value?.let {
@@ -44,7 +46,7 @@ class DownloadEnclosures : ItemHandler {
                 logger.formatln(
                     "%s transferred in %s.",
                     result.first.formatAsSize(),
-                    result.second.formatAsTime()
+                    result.second.formatAsTime(),
                 )
 
                 item.timestampAsInstant?.let {
@@ -57,13 +59,11 @@ class DownloadEnclosures : ItemHandler {
     }
 
     internal fun targetFileFor(filename: String): File {
-
         var path = targetDirectory + File.separator + filename
 
         var targetFile = File(path)
 
         if (targetFile.exists()) {
-
             // insert a timestamp into the filename to make it unique
 
             var name = path
@@ -103,8 +103,10 @@ private fun String.urlDecode(encoding: String = "UTF-8"): String {
     }
 }
 
-private fun download(inStream: InputStream, target: File): Long {
-
+private fun download(
+    inStream: InputStream,
+    target: File,
+): Long {
     val inputSource = inStream.source().buffer()
     val outputSink = target.sink().buffer()
 
@@ -121,5 +123,3 @@ private fun <T> profile(block: () -> T): Pair<T, Long> {
     val time = System.currentTimeMillis() - start
     return v to time
 }
-
-

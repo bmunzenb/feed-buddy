@@ -5,10 +5,8 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 
 class ContentDispositionTest {
-
     @Test
     fun `content disposition returns null for no filename`() {
-
         val contentDisposition = ContentDisposition("")
 
         assertNull(contentDisposition.filename)
@@ -16,7 +14,6 @@ class ContentDispositionTest {
 
     @Test
     fun `content disposition returns filename`() {
-
         val contentDisposition = ContentDisposition("attachment; filename=foobar.txt")
 
         assertEquals("foobar.txt", contentDisposition.filename)
@@ -24,7 +21,6 @@ class ContentDispositionTest {
 
     @Test
     fun `content disposition removes whitespace from filenames`() {
-
         val contentDisposition = ContentDisposition("attachment ; filename = foobar.txt ")
 
         assertEquals("foobar.txt", contentDisposition.filename)
@@ -32,7 +28,6 @@ class ContentDispositionTest {
 
     @Test
     fun `content disposition removes quotes from filenames`() {
-
         val contentDisposition = ContentDisposition("attachment; filename=\"foobar.txt\"")
 
         assertEquals("foobar.txt", contentDisposition.filename)

@@ -5,7 +5,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class FormatterTest {
-
     @Test
     fun `it can format milliseconds`() {
         Assert.assertEquals("50 ms", 50L.formatAsTime())

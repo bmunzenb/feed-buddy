@@ -15,42 +15,47 @@ object URLClientDefaults {
 class URLClient(
     private val userAgent: String? = null,
     private val timeout: Int = URLClientDefaults.timeout,
-    private val maxRedirects: Int = URLClientDefaults.maxRedirects
+    private val maxRedirects: Int = URLClientDefaults.maxRedirects,
 ) {
     companion object {
-
-        private val redirectCodes = setOf(
-            HttpURLConnection.HTTP_MOVED_PERM,
-            HttpURLConnection.HTTP_MOVED_TEMP,
-            HttpURLConnection.HTTP_SEE_OTHER,
-            307, // Temporary Redirect (since HTTP/1.1)
-            308 // Permanent Redirect (RFC 7538)
-        )
+        @Suppress("ktlint:standard:discouraged-comment-location")
+        private val redirectCodes =
+            setOf(
+                HttpURLConnection.HTTP_MOVED_PERM,
+                HttpURLConnection.HTTP_MOVED_TEMP,
+                HttpURLConnection.HTTP_SEE_OTHER,
+                307, // Temporary Redirect (since HTTP/1.1)
+                308, // Permanent Redirect (RFC 7538)
+            )
     }
 
     fun connect(url: URL): Response {
         val resolvedUserAgent = userAgent ?: URLClientDefaults.userAgent
         return connect(
             url = url,
-            requestProperties = mapOf(
-                "User-agent" to resolvedUserAgent,
-                "Accept" to "application/xml"
-            ),
-            locations = emptySet()
+            requestProperties =
+                mapOf(
+                    "User-agent" to resolvedUserAgent,
+                    "Accept" to "application/xml",
+                ),
+            locations = emptySet(),
         )
     }
 
-    private fun connect(url: URL, requestProperties: Map<String, String>, locations: Set<String>): Response {
-
-        val connection = url.openConnection().apply {
-            connectTimeout = timeout
-            readTimeout = timeout
-        }
+    private fun connect(
+        url: URL,
+        requestProperties: Map<String, String>,
+        locations: Set<String>,
+    ): Response {
+        val connection =
+            url.openConnection().apply {
+                connectTimeout = timeout
+                readTimeout = timeout
+            }
 
         requestProperties.forEach(connection::setRequestProperty)
 
         if (connection is HttpURLConnection) {
-
             // HttpURLConnection will not follow redirects if the protocol changes (e.g. HTTP -> HTTPS)
             // so we need to manually handle redirects
             connection.instanceFollowRedirects = false
@@ -91,7 +96,7 @@ class URLClient(
             resolvedUrl = url,
             contentType = ContentType(connection.contentType),
             contentDisposition = ContentDisposition(connection.getHeaderField("Content-Disposition")),
-            inStream = inStream
+            inStream = inStream,
         )
     }
 }

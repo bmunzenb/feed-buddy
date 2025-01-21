@@ -5,10 +5,9 @@ import java.io.InputStream
 import java.io.InputStreamReader
 
 class XMLFilterReader(
-        inStream: InputStream,
-        private val encoding: String
+    inStream: InputStream,
+    private val encoding: String,
 ) : FilterReader(InputStreamReader(inStream, encoding)) {
-
     companion object {
         private const val BYTE_ORDER_MARK = '\uFEFF'
     }
@@ -32,7 +31,11 @@ class XMLFilterReader(
         throw UnsupportedOperationException()
     }
 
-    override fun read(cbuf: CharArray, off: Int, len: Int): Int {
+    override fun read(
+        cbuf: CharArray,
+        off: Int,
+        len: Int,
+    ): Int {
         val read = super.read(cbuf, off, len)
 
         if (read < 0) {
@@ -43,7 +46,6 @@ class XMLFilterReader(
         var counter = 0
 
         for (i in off until off + read) {
-
             val c = cbuf[i]
 
             if (firstChar) {
@@ -72,12 +74,13 @@ class XMLFilterReader(
     }
 }
 
-private fun Char.isValidXML(): Boolean = code.let {
-    // https://www.w3.org/TR/xml/#charsets
-    it == 0x9 ||
+private fun Char.isValidXML(): Boolean =
+    code.let {
+        // https://www.w3.org/TR/xml/#charsets
+        it == 0x9 ||
             it == 0xA ||
             it == 0xD ||
             it in 0x20..0xD7FF ||
             it in 0xE000..0xFFFD ||
             it in 0x10000..0x10FFFF
-}
+    }

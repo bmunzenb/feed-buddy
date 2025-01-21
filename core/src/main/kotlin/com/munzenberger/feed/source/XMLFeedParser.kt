@@ -7,7 +7,6 @@ interface XMLFeedParser {
     fun parse(eventReader: XMLEventReader): Feed
 
     fun parseCharacterData(eventReader: XMLEventReader): String {
-
         var value = ""
 
         val event = eventReader.nextEvent()
