@@ -7,6 +7,7 @@ import com.munzenberger.feed.Logger
 class RegexItemFilter : ItemFilter {
     var title: String? = null
     var content: String? = null
+    var category: String? = null
 
     override fun evaluate(
         context: FeedContext,
@@ -17,6 +18,7 @@ class RegexItemFilter : ItemFilter {
             listOf(
                 title?.let { Regex(it).matches(item.title) } ?: true,
                 content?.let { Regex(it).matches(item.content) } ?: true,
+                category?.let { Regex(it).let { r -> item.categories.any { c -> r.matches(c) } } } ?: true,
             )
 
         return matchers.all { it }

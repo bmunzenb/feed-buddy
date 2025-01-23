@@ -28,6 +28,7 @@ class FeedProcessorTest {
             guid = "item guid",
             timestamp = "item timestamp",
             enclosures = emptyList(),
+            categories = emptyList(),
         )
 
     private val feed =
@@ -197,11 +198,9 @@ class FeedProcessorTest {
         every { itemRegistry.contains(any()) } returns false
         every { itemRegistry.add(any()) } returns Unit
 
-        val itemFilter = mockk<ItemFilter>()
-        every { itemFilter.evaluate(any(), any(), any()) } returns true
+        val itemFilter = ItemFilter { _, _, _ -> true }
 
-        val itemHandler = mockk<ItemHandler>()
-        every { itemHandler.execute(any(), any(), any()) } returns Unit
+        val itemHandler = ItemHandler { _, _, _ -> }
 
         val consumer =
             Consumer<FeedStatus> {

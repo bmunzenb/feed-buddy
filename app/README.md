@@ -268,10 +268,11 @@ Use this filter to match a feed item's title or content with a regular expressio
 feed's handlers if all the specified regular expressions match the item's properties.  Set the filter's `type` property
 to `com.munzenberger.feed.filter.RegexItemFilter` and configure with the following properties:
 
-| Name      |  Type  | Required | Description                                          |
-|-----------|:------:|:--------:|------------------------------------------------------|
-| `title`   | String |    No    | If specified, matches with the item's title value.   |
-| `content` | String |    No    | If specified, matches with the item's content value. |
+| Name       |  Type  | Required | Description                                                                                                                |
+|------------|:------:|:--------:|----------------------------------------------------------------------------------------------------------------------------|
+| `title`    | String |    No    | If specified, matches with the item's title value.                                                                         |
+| `content`  | String |    No    | If specified, matches with the item's content value.                                                                       |
+| `category` | String |    No    | If specified, matches with any of the item's categories. For Atom feeds, this matches against the category term attribute. | 
 
 The following example configurations in XML, JSON, and YAML are all equivalent:
 

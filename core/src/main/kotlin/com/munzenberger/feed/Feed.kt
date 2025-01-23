@@ -15,6 +15,7 @@ data class Item(
     val guid: String,
     val timestamp: String,
     val enclosures: List<Enclosure>,
+    val categories: List<String>,
 ) {
     val timestampAsInstant: Instant? by lazy { timestamp.toInstant() }
 }

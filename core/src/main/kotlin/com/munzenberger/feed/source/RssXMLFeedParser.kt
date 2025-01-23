@@ -19,6 +19,7 @@ private class RssItem {
     var guid = ""
     var pubDate = ""
     val enclosures = mutableListOf<RssEnclosure>()
+    val categories = mutableListOf<String>()
 }
 
 private class RssEnclosure {
@@ -39,6 +40,7 @@ private fun RssItem.toItem() =
         guid = guid,
         timestamp = pubDate,
         enclosures = enclosures.map { Enclosure(it.url) },
+        categories = categories,
     )
 
 internal object RssXMLFeedParser : XMLFeedParser {
@@ -51,6 +53,7 @@ internal object RssXMLFeedParser : XMLFeedParser {
     private const val PUBDATE = "pubDate"
     private const val ENCLOSURE = "enclosure"
     private const val URL = "url"
+    private const val CATEGORY = "category"
 
     override fun parse(eventReader: XMLEventReader): Feed {
         val channel = RssChannel()
@@ -88,6 +91,7 @@ internal object RssXMLFeedParser : XMLFeedParser {
         }
     }
 
+    @Suppress("CyclomaticComplexMethod", "NestedBlockDepth")
     private fun parseItem(
         item: RssItem,
         eventReader: XMLEventReader,
@@ -105,6 +109,7 @@ internal object RssXMLFeedParser : XMLFeedParser {
                     GUID -> item.guid = parseCharacterData(eventReader)
                     PUBDATE -> item.pubDate = parseCharacterData(eventReader)
                     ENCLOSURE -> item.enclosures += RssEnclosure().apply { parseEnclosure(this, startElement) }
+                    CATEGORY -> item.categories += parseCharacterData(eventReader)
                 }
 
                 if (startElement.name.prefix == "content" && startElement.name.localPart == "encoded") {

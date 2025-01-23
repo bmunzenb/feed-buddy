@@ -51,12 +51,14 @@ Here is a basic implementation for creating a `FeedOperator` that will poll one 
 
 ```kotlin
 // Use the default item registry as a file per feed
-val pathToRegistry = Path("/path/to/registry")
-val itemRegistryFactory = FileItemRegistryFactory(pathToRegistry)
+val itemRegistryFactory = FileItemRegistryFactory(
+    Path("/path/to/registry")
+)
 
 // Specify the configuration from a file
-val configFile = File("/path/to/config/feeds.json")
-val configProvider = FileConfigProvider(configFile)
+val configProvider = FileConfigProvider(
+    File("/path/to/config/feeds.json")
+)
 
 // Use the default filter and handler factories
 val filterFactory = DefaultItemProcessorFactory<ItemFilter>()
@@ -147,17 +149,13 @@ val itemRegistry = object : ItemRegistry {
     }
 }
 
-val itemFilter = object : ItemFilter {
-    override fun evaluate(context: FeedContext, item: Item, logger: Logger): Boolean {
-        return item.title.contains("Foo", ignoreCase = true)
-    }
+val itemFilter = ItemFilter { context, item, logger ->
+    item.title.contains("Foo", ignoreCase = true)
 }
 
-val itemHandler = object : ItemHandler {
-    override fun execute(context: FeedContext, item: Item, logger: Logger) {
-        // logging sends a `FeedStatus` event to the status consumer
-        logger.println(item.title)
-    }
+val itemHandler = ItemHandler { context, item, logger ->
+    // logging sends a `FeedStatus` event to the status consumer
+    logger.println(item.title)
 }
 
 val statusConsumer = Consumer<FeedStatus> { status ->

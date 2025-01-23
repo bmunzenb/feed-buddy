@@ -15,6 +15,7 @@ class FileItemRegistryTest {
                 guid = "guid",
                 timestamp = "",
                 enclosures = emptyList(),
+                categories = emptyList(),
             )
 
         assertEquals("guid", item.persistableIdentity)
@@ -30,6 +31,7 @@ class FileItemRegistryTest {
                 guid = "",
                 timestamp = "",
                 enclosures = emptyList(),
+                categories = emptyList(),
             )
 
         assertEquals("link", item.persistableIdentity)
@@ -45,6 +47,7 @@ class FileItemRegistryTest {
                 guid = "",
                 timestamp = "",
                 enclosures = emptyList(),
+                categories = emptyList(),
             )
 
         assertEquals("title", item.persistableIdentity)
@@ -60,6 +63,7 @@ class FileItemRegistryTest {
                 guid = "",
                 timestamp = "",
                 enclosures = emptyList(),
+                categories = emptyList(),
             )
 
         assertEquals("", item.persistableIdentity)

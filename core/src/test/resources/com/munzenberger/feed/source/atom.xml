@@ -39,6 +39,8 @@
             <name>John Doe</name>
             <email>johndoe@example.com</email>
         </author>
+        <category term="Category A"/>
+        <category term="Category B"/>
     </entry>
 
     <entry>

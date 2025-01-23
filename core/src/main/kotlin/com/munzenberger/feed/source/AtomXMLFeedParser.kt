@@ -21,6 +21,7 @@ private class AtomEntry {
     var updated = ""
     var summary = ""
     val contents = mutableListOf<AtomContent>()
+    val categories = mutableListOf<AtomCategory>()
 }
 
 private class AtomLink {
@@ -40,6 +41,10 @@ private class AtomContent {
             }
 }
 
+private class AtomCategory {
+    var term: String = ""
+}
+
 private fun AtomFeed.toFeed() =
     Feed(
         title = title,
@@ -57,6 +62,7 @@ private fun AtomEntry.toItem() =
             links
                 .filter { it.rel == "enclosure" }
                 .map { Enclosure(it.href) },
+        categories = categories.map { it.term },
     )
 
 internal object AtomXMLFeedParser : XMLFeedParser {
@@ -70,6 +76,8 @@ internal object AtomXMLFeedParser : XMLFeedParser {
     private const val UPDATED = "updated"
     private const val SUMMARY = "summary"
     private const val CONTENT = "content"
+    private const val CATEGORY = "category"
+    private const val CATEGORY_TERM = "term"
 
     override fun parse(eventReader: XMLEventReader): Feed {
         val feed = AtomFeed()
@@ -88,6 +96,7 @@ internal object AtomXMLFeedParser : XMLFeedParser {
         return feed.toFeed()
     }
 
+    @Suppress("CyclomaticComplexMethod", "NestedBlockDepth")
     private fun parseEntry(
         entry: AtomEntry,
         eventReader: XMLEventReader,
@@ -103,6 +112,7 @@ internal object AtomXMLFeedParser : XMLFeedParser {
                     UPDATED -> entry.updated = parseCharacterData(eventReader)
                     SUMMARY -> entry.summary = parseCharacterData(eventReader)
                     CONTENT -> entry.contents += AtomContent().apply { parseContent(this, event.asStartElement(), eventReader) }
+                    CATEGORY -> entry.categories += AtomCategory().apply { parseCategory(this, event.asStartElement()) }
                 }
             }
 
@@ -153,6 +163,20 @@ internal object AtomXMLFeedParser : XMLFeedParser {
             }
 
             event.writeAsEncodedUnicode(valueWriter)
+        }
+    }
+
+    private fun parseCategory(
+        category: AtomCategory,
+        startElement: StartElement,
+    ) {
+        val attributes = startElement.attributes
+
+        while (attributes.hasNext()) {
+            val attr = attributes.next() as Attribute
+            when (attr.name.localPart) {
+                CATEGORY_TERM -> category.term = attr.value
+            }
         }
     }
 }

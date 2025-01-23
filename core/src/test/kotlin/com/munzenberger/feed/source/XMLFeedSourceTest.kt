@@ -28,6 +28,7 @@ class XMLFeedSourceTest {
                             guid = "7bd204c6-1655-4c27-aeee-53f933c5395f",
                             timestamp = "Sun, 06 Sep 2009 16:20:00 +0000",
                             enclosures = emptyList(),
+                            categories = emptyList(),
                         ),
                         Item(
                             title = "Another entry",
@@ -40,6 +41,11 @@ class XMLFeedSourceTest {
                                     Enclosure("http://example.com/file1.mp3"),
                                     Enclosure("http://example.com/file2.mp3"),
                                 ),
+                            categories =
+                                listOf(
+                                    "Category A",
+                                    "Category B",
+                                ),
                         ),
                         Item(
                             title = "Encoded content",
@@ -48,6 +54,7 @@ class XMLFeedSourceTest {
                             guid = "11fc01c0-7940-42b6-8bf5-df2730e46dfe",
                             timestamp = "Thu, 23 Apr 2020 04:01:00 +0000",
                             enclosures = emptyList(),
+                            categories = emptyList(),
                         ),
                     ),
             )
@@ -73,6 +80,7 @@ class XMLFeedSourceTest {
                             guid = "urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a",
                             timestamp = "2003-12-13T18:30:02Z",
                             enclosures = emptyList(),
+                            categories = emptyList(),
                         ),
                         Item(
                             title = "Another entry with enclosures",
@@ -85,6 +93,11 @@ class XMLFeedSourceTest {
                                     Enclosure("http://example.com/file1.mp3"),
                                     Enclosure("http://example.com/file2.mp3"),
                                 ),
+                            categories =
+                                listOf(
+                                    "Category A",
+                                    "Category B",
+                                ),
                         ),
                         Item(
                             title = "HTML entry",
@@ -93,6 +106,7 @@ class XMLFeedSourceTest {
                             guid = "urn:uuid:617ab45c-77c9-4e40-877a-85d062a4ac21",
                             timestamp = "2018-05-05T04:25:02Z",
                             enclosures = emptyList(),
+                            categories = emptyList(),
                         ),
                     ),
             )
