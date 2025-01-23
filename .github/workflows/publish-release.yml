@@ -1,7 +1,6 @@
 name: Publish Release
 
 on:
-  workflow_dispatch: # allow manual execution
   push:
     tags:
       - 'release-*'
@@ -33,7 +32,6 @@ jobs:
       - name: Publish application
         uses: softprops/action-gh-release@v2
         with:
-          draft: true
           files: app/build/distributions/*
 
       - name: Publish package
