@@ -6,8 +6,8 @@ on:
       - 'release-*'
 
 jobs:
-  build:
-    name: Build and Draft Release from Tag
+  build-and-release:
+    name: Build and Create Release from Tag
     runs-on: ubuntu-latest
     permissions:
       contents: write
