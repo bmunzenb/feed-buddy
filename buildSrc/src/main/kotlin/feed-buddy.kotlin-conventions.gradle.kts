@@ -11,6 +11,7 @@ kotlin {
 }
 
 ktlint {
+    // https://github.com/pinterest/ktlint/releases
     version.set("1.5.0")
 }
 
