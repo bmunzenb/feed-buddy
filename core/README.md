@@ -30,7 +30,7 @@ a file for each feed processed.
 Implementations of this interface provide an instance of an `OperatorConfig` when requested.  The only provided
 implementation is `FileConfigProvider` which reads the configuration from a JSON, YAML, or XML file.
 
-#### `ItemProcessorFactory<ItemHanlder>` and `ItemProcessorFactory<ItemFilter>`
+#### `ItemProcessorFactory<ItemHandler>` and `ItemProcessorFactory<ItemFilter>`
 
 These factories are responsible for creating instances of feed item processors, specifically filters which determine
 which items in a feed are eligible for processing, and handlers which process each item in a feed. The only provided
