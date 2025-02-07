@@ -6,10 +6,6 @@ plugins {
     `maven-publish`
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation(libs.kotlin.reflect)
     implementation(libs.commons.email)

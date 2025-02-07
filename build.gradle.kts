@@ -5,11 +5,6 @@ plugins {
     alias(libs.plugins.versions)
 }
 
-repositories {
-    mavenCentral()
-    gradlePluginPortal()
-}
-
 // https://github.com/ben-manes/gradle-versions-plugin
 fun isNonStable(version: String): Boolean {
     val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
