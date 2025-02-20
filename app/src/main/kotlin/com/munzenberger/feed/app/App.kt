@@ -108,7 +108,7 @@ class App : CliktCommand(name = "feed-buddy") {
                     DefaultItemProcessorFactory()
             }
 
-        val statusConsumer = LoggingStatusConsumer(logger)
+        val statusConsumer = LoggingEventConsumer(logger)
 
         val feedOperator: FeedOperator =
             when (mode) {

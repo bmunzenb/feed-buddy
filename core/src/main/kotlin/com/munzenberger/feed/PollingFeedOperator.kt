@@ -7,7 +7,6 @@ import com.munzenberger.feed.engine.ItemProcessorFactory
 import com.munzenberger.feed.engine.ItemRegistryFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
-import com.munzenberger.feed.status.FeedStatus
 import java.util.Timer
 import java.util.TimerTask
 import java.util.function.Consumer
@@ -19,7 +18,7 @@ class PollingFeedOperator(
     private val configProvider: ConfigProvider,
     filterFactory: ItemProcessorFactory<ItemFilter>,
     handlerFactory: ItemProcessorFactory<ItemHandler>,
-    private val statusConsumer: Consumer<FeedStatus>,
+    private val statusConsumer: Consumer<FeedEvent>,
 ) : BaseFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer) {
     private var timer: Timer? = null
 
@@ -49,7 +48,7 @@ class PollingFeedOperator(
 
                 override fun run() {
                     if (configProvider.timestamp != timestamp) {
-                        statusConsumer.accept(FeedStatus.OperatorConfigurationChange)
+                        statusConsumer.accept(FeedEvent.OperatorConfigurationChange)
                         this@PollingFeedOperator.run {
                             cancel()
                             start()

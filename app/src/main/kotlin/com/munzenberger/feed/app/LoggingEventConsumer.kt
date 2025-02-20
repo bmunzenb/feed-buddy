@@ -1,16 +1,16 @@
 package com.munzenberger.feed.app
 
+import com.munzenberger.feed.FeedEvent
 import com.munzenberger.feed.Logger
 import com.munzenberger.feed.formatAsTime
-import com.munzenberger.feed.status.FeedStatus
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.function.Consumer
 
-class LoggingStatusConsumer(
+class LoggingEventConsumer(
     private val logger: Logger,
-) : Consumer<FeedStatus> {
+) : Consumer<FeedEvent> {
     companion object {
         private val tf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
         private val timestamp: String
@@ -30,22 +30,22 @@ class LoggingStatusConsumer(
     private var errors = 0
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
-    override fun accept(status: FeedStatus) {
-        when (status) {
-            is FeedStatus.OperatorStart ->
+    override fun accept(event: FeedEvent) {
+        when (event) {
+            is FeedEvent.OperatorStart ->
                 logger.formatln(
                     "Scheduling %d %s from %s.",
-                    status.feedCount,
-                    "feed".pluralize(status.feedCount),
-                    status.configProviderName,
+                    event.feedCount,
+                    "feed".pluralize(event.feedCount),
+                    event.configProviderName,
                 )
 
-            is FeedStatus.OperatorConfigurationChange ->
+            is FeedEvent.OperatorConfigurationChange ->
                 logger.println(
                     "Detected configuration change.",
                 )
 
-            is FeedStatus.ProcessorFeedStart -> {
+            is FeedEvent.ProcessorFeedStart -> {
                 startTime = System.currentTimeMillis()
                 count = 0
                 processed = 0
@@ -54,43 +54,43 @@ class LoggingStatusConsumer(
                 logger.format(
                     "[%s] Reading %s... ",
                     timestamp,
-                    status.sourceName,
+                    event.sourceName,
                 )
             }
 
-            is FeedStatus.ProcessorFeedRead ->
+            is FeedEvent.ProcessorFeedRead ->
                 logger.formatln(
                     "%s, %d %s.",
-                    status.feedTitle,
-                    status.itemCount,
-                    "item".pluralize(status.itemCount),
+                    event.feedTitle,
+                    event.itemCount,
+                    "item".pluralize(event.itemCount),
                 )
 
-            is FeedStatus.ProcessorFeedFilter -> {
-                count = status.itemCount
+            is FeedEvent.ProcessorFeedFilter -> {
+                count = event.itemCount
             }
 
-            is FeedStatus.ProcessorItemStart -> {
+            is FeedEvent.ProcessorItemStart -> {
                 processed++
                 logger.formatln(
                     "[%d/%d] Processing \"%s\" (%s)...",
                     processed,
                     count,
-                    status.itemTitle,
-                    status.itemGuid,
+                    event.itemTitle,
+                    event.itemGuid,
                 )
             }
 
-            is FeedStatus.ProcessorItemError -> {
+            is FeedEvent.ProcessorItemError -> {
                 errors++
-                onError(status.error)
+                onError(event.error)
             }
 
-            is FeedStatus.ProcessorItemComplete -> Unit
+            is FeedEvent.ProcessorItemComplete -> Unit
 
-            is FeedStatus.ProcessorFeedError -> onError(status.error)
+            is FeedEvent.ProcessorFeedError -> onError(event.error)
 
-            is FeedStatus.ProcessorFeedComplete -> {
+            is FeedEvent.ProcessorFeedComplete -> {
                 val elapsed = System.currentTimeMillis() - startTime
                 if (count > 0) {
                     when (errors) {
@@ -114,15 +114,15 @@ class LoggingStatusConsumer(
                 }
             }
 
-            is FeedStatus.ItemProcessorMessage -> {
-                if (status.isPartialMessage) {
-                    logger.print(status.message)
+            is FeedEvent.ItemProcessorMessage -> {
+                if (event.isPartialMessage) {
+                    logger.print(event.message)
                 } else {
-                    logger.println(status.message)
+                    logger.println(event.message)
                 }
             }
 
-            is FeedStatus.ItemProcessorError -> onError(status.error)
+            is FeedEvent.ItemProcessorError -> onError(event.error)
         }
     }
 

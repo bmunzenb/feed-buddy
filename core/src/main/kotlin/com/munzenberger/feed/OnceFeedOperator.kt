@@ -7,7 +7,6 @@ import com.munzenberger.feed.engine.ItemProcessorFactory
 import com.munzenberger.feed.engine.ItemRegistryFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
-import com.munzenberger.feed.status.FeedStatus
 import java.util.function.Consumer
 
 class OnceFeedOperator(
@@ -15,7 +14,7 @@ class OnceFeedOperator(
     configProvider: ConfigProvider,
     filterFactory: ItemProcessorFactory<ItemFilter>,
     handlerFactory: ItemProcessorFactory<ItemHandler>,
-    statusConsumer: Consumer<FeedStatus>,
+    statusConsumer: Consumer<FeedEvent>,
 ) : BaseFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer) {
     override fun start(
         config: OperatorConfig,

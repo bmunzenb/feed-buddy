@@ -2,12 +2,12 @@ package com.munzenberger.feed.engine
 
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.FeedContext
+import com.munzenberger.feed.FeedEvent
 import com.munzenberger.feed.Item
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.FeedSource
 import com.munzenberger.feed.source.XMLFeedSource
-import com.munzenberger.feed.status.FeedStatus
 import io.mockk.Ordering
 import io.mockk.every
 import io.mockk.mockk
@@ -18,7 +18,7 @@ import java.net.URI
 import java.util.function.Consumer
 
 class FeedProcessorTest {
-    private val consumer = Consumer<FeedStatus> { }
+    private val consumer = Consumer<FeedEvent> { }
 
     private val item =
         Item(
@@ -203,10 +203,10 @@ class FeedProcessorTest {
         val itemHandler = ItemHandler { _, _, _ -> }
 
         val consumer =
-            Consumer<FeedStatus> {
+            Consumer<FeedEvent> {
                 when (it) {
-                    is FeedStatus.ProcessorFeedError -> throw it.error
-                    is FeedStatus.ProcessorFeedRead -> println(it)
+                    is FeedEvent.ProcessorFeedError -> throw it.error
+                    is FeedEvent.ProcessorFeedRead -> println(it)
                     else -> Unit
                 }
             }

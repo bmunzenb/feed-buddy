@@ -7,7 +7,6 @@ import com.munzenberger.feed.engine.ItemProcessorFactory
 import com.munzenberger.feed.engine.ItemRegistryFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
-import com.munzenberger.feed.status.FeedStatus
 import java.util.function.Consumer
 
 interface FeedOperator {
@@ -21,7 +20,7 @@ abstract class BaseFeedOperator(
     private val configProvider: ConfigProvider,
     private val filterFactory: ItemProcessorFactory<ItemFilter>,
     private val handlerFactory: ItemProcessorFactory<ItemHandler>,
-    private val statusConsumer: Consumer<FeedStatus>,
+    private val statusConsumer: Consumer<FeedEvent>,
 ) : FeedOperator {
     override fun start() {
         val config = configProvider.config
@@ -41,7 +40,7 @@ abstract class BaseFeedOperator(
                 statusConsumer,
             )
 
-        statusConsumer.accept(FeedStatus.OperatorStart(config.feeds.size, configProvider.name))
+        statusConsumer.accept(FeedEvent.OperatorStart(config.feeds.size, configProvider.name))
 
         start(config, processorFactory)
     }

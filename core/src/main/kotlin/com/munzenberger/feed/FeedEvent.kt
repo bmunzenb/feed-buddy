@@ -1,49 +1,49 @@
-package com.munzenberger.feed.status
+package com.munzenberger.feed
 
-sealed class FeedStatus {
+sealed class FeedEvent {
     data class OperatorStart(
         val feedCount: Int,
         val configProviderName: String,
-    ) : FeedStatus()
+    ) : FeedEvent()
 
-    data object OperatorConfigurationChange : FeedStatus()
+    data object OperatorConfigurationChange : FeedEvent()
 
     data class ProcessorFeedStart(
         val sourceName: String,
-    ) : FeedStatus()
+    ) : FeedEvent()
 
     data class ProcessorFeedRead(
         val feedTitle: String,
         val itemCount: Int,
-    ) : FeedStatus()
+    ) : FeedEvent()
 
     data class ProcessorFeedFilter(
         val itemCount: Int,
-    ) : FeedStatus()
+    ) : FeedEvent()
 
     data class ProcessorItemStart(
         val itemTitle: String,
         val itemGuid: String,
-    ) : FeedStatus()
+    ) : FeedEvent()
 
-    data object ProcessorItemComplete : FeedStatus()
+    data object ProcessorItemComplete : FeedEvent()
 
     data class ProcessorItemError(
         val error: Throwable,
-    ) : FeedStatus()
+    ) : FeedEvent()
 
     data class ProcessorFeedError(
         val error: Throwable,
-    ) : FeedStatus()
+    ) : FeedEvent()
 
-    data object ProcessorFeedComplete : FeedStatus()
+    data object ProcessorFeedComplete : FeedEvent()
 
     data class ItemProcessorMessage(
         val message: Any,
         val isPartialMessage: Boolean = false,
-    ) : FeedStatus()
+    ) : FeedEvent()
 
     data class ItemProcessorError(
         val error: Throwable,
-    ) : FeedStatus()
+    ) : FeedEvent()
 }

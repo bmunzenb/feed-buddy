@@ -8,7 +8,6 @@ import com.munzenberger.feed.engine.ItemRegistry
 import com.munzenberger.feed.engine.ItemRegistryFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
-import com.munzenberger.feed.status.FeedStatus
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Ignore
@@ -46,11 +45,11 @@ class FeedOperatorTest {
         val itemHandlerFactory = DefaultItemProcessorFactory<ItemHandler>()
 
         val consumer =
-            Consumer<FeedStatus> {
+            Consumer<FeedEvent> {
                 when (it) {
-                    is FeedStatus.ProcessorFeedError -> throw it.error
-                    is FeedStatus.ProcessorItemError -> throw it.error
-                    is FeedStatus.ProcessorFeedRead -> println(it)
+                    is FeedEvent.ProcessorFeedError -> throw it.error
+                    is FeedEvent.ProcessorItemError -> throw it.error
+                    is FeedEvent.ProcessorFeedRead -> println(it)
                     else -> Unit
                 }
             }

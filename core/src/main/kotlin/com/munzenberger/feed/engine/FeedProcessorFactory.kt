@@ -1,12 +1,12 @@
 package com.munzenberger.feed.engine
 
+import com.munzenberger.feed.FeedEvent
 import com.munzenberger.feed.config.FeedConfig
 import com.munzenberger.feed.filter.CompositeItemFilter
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.CompositeItemHandler
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.XMLFeedSource
-import com.munzenberger.feed.status.FeedStatus
 import java.net.URI
 import java.util.function.Consumer
 
@@ -14,7 +14,7 @@ class FeedProcessorFactory(
     private val registryFactory: ItemRegistryFactory,
     private val itemFilterFactory: ItemProcessorFactory<ItemFilter> = DefaultItemProcessorFactory(),
     private val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory(),
-    private val statusConsumer: Consumer<FeedStatus>,
+    private val statusConsumer: Consumer<FeedEvent>,
 ) {
     fun getInstance(feedConfig: FeedConfig): FeedProcessor {
         val url = URI(feedConfig.url).toURL()
