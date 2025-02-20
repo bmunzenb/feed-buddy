@@ -20,7 +20,7 @@ abstract class BaseFeedOperator(
     private val configProvider: ConfigProvider,
     private val filterFactory: ItemProcessorFactory<ItemFilter>,
     private val handlerFactory: ItemProcessorFactory<ItemHandler>,
-    private val statusConsumer: Consumer<FeedEvent>,
+    private val eventConsumer: Consumer<FeedEvent>,
 ) : FeedOperator {
     override fun start() {
         val config = configProvider.config
@@ -37,10 +37,10 @@ abstract class BaseFeedOperator(
                 registryFactory,
                 filterFactory,
                 handlerFactory,
-                statusConsumer,
+                eventConsumer,
             )
 
-        statusConsumer.accept(FeedEvent.OperatorStart(config.feeds.size, configProvider.name))
+        eventConsumer.accept(FeedEvent.OperatorStart(config.feeds.size, configProvider.name))
 
         start(config, processorFactory)
     }

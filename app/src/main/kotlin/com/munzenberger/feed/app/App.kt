@@ -78,8 +78,6 @@ class App : CliktCommand(name = "feed-buddy") {
     override fun run() {
         URLClientDefaults.timeout = timeout * 1000 // convert to millis
 
-        val configFile = feeds.toFile()
-
         val logger =
             CompositeLogger().apply {
                 add(ConsoleLogger)
@@ -91,7 +89,7 @@ class App : CliktCommand(name = "feed-buddy") {
 
         val registryFactory = FileItemRegistryFactory(registry)
 
-        val configProvider = FileConfigProvider(configFile)
+        val configProvider = FileConfigProvider(feeds.toFile())
 
         val filterFactory = DefaultItemProcessorFactory<ItemFilter>()
 
@@ -108,15 +106,15 @@ class App : CliktCommand(name = "feed-buddy") {
                     DefaultItemProcessorFactory()
             }
 
-        val statusConsumer = LoggingEventConsumer(logger)
+        val eventConsumer = LoggingEventConsumer(logger)
 
         val feedOperator: FeedOperator =
             when (mode) {
                 OperatingMode.POLL ->
-                    PollingFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer)
+                    PollingFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, eventConsumer)
 
                 OperatingMode.ONCE, OperatingMode.NOOP ->
-                    OnceFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer)
+                    OnceFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, eventConsumer)
             }
 
         Runtime.getRuntime().addShutdownHook(

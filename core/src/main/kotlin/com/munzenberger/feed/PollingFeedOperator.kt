@@ -18,8 +18,8 @@ class PollingFeedOperator(
     private val configProvider: ConfigProvider,
     filterFactory: ItemProcessorFactory<ItemFilter>,
     handlerFactory: ItemProcessorFactory<ItemHandler>,
-    private val statusConsumer: Consumer<FeedEvent>,
-) : BaseFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer) {
+    private val eventConsumer: Consumer<FeedEvent>,
+) : BaseFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, eventConsumer) {
     private var timer: Timer? = null
 
     override fun start(
@@ -48,7 +48,7 @@ class PollingFeedOperator(
 
                 override fun run() {
                     if (configProvider.timestamp != timestamp) {
-                        statusConsumer.accept(FeedEvent.OperatorConfigurationChange)
+                        eventConsumer.accept(FeedEvent.OperatorConfigurationChange)
                         this@PollingFeedOperator.run {
                             cancel()
                             start()

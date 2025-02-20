@@ -39,11 +39,11 @@ implementation is `DefaultItemProcessorFactory<T : ItemProcessor>` which can be 
 Note that implementations of `ItemProcessorFactory` must support lookup for item processors that are global to the
 operator, and reused for any feed that references them by name via a `ref` property.
 
-#### `Consumer<FeedStatus>`
+#### `Consumer<FeedEvent>`
 
-This is a callback that accepts instances of `FeedStatus` for the purposes of lifecycle notifications. This is commonly
+This is a callback that accepts instances of `FeedEvent` for the purposes of lifecycle notifications. This is commonly
 used for logging purposes.  The *Feed Buddy* application module implements a logger using this interface, see 
-`LoggingStatusConsumer`.
+`LoggingEventConsumer`.
 
 #### Sample Code
 
@@ -52,7 +52,7 @@ Here is a basic implementation for creating a `FeedOperator` that will poll one 
 ```kotlin
 // Use the default item registry as a file per feed
 val itemRegistryFactory = FileItemRegistryFactory(
-    Path("/path/to/registry")
+    Path.of("/path/to/registry")
 )
 
 // Specify the configuration from a file
@@ -64,8 +64,8 @@ val configProvider = FileConfigProvider(
 val filterFactory = DefaultItemProcessorFactory<ItemFilter>()
 val handlerFactory = DefaultItemProcessorFactory<ItemHandler>()
 
-val statusConsumer = Consumer<FeedStatus> { status ->
-    // Do something with `status`, e.g. log it
+val eventConsumer = Consumer<FeedEvent> { event ->
+    // Do something with `event`, e.g. log it
 }
 
 val operator = PollingFeedOperator(
@@ -73,7 +73,7 @@ val operator = PollingFeedOperator(
     configProvider = configProvider,
     filterFactory = filterFactory,
     handlerFactory = handlerFactory,
-    statusConsumer = statusConsumer
+    eventConsumer = eventConsumer
 )
 
 // Start polling--this is an asynchronous call
@@ -119,9 +119,9 @@ An `ItemHandler` is used to process eligible items.  Provided implementations:
 
 *Note that you can compose multiple handlers together using the plus operator.*
 
-#### `Consumer<FeedStatus>`
+#### `Consumer<FeedEvent>`
 
-This is a callback that accepts instances of `FeedStatus` for the purposes of lifecycle notifications. This is commonly
+This is a callback that accepts instances of `FeedEvent` for the purposes of lifecycle notifications. This is commonly
 used for logging purposes.
 
 #### Sample Code
@@ -130,8 +130,9 @@ Here is a basic implementation for creating a `FeedProcessor` that will print th
 the item's title contains the word "Foo":
 
 ```kotlin
-val feedUrl = URI.create("http://www.example.com/feed.xml").toURL()
-val feedSource = XMLFeedSource(feedUrl)
+val feedSource = XMLFeedSource(
+    URI.create("http://www.example.com/feed.xml").toURL()
+)
 
 // Use an in-memory map of processed items.  A real implementation should persist
 // to the filesystem or a database.  See `FileItemRegistry`.
@@ -154,14 +155,14 @@ val itemFilter = ItemFilter { context, item, logger ->
 }
 
 val itemHandler = ItemHandler { context, item, logger ->
-    // logging sends a `FeedStatus` event to the status consumer
+    // logging sends a `FeedEvent` to the event consumer
     logger.println(item.title)
 }
 
-val statusConsumer = Consumer<FeedStatus> { status ->
+val eventConsumer = Consumer<FeedEvent> { event ->
     // print messages logged from item processors to the console
-    if (status is FeedStatus.ItemProcessorMessage) {
-        println(status.message)
+    if (event is FeedEvent.ItemProcessorMessage) {
+        println(event.message)
     }
 }
 
@@ -170,7 +171,7 @@ val processor = FeedProcessor(
     itemRegistry = itemRegistry,
     itemFilter = itemFilter,
     itemHandler = itemHandler,
-    statusConsumer = statusConsumer
+    eventConsumer = eventConsumer
 )
 
 processor.run()

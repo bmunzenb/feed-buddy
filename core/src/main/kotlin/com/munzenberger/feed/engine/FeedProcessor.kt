@@ -13,41 +13,41 @@ class FeedProcessor(
     private val itemRegistry: ItemRegistry,
     private val itemFilter: ItemFilter,
     private val itemHandler: ItemHandler,
-    private val statusConsumer: Consumer<FeedEvent>,
+    private val eventConsumer: Consumer<FeedEvent>,
 ) : Runnable {
     override fun run() {
         try {
-            statusConsumer.accept(FeedEvent.ProcessorFeedStart(source.name))
+            eventConsumer.accept(FeedEvent.ProcessorFeedStart(source.name))
 
             val feed = source.read()
 
-            statusConsumer.accept(FeedEvent.ProcessorFeedRead(feed.title, feed.items.size))
+            eventConsumer.accept(FeedEvent.ProcessorFeedRead(feed.title, feed.items.size))
 
             val context = FeedContext(source.name, feed.title)
-            val consumerLogger = ConsumerLogger(statusConsumer)
+            val consumerLogger = ConsumerLogger(eventConsumer)
 
             val items =
                 feed.items
                     .filterNot(itemRegistry::contains)
                     .filter { itemFilter.evaluate(context, it, consumerLogger) }
 
-            statusConsumer.accept(FeedEvent.ProcessorFeedFilter(items.size))
+            eventConsumer.accept(FeedEvent.ProcessorFeedFilter(items.size))
 
             items.forEach { item ->
                 try {
-                    statusConsumer.accept(FeedEvent.ProcessorItemStart(item.title, item.guid))
+                    eventConsumer.accept(FeedEvent.ProcessorItemStart(item.title, item.guid))
                     itemHandler.execute(context, item, consumerLogger)
                     itemRegistry.add(item)
                 } catch (e: Throwable) {
-                    statusConsumer.accept(FeedEvent.ProcessorItemError(e))
+                    eventConsumer.accept(FeedEvent.ProcessorItemError(e))
                 } finally {
-                    statusConsumer.accept(FeedEvent.ProcessorItemComplete)
+                    eventConsumer.accept(FeedEvent.ProcessorItemComplete)
                 }
             }
         } catch (e: Throwable) {
-            statusConsumer.accept(FeedEvent.ProcessorFeedError(e))
+            eventConsumer.accept(FeedEvent.ProcessorFeedError(e))
         } finally {
-            statusConsumer.accept(FeedEvent.ProcessorFeedComplete)
+            eventConsumer.accept(FeedEvent.ProcessorFeedComplete)
         }
     }
 }

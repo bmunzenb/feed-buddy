@@ -14,7 +14,7 @@ class FeedProcessorFactory(
     private val registryFactory: ItemRegistryFactory,
     private val itemFilterFactory: ItemProcessorFactory<ItemFilter> = DefaultItemProcessorFactory(),
     private val itemHandlerFactory: ItemProcessorFactory<ItemHandler> = DefaultItemProcessorFactory(),
-    private val statusConsumer: Consumer<FeedEvent>,
+    private val eventConsumer: Consumer<FeedEvent>,
 ) {
     fun getInstance(feedConfig: FeedConfig): FeedProcessor {
         val url = URI(feedConfig.url).toURL()
@@ -36,7 +36,7 @@ class FeedProcessorFactory(
             itemRegistry,
             itemFilter,
             itemHandler,
-            statusConsumer,
+            eventConsumer,
         )
     }
 }

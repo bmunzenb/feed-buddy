@@ -60,7 +60,7 @@ class FeedProcessorTest {
                 itemRegistry = mockk(),
                 itemFilter = mockk(),
                 itemHandler = mockk(),
-                statusConsumer = consumer,
+                eventConsumer = consumer,
             )
 
         processor.run()
@@ -90,7 +90,7 @@ class FeedProcessorTest {
                 itemRegistry = mockItemRegistry,
                 itemFilter = mockItemFilter,
                 itemHandler = mockItemHandler,
-                statusConsumer = consumer,
+                eventConsumer = consumer,
             )
 
         processor.run()
@@ -116,7 +116,7 @@ class FeedProcessorTest {
                 itemRegistry = mockItemRegistry,
                 itemFilter = mockk(),
                 itemHandler = mockk(),
-                statusConsumer = consumer,
+                eventConsumer = consumer,
             )
 
         processor.run()
@@ -149,7 +149,7 @@ class FeedProcessorTest {
                 itemRegistry = mockItemRegistry,
                 itemFilter = mockItemFilter,
                 itemHandler = mockItemHandler,
-                statusConsumer = consumer,
+                eventConsumer = consumer,
             )
 
         processor.run()
@@ -178,7 +178,7 @@ class FeedProcessorTest {
                 itemRegistry = mockItemRegistry,
                 itemFilter = mockItemFilter,
                 itemHandler = mockk(),
-                statusConsumer = consumer,
+                eventConsumer = consumer,
             )
 
         processor.run()
@@ -217,7 +217,7 @@ class FeedProcessorTest {
                 itemRegistry = itemRegistry,
                 itemFilter = itemFilter,
                 itemHandler = itemHandler,
-                statusConsumer = consumer,
+                eventConsumer = consumer,
             )
 
         processor.run()
