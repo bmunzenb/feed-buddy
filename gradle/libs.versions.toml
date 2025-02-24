@@ -11,7 +11,7 @@ slf4j = "2.0.16"
 junit = "4.13.2"
 mockk = "1.13.16"
 versions = "0.52.0"
-detekt = "1.23.7"
+detekt = "1.23.8"
 ktlint-plugin = "12.1.2"
 
 [libraries]
