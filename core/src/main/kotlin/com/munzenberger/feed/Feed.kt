@@ -25,6 +25,10 @@ data class Enclosure(
 )
 
 internal fun String.toInstant(): Instant? {
+    if (isBlank()) {
+        return null
+    }
+
     try {
         return DateTimeFormatter.ISO_DATE_TIME.parse(this, Instant::from)
     } catch (e: Throwable) {
