@@ -41,6 +41,13 @@ internal fun String.toInstant(): Instant? {
         // do nothing
     }
 
+    try {
+        // workaround for RFC_1123_DATE_TIME not supporting time zone strings other than GMT
+        return rfc1123DateTimeFormatter().parse(this, Instant::from)
+    } catch (e: Throwable) {
+        // do nothing
+    }
+
     // could not parse date to Instant :shrug:
     System.err.println("Could not parse timestamp: $this")
     return null
