@@ -25,6 +25,10 @@ data class Enclosure(
 )
 
 internal fun String.toInstant(): Instant? {
+    if (isBlank()) {
+        return null
+    }
+
     try {
         return DateTimeFormatter.ISO_DATE_TIME.parse(this, Instant::from)
     } catch (e: Throwable) {
@@ -33,6 +37,13 @@ internal fun String.toInstant(): Instant? {
 
     try {
         return DateTimeFormatter.RFC_1123_DATE_TIME.parse(this, Instant::from)
+    } catch (e: Throwable) {
+        // do nothing
+    }
+
+    try {
+        // workaround for RFC_1123_DATE_TIME not supporting time zone strings other than GMT
+        return rfc1123DateTimeFormatter().parse(this, Instant::from)
     } catch (e: Throwable) {
         // do nothing
     }

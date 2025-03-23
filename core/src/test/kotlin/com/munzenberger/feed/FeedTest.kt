@@ -23,6 +23,14 @@ class FeedTest {
     }
 
     @Test
+    fun `it can parse timestamp in modified RFC format`() {
+        val timestamp = "Tue, 18 Mar 2025 19:38:57 PDT"
+        val instant = Instant.ofEpochSecond(1742351937)
+
+        assertEquals(instant, timestamp.toInstant())
+    }
+
+    @Test
     fun `it does not parse an invalid timestamp format`() {
         val timestamp = ""
 
