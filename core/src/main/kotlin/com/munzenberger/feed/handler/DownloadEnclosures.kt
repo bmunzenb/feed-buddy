@@ -2,12 +2,15 @@ package com.munzenberger.feed.handler
 
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
-import com.munzenberger.feed.Logger
+import com.munzenberger.feed.ItemProcessorEvent
 import com.munzenberger.feed.client.Response
 import com.munzenberger.feed.client.URLClient
 import com.munzenberger.feed.filterForPath
 import com.munzenberger.feed.formatAsSize
 import com.munzenberger.feed.formatAsTime
+import com.munzenberger.feed.formatln
+import com.munzenberger.feed.print
+import com.munzenberger.feed.println
 import okio.buffer
 import okio.sink
 import okio.source
@@ -17,6 +20,7 @@ import java.io.InputStream
 import java.net.URI
 import java.net.URL
 import java.net.URLDecoder
+import java.util.function.Consumer
 
 class DownloadEnclosures : ItemHandler {
     var targetDirectory: String = "."
@@ -24,36 +28,43 @@ class DownloadEnclosures : ItemHandler {
     override fun execute(
         context: FeedContext,
         item: Item,
-        logger: Logger,
+        eventConsumer: Consumer<ItemProcessorEvent>,
     ) {
         item.enclosures.forEach { enclosure ->
-
-            logger.print("Resolving enclosure source... ")
+            eventConsumer.print("Resolving enclosure source... ")
 
             URLClient().connect(URI.create(enclosure.url).toURL()).run {
-                logger.println(resolvedUrl)
+                eventConsumer.println(resolvedUrl)
 
-                contentDisposition.value?.let {
-                    logger.println("Content-Disposition: $it")
-                }
+                executeForResponse(this, item, eventConsumer)
+            }
+        }
+    }
 
-                val target = targetFileFor(filename)
+    private fun executeForResponse(
+        response: Response,
+        item: Item,
+        eventConsumer: Consumer<ItemProcessorEvent>,
+    ) {
+        response.contentDisposition.value?.let {
+            eventConsumer.println("Content-Disposition: $it")
+        }
 
-                logger.print("Downloading to $target... ")
+        val target = targetFileFor(response.filename)
 
-                val result = profile { download(inStream, target) }
+        eventConsumer.print("Downloading to $target... ")
 
-                logger.formatln(
-                    "%s transferred in %s.",
-                    result.first.formatAsSize(),
-                    result.second.formatAsTime(),
-                )
+        val result = profile { download(response.inStream, target) }
 
-                item.timestampAsInstant?.let {
-                    if (!target.setLastModified(it.toEpochMilli())) {
-                        logger.println("Could not set last modified time on file: $target")
-                    }
-                }
+        eventConsumer.formatln(
+            "%s transferred in %s.",
+            result.first.formatAsSize(),
+            result.second.formatAsTime(),
+        )
+
+        item.timestampAsInstant?.let {
+            if (!target.setLastModified(it.toEpochMilli())) {
+                eventConsumer.println("Could not set last modified time on file: $target")
             }
         }
     }

@@ -48,7 +48,7 @@ class PollingFeedOperator(
 
                 override fun run() {
                     if (configProvider.timestamp != timestamp) {
-                        eventConsumer.accept(FeedEvent.OperatorConfigurationChange)
+                        eventConsumer.accept(SystemEvent.OperatorConfigurationChange)
                         this@PollingFeedOperator.run {
                             cancel()
                             start()

@@ -150,18 +150,19 @@ val itemRegistry = object : ItemRegistry {
     }
 }
 
-val itemFilter = ItemFilter { context, item, logger ->
+val itemFilter = ItemFilter { context, item, eventConsumer ->
     item.title.contains("Foo", ignoreCase = true)
 }
 
-val itemHandler = ItemHandler { context, item, logger ->
-    // logging sends a `FeedEvent` to the event consumer
-    logger.println(item.title)
+val itemHandler = ItemHandler { context, item, eventConsumer ->
+    // `println` is a convenient extension function that makes the event consumer
+    // work like a logger, automatically sending a Message event
+    eventConsumer.println(item.title)
 }
 
 val eventConsumer = Consumer<FeedEvent> { event ->
-    // print messages logged from item processors to the console
-    if (event is FeedEvent.ItemProcessorMessage) {
+    // print messages from item processors to the console
+    if (event is ItemProcessorEvent.Message) {
         println(event.message)
     }
 }

@@ -47,9 +47,9 @@ class FeedOperatorTest {
         val consumer =
             Consumer<FeedEvent> {
                 when (it) {
-                    is FeedEvent.ProcessorFeedError -> throw it.error
-                    is FeedEvent.ProcessorItemError -> throw it.error
-                    is FeedEvent.ProcessorFeedRead -> println(it)
+                    is SystemEvent.ProcessorFeedError -> throw it.error
+                    is SystemEvent.ProcessorItemError -> throw it.error
+                    is SystemEvent.ProcessorFeedRead -> println(it)
                     else -> Unit
                 }
             }

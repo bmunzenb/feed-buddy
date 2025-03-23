@@ -309,21 +309,42 @@ package com.example.feed
 
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
-import com.munzenberger.feed.Logger
+import com.munzenberger.feed.ItemProcessorEvent
 
 class MyFilter : ItemFilter {
-  var customProperty: String = "default" // will be set using the property in the config
-  override fun evaluate(context: FeedContext, item: Item, logger: Logger): Boolean {
-    // Implement your filter's logic and return true to process the item
-    return true
+    var customProperty: String = "default" // will be set using the property in the config
+
+    override fun evaluate(
+        context: FeedContext,
+        item: Item,
+        eventConsumer: Consumer<ItemProcessorEvent>
+    ): Boolean {
+        // Implement your filter's logic and return true to process the item
+
+        // You can implement your own ItemProcessorEvents if you also want to
+        // notify the event consumer of lifecycle changes within the filter,
+        // or use the print and format extension functions on eventConsumer to
+        // use it as a logger.
+
+        return true
   }
 }
 
 class MyHandler : ItemHandler {
-  var customProperty: Int = 42 // will be set using the property in the config
-  override fun execute(context: FeedContext, item: Item, logger: Logger) {
-    // Implement your handler's logic
-  }
+    var customProperty: Int = 42 // will be set using the property in the config
+
+    override fun execute(
+        context: FeedContext,
+        item: Item,
+        eventConsumer: Consumer<ItemProcessorEvent>
+    ) {
+        // Implement your handler's logic
+
+        // You can implement your own ItemProcessorEvents if you also want to
+        // notify the event consumer of lifecycle changes within the handler,
+        // or use the print and format extension functions on eventConsumer to
+        // use it as a logger.
+    }
 }
 ```
 You can then use the class names as the `type` for handlers and filters in your configuration.  Make sure your classes

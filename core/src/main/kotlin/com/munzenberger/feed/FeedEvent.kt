@@ -1,49 +1,79 @@
 package com.munzenberger.feed
 
-sealed class FeedEvent {
+import java.util.function.Consumer
+
+interface FeedEvent
+
+sealed class SystemEvent : FeedEvent {
     data class OperatorStart(
         val feedCount: Int,
         val configProviderName: String,
-    ) : FeedEvent()
+    ) : SystemEvent()
 
-    data object OperatorConfigurationChange : FeedEvent()
+    data object OperatorConfigurationChange : SystemEvent()
 
     data class ProcessorFeedStart(
         val sourceName: String,
-    ) : FeedEvent()
+    ) : SystemEvent()
 
     data class ProcessorFeedRead(
         val feedTitle: String,
         val itemCount: Int,
-    ) : FeedEvent()
+    ) : SystemEvent()
 
     data class ProcessorFeedFilter(
         val itemCount: Int,
-    ) : FeedEvent()
+    ) : SystemEvent()
 
     data class ProcessorItemStart(
         val itemTitle: String,
         val itemGuid: String,
-    ) : FeedEvent()
+    ) : SystemEvent()
 
-    data object ProcessorItemComplete : FeedEvent()
+    data object ProcessorItemComplete : SystemEvent()
 
     data class ProcessorItemError(
         val error: Throwable,
-    ) : FeedEvent()
+    ) : SystemEvent()
 
     data class ProcessorFeedError(
         val error: Throwable,
-    ) : FeedEvent()
+    ) : SystemEvent()
 
-    data object ProcessorFeedComplete : FeedEvent()
+    data object ProcessorFeedComplete : SystemEvent()
+}
 
-    data class ItemProcessorMessage(
+interface ItemProcessorEvent : FeedEvent {
+    data class Message(
         val message: Any,
         val isPartialMessage: Boolean = false,
-    ) : FeedEvent()
+    ) : ItemProcessorEvent
 
-    data class ItemProcessorError(
+    data class Error(
         val error: Throwable,
-    ) : FeedEvent()
+    ) : ItemProcessorEvent
+}
+
+fun Consumer<ItemProcessorEvent>.print(obj: Any) {
+    accept(ItemProcessorEvent.Message(obj.toString(), isPartialMessage = true))
+}
+
+fun Consumer<ItemProcessorEvent>.println(obj: Any) {
+    accept(ItemProcessorEvent.Message(obj.toString()))
+}
+
+fun Consumer<ItemProcessorEvent>.format(
+    format: String,
+    vararg args: Any,
+) {
+    val message = String.format(format, *args)
+    print(message)
+}
+
+fun Consumer<ItemProcessorEvent>.formatln(
+    format: String,
+    vararg args: Any,
+) {
+    val message = String.format(format, *args)
+    println(message)
 }

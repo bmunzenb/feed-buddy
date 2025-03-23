@@ -1,7 +1,8 @@
 package com.munzenberger.feed.app
 
 import com.munzenberger.feed.FeedEvent
-import com.munzenberger.feed.Logger
+import com.munzenberger.feed.ItemProcessorEvent
+import com.munzenberger.feed.SystemEvent
 import com.munzenberger.feed.formatAsTime
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -32,7 +33,7 @@ class LoggingEventConsumer(
     @Suppress("LongMethod", "CyclomaticComplexMethod")
     override fun accept(event: FeedEvent) {
         when (event) {
-            is FeedEvent.OperatorStart ->
+            is SystemEvent.OperatorStart ->
                 logger.formatln(
                     "Scheduling %d %s from %s.",
                     event.feedCount,
@@ -40,12 +41,12 @@ class LoggingEventConsumer(
                     event.configProviderName,
                 )
 
-            is FeedEvent.OperatorConfigurationChange ->
+            is SystemEvent.OperatorConfigurationChange ->
                 logger.println(
                     "Detected configuration change.",
                 )
 
-            is FeedEvent.ProcessorFeedStart -> {
+            is SystemEvent.ProcessorFeedStart -> {
                 startTime = System.currentTimeMillis()
                 count = 0
                 processed = 0
@@ -58,7 +59,7 @@ class LoggingEventConsumer(
                 )
             }
 
-            is FeedEvent.ProcessorFeedRead ->
+            is SystemEvent.ProcessorFeedRead ->
                 logger.formatln(
                     "%s, %d %s.",
                     event.feedTitle,
@@ -66,11 +67,11 @@ class LoggingEventConsumer(
                     "item".pluralize(event.itemCount),
                 )
 
-            is FeedEvent.ProcessorFeedFilter -> {
+            is SystemEvent.ProcessorFeedFilter -> {
                 count = event.itemCount
             }
 
-            is FeedEvent.ProcessorItemStart -> {
+            is SystemEvent.ProcessorItemStart -> {
                 processed++
                 logger.formatln(
                     "[%d/%d] Processing \"%s\" (%s)...",
@@ -81,16 +82,16 @@ class LoggingEventConsumer(
                 )
             }
 
-            is FeedEvent.ProcessorItemError -> {
+            is SystemEvent.ProcessorItemError -> {
                 errors++
                 onError(event.error)
             }
 
-            is FeedEvent.ProcessorItemComplete -> Unit
+            is SystemEvent.ProcessorItemComplete -> Unit
 
-            is FeedEvent.ProcessorFeedError -> onError(event.error)
+            is SystemEvent.ProcessorFeedError -> onError(event.error)
 
-            is FeedEvent.ProcessorFeedComplete -> {
+            is SystemEvent.ProcessorFeedComplete -> {
                 val elapsed = System.currentTimeMillis() - startTime
                 if (count > 0) {
                     when (errors) {
@@ -114,7 +115,7 @@ class LoggingEventConsumer(
                 }
             }
 
-            is FeedEvent.ItemProcessorMessage -> {
+            is ItemProcessorEvent.Message -> {
                 if (event.isPartialMessage) {
                     logger.print(event.message)
                 } else {
@@ -122,7 +123,7 @@ class LoggingEventConsumer(
                 }
             }
 
-            is FeedEvent.ItemProcessorError -> onError(event.error)
+            is ItemProcessorEvent.Error -> onError(event.error)
         }
     }
 

@@ -1,9 +1,32 @@
 package com.munzenberger.feed.app
 
-import com.munzenberger.feed.Logger
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
+
+interface Logger {
+    fun print(obj: Any)
+
+    fun println(obj: Any)
+
+    fun printStackTrace(t: Throwable)
+
+    fun format(
+        format: String,
+        vararg params: Any,
+    ) {
+        val str = String.format(format, *params)
+        print(str)
+    }
+
+    fun formatln(
+        format: String,
+        vararg params: Any,
+    ) {
+        val str = String.format(format, *params)
+        println(str)
+    }
+}
 
 class CompositeLogger : Logger {
     private val loggers = mutableListOf<Logger>()
@@ -40,7 +63,7 @@ object ConsoleLogger : Logger {
 }
 
 class FileLogger(
-    val file: File,
+    private val file: File,
 ) : Logger {
     companion object {
         private val NEWLINE = System.lineSeparator()

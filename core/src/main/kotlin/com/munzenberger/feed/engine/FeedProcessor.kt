@@ -2,7 +2,8 @@ package com.munzenberger.feed.engine
 
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.FeedEvent
-import com.munzenberger.feed.Logger
+import com.munzenberger.feed.ItemProcessorEvent
+import com.munzenberger.feed.SystemEvent
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.FeedSource
@@ -17,53 +18,46 @@ class FeedProcessor(
 ) : Runnable {
     override fun run() {
         try {
-            eventConsumer.accept(FeedEvent.ProcessorFeedStart(source.name))
+            eventConsumer.accept(SystemEvent.ProcessorFeedStart(source.name))
 
             val feed = source.read()
 
-            eventConsumer.accept(FeedEvent.ProcessorFeedRead(feed.title, feed.items.size))
+            eventConsumer.accept(SystemEvent.ProcessorFeedRead(feed.title, feed.items.size))
 
             val context = FeedContext(source.name, feed.title)
-            val consumerLogger = ConsumerLogger(eventConsumer)
+
+            val itemProcessorEventConsumer = ItemProcessorEventConsumer(eventConsumer)
 
             val items =
                 feed.items
                     .filterNot(itemRegistry::contains)
-                    .filter { itemFilter.evaluate(context, it, consumerLogger) }
+                    .filter { itemFilter.evaluate(context, it, itemProcessorEventConsumer) }
 
-            eventConsumer.accept(FeedEvent.ProcessorFeedFilter(items.size))
+            eventConsumer.accept(SystemEvent.ProcessorFeedFilter(items.size))
 
             items.forEach { item ->
                 try {
-                    eventConsumer.accept(FeedEvent.ProcessorItemStart(item.title, item.guid))
-                    itemHandler.execute(context, item, consumerLogger)
+                    eventConsumer.accept(SystemEvent.ProcessorItemStart(item.title, item.guid))
+                    itemHandler.execute(context, item, itemProcessorEventConsumer)
                     itemRegistry.add(item)
                 } catch (e: Throwable) {
-                    eventConsumer.accept(FeedEvent.ProcessorItemError(e))
+                    eventConsumer.accept(SystemEvent.ProcessorItemError(e))
                 } finally {
-                    eventConsumer.accept(FeedEvent.ProcessorItemComplete)
+                    eventConsumer.accept(SystemEvent.ProcessorItemComplete)
                 }
             }
         } catch (e: Throwable) {
-            eventConsumer.accept(FeedEvent.ProcessorFeedError(e))
+            eventConsumer.accept(SystemEvent.ProcessorFeedError(e))
         } finally {
-            eventConsumer.accept(FeedEvent.ProcessorFeedComplete)
+            eventConsumer.accept(SystemEvent.ProcessorFeedComplete)
         }
     }
 }
 
-private class ConsumerLogger(
+private class ItemProcessorEventConsumer(
     private val consumer: Consumer<FeedEvent>,
-) : Logger {
-    override fun print(obj: Any) {
-        consumer.accept(FeedEvent.ItemProcessorMessage(obj, true))
-    }
-
-    override fun println(obj: Any) {
-        consumer.accept(FeedEvent.ItemProcessorMessage(obj))
-    }
-
-    override fun printStackTrace(t: Throwable) {
-        consumer.accept(FeedEvent.ItemProcessorError(t))
+) : Consumer<ItemProcessorEvent> {
+    override fun accept(event: ItemProcessorEvent) {
+        consumer.accept(event)
     }
 }

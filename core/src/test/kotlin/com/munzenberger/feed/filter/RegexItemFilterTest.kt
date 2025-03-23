@@ -2,16 +2,17 @@ package com.munzenberger.feed.filter
 
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.Item
-import com.munzenberger.feed.Logger
+import com.munzenberger.feed.ItemProcessorEvent
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.util.function.Consumer
 
 class RegexItemFilterTest {
     private val context = mockk<FeedContext>()
-    private val logger = mockk<Logger>()
+    private val eventConsumer = mockk<Consumer<ItemProcessorEvent>>()
 
     @Test
     fun `it filters items based on title`() {
@@ -25,14 +26,14 @@ class RegexItemFilterTest {
                 title = ".*Foo.*"
             }
 
-        assertTrue(filterInclude.evaluate(context, item, logger))
+        assertTrue(filterInclude.evaluate(context, item, eventConsumer))
 
         val filterExclude =
             RegexItemFilter().apply {
                 title = ".*Bar.*"
             }
 
-        assertFalse(filterExclude.evaluate(context, item, logger))
+        assertFalse(filterExclude.evaluate(context, item, eventConsumer))
     }
 
     @Test
@@ -47,14 +48,14 @@ class RegexItemFilterTest {
                 content = ".*quick.*"
             }
 
-        assertTrue(filterInclude.evaluate(context, item, logger))
+        assertTrue(filterInclude.evaluate(context, item, eventConsumer))
 
         val filterExclude =
             RegexItemFilter().apply {
                 content = ".*slow.*"
             }
 
-        assertFalse(filterExclude.evaluate(context, item, logger))
+        assertFalse(filterExclude.evaluate(context, item, eventConsumer))
     }
 
     @Test
@@ -69,14 +70,14 @@ class RegexItemFilterTest {
                 category = ".*Category A.*"
             }
 
-        assertTrue(filterInclude.evaluate(context, item, logger))
+        assertTrue(filterInclude.evaluate(context, item, eventConsumer))
 
         val filterExclude =
             RegexItemFilter().apply {
                 content = ".*Category C.*"
             }
 
-        assertFalse(filterExclude.evaluate(context, item, logger))
+        assertFalse(filterExclude.evaluate(context, item, eventConsumer))
     }
 
     @Test
@@ -91,6 +92,6 @@ class RegexItemFilterTest {
                 category = ".*foo.*"
             }
 
-        assertFalse(filter.evaluate(context, item, logger))
+        assertFalse(filter.evaluate(context, item, eventConsumer))
     }
 }

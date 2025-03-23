@@ -16,7 +16,7 @@ ktlint {
 }
 
 group = "com.munzenberger"
-version = "2.3"
+version = "2.4"
 
 base {
     archivesName = "${rootProject.name}-${project.name}"

@@ -40,7 +40,7 @@ abstract class BaseFeedOperator(
                 eventConsumer,
             )
 
-        eventConsumer.accept(FeedEvent.OperatorStart(config.feeds.size, configProvider.name))
+        eventConsumer.accept(SystemEvent.OperatorStart(config.feeds.size, configProvider.name))
 
         start(config, processorFactory)
     }

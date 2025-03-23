@@ -4,6 +4,7 @@ import com.munzenberger.feed.Feed
 import com.munzenberger.feed.FeedContext
 import com.munzenberger.feed.FeedEvent
 import com.munzenberger.feed.Item
+import com.munzenberger.feed.SystemEvent
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import com.munzenberger.feed.source.FeedSource
@@ -205,8 +206,8 @@ class FeedProcessorTest {
         val consumer =
             Consumer<FeedEvent> {
                 when (it) {
-                    is FeedEvent.ProcessorFeedError -> throw it.error
-                    is FeedEvent.ProcessorFeedRead -> println(it)
+                    is SystemEvent.ProcessorFeedError -> throw it.error
+                    is SystemEvent.ProcessorFeedRead -> println(it)
                     else -> Unit
                 }
             }
