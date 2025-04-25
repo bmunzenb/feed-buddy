@@ -6,14 +6,13 @@ import javax.xml.stream.XMLEventReader
 interface XMLFeedParser {
     fun parse(eventReader: XMLEventReader): Feed
 
-    fun parseCharacterData(eventReader: XMLEventReader): String {
-        var value = ""
-
-        val event = eventReader.nextEvent()
-        if (event.isCharacters) {
-            value = event.asCharacters().data
+    fun parseCharacterData(eventReader: XMLEventReader) =
+        buildString {
+            var event = eventReader.nextEvent()
+            while (event.isCharacters) {
+                val data = event.asCharacters().data
+                append(data)
+                event = eventReader.nextEvent()
+            }
         }
-
-        return value
-    }
 }
