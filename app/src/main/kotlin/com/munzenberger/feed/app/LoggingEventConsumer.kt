@@ -35,7 +35,7 @@ class LoggingEventConsumer(
         when (event) {
             is SystemEvent.OperatorStart ->
                 logger.formatln(
-                    "Scheduling %d %s from %s.",
+                    "Scheduling %,d %s from %s.",
                     event.feedCount,
                     "feed".pluralize(event.feedCount),
                     event.configProviderName,
@@ -61,7 +61,7 @@ class LoggingEventConsumer(
 
             is SystemEvent.ProcessorFeedRead ->
                 logger.formatln(
-                    "%s, %d %s.",
+                    "%s, %,d %s.",
                     event.feedTitle,
                     event.itemCount,
                     "item".pluralize(event.itemCount),
@@ -74,7 +74,7 @@ class LoggingEventConsumer(
             is SystemEvent.ProcessorItemStart -> {
                 processed++
                 logger.formatln(
-                    "[%d/%d] Processing \"%s\" (%s)...",
+                    "[%,d/%,d] Processing \"%s\" (%s)...",
                     processed,
                     count,
                     event.itemTitle,
@@ -97,14 +97,14 @@ class LoggingEventConsumer(
                     when (errors) {
                         0 ->
                             logger.formatln(
-                                "%d %s processed in %s.",
+                                "%,d %s processed in %s.",
                                 processed,
                                 "item".pluralize(processed),
                                 elapsed.formatAsTime(),
                             )
                         else ->
                             logger.formatln(
-                                "%d %s processed successfully, %d %s in %s.",
+                                "%,d %s processed successfully, %,d %s in %s.",
                                 processed - errors,
                                 "item".pluralize(processed),
                                 errors,
