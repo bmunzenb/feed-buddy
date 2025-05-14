@@ -19,6 +19,7 @@ class FileConfigProvider(
             when {
                 file.path.endsWith(".json", true) -> JsonConfigAdapter
                 file.path.endsWith(".yaml", true) -> YamlConfigAdapter
+                file.path.endsWith(".yml", true) -> YamlConfigAdapter
                 else -> XmlConfigAdapter
             }
 

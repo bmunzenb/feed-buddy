@@ -22,6 +22,7 @@ import com.munzenberger.feed.handler.ItemHandler
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Properties
+import kotlin.time.Duration.Companion.seconds
 
 fun main(args: Array<String>) {
     val versionProperties =
@@ -72,7 +73,7 @@ class App : CliktCommand(name = "feed-buddy") {
         .path(canBeDir = false)
 
     override fun run() {
-        URLClientDefaults.timeout = timeout * 1000 // convert to millis
+        URLClientDefaults.timeout = timeout.seconds
 
         val logger =
             CompositeLogger().apply {
@@ -94,7 +95,7 @@ class App : CliktCommand(name = "feed-buddy") {
                 OperatingMode.NOOP -> {
                     logger.println("Executing in NOOP mode: items will be marked as processed but no handlers will execute.")
                     object : ItemProcessorFactory<ItemHandler> {
-                        override fun getInstance(config: ItemProcessorConfig): ItemHandler = ItemHandler { _, _, _ -> }
+                        override fun getInstance(config: ItemProcessorConfig) = ItemHandler { _, _, _ -> }
                     }
                 }
 

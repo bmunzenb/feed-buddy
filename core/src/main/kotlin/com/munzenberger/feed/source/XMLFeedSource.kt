@@ -3,6 +3,7 @@ package com.munzenberger.feed.source
 import com.ctc.wstx.stax.WstxInputFactory
 import com.munzenberger.feed.Feed
 import com.munzenberger.feed.client.URLClient
+import com.munzenberger.feed.client.URLClientDefaults
 import java.net.URL
 import javax.xml.stream.XMLEventReader
 import javax.xml.stream.events.StartElement
@@ -16,7 +17,7 @@ class XMLFeedSource(
     override val name: String = source.toExternalForm()
 
     override fun read(): Feed {
-        val response = URLClient(userAgent).connect(source)
+        val response = URLClient(userAgent ?: URLClientDefaults.userAgent).connect(source)
 
         val reader = XMLFilterReader(response.inStream, response.encoding)
 

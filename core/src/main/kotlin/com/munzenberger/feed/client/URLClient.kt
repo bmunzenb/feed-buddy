@@ -5,16 +5,19 @@ import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
 import java.util.zip.GZIPInputStream
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 object URLClientDefaults {
     var userAgent: String = "Feed-Buddy/SNAPSHOT (+https://github.com/bmunzenb/feed-buddy)"
-    var timeout: Int = 30_000 // 30 seconds
+    var timeout: Duration = 30.seconds
     var maxRedirects: Int = 20
 }
 
 class URLClient(
-    private val userAgent: String? = null,
-    private val timeout: Int = URLClientDefaults.timeout,
+    private val userAgent: String = URLClientDefaults.userAgent,
+    private val timeout: Duration = URLClientDefaults.timeout,
     private val maxRedirects: Int = URLClientDefaults.maxRedirects,
 ) {
     companion object {
@@ -29,18 +32,16 @@ class URLClient(
             )
     }
 
-    fun connect(url: URL): Response {
-        val resolvedUserAgent = userAgent ?: URLClientDefaults.userAgent
-        return connect(
+    fun connect(url: URL): Response =
+        connect(
             url = url,
             requestProperties =
                 mapOf(
-                    "User-agent" to resolvedUserAgent,
+                    "User-agent" to userAgent,
                     "Accept" to "application/xml",
                 ),
             locations = emptySet(),
         )
-    }
 
     private fun connect(
         url: URL,
@@ -49,8 +50,8 @@ class URLClient(
     ): Response {
         val connection =
             url.openConnection().apply {
-                connectTimeout = timeout
-                readTimeout = timeout
+                connectTimeout = timeout.toInt(DurationUnit.MILLISECONDS)
+                readTimeout = timeout.toInt(DurationUnit.MILLISECONDS)
             }
 
         requestProperties.forEach(connection::setRequestProperty)
