@@ -12,7 +12,7 @@ kotlin {
 
 ktlint {
     // https://github.com/pinterest/ktlint/releases
-    version.set("1.5.0")
+    version.set("1.6.0")
 }
 
 group = "com.munzenberger"
