@@ -54,7 +54,7 @@ private fun AtomFeed.toFeed() =
 private fun AtomEntry.toItem() =
     Item(
         title = title,
-        content = contents.firstOrNull()?.decodedValue ?: summary,
+        content = contents.firstOrNull { it.value.isNotBlank() }?.decodedValue ?: summary,
         link = links.firstOrNull { it.rel.isEmpty() || it.rel == "alternate" }?.href ?: "",
         guid = id,
         timestamp = updated,
@@ -105,6 +105,13 @@ internal object AtomXMLFeedParser : XMLFeedParser {
             val event = eventReader.nextEvent()
 
             if (event.isStartElement) {
+                val name = event.asStartElement().name
+
+                // ignore any elements not core to Atom
+                if (name.prefix.isNotBlank()) {
+                    continue
+                }
+
                 when (event.asStartElement().name.localPart) {
                     TITLE -> entry.title = parseCharacterData(eventReader)
                     LINK -> entry.links += AtomLink().apply { parseLink(this, event.asStartElement()) }
