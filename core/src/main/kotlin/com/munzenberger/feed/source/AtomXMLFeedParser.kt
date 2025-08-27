@@ -159,18 +159,28 @@ internal object AtomXMLFeedParser : XMLFeedParser {
             }
         }
 
+        content.value =
+            when (content.type.lowercase()) {
+                // https://datatracker.ietf.org/doc/html/rfc4287#section-4.1.3
+                "xhtml" -> parseContentAsXhtml(eventReader)
+                else -> parseCharacterData(eventReader)
+            }
+    }
+
+    private fun parseContentAsXhtml(eventReader: XMLEventReader): String {
         val valueWriter = StringWriter()
 
         while (eventReader.hasNext()) {
             val event = eventReader.nextEvent()
 
             if (event.isEndElement && event.asEndElement().name.localPart == CONTENT) {
-                content.value = valueWriter.toString()
-                return
+                break
             }
 
             event.writeAsEncodedUnicode(valueWriter)
         }
+
+        return valueWriter.toString()
     }
 
     private fun parseCategory(

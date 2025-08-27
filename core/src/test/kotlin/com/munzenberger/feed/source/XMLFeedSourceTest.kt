@@ -108,6 +108,15 @@ class XMLFeedSourceTest {
                             enclosures = emptyList(),
                             categories = emptyList(),
                         ),
+                        Item(
+                            title = "HTML entry with CDATA",
+                            content = """<div style="info"><p>This is the entry content.</p></div>""",
+                            link = "http://example.org/2003/12/13/atom03.html",
+                            guid = "urn:uuid:eab40f86-0bd6-4800-9685-98ddddb9548a",
+                            timestamp = "2025-08-27T04:25:02Z",
+                            enclosures = emptyList(),
+                            categories = emptyList(),
+                        ),
                     ),
             )
 
