@@ -69,7 +69,7 @@ class SendEmail : ItemHandler {
                 setFrom(from, context.feedTitle)
                 item.timestampAsInstant?.let { sentDate = Date.from(it) }
                 subject = item.title
-                setHtmlMsg(item.toHtmlMessage(templateURL))
+                setHtmlMsg(item.toHtmlMessage(templateURL, context))
                 mailSession = session
                 buildMimeMessage()
             }
@@ -88,8 +88,11 @@ class SendEmail : ItemHandler {
     }
 }
 
-internal fun Item.toHtmlMessage(template: URL): String {
-    val mailItem = MailItem(this)
+internal fun Item.toHtmlMessage(
+    template: URL,
+    context: FeedContext,
+): String {
+    val mailItem = MailItem(context, this)
     val context = VelocityContext().apply { put("item", mailItem) }
     val writer = StringWriter()
     val reader = InputStreamReader(template.openStream())
@@ -98,12 +101,14 @@ internal fun Item.toHtmlMessage(template: URL): String {
 }
 
 class MailItem(
+    context: FeedContext,
     item: Item,
 ) {
     val description: String = item.content.encodeForEmail()
     val link: String = item.link
     val id: String = item.guid
     val enclosures: List<Enclosure> = item.enclosures
+    val source = context.sourceName
 }
 
 private fun String.encodeForEmail(): String {
