@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.2.20"
-okio = "3.16.0"
+okio = "3.16.2"
 jackson = "2.20.0"
 woodstox = "7.1.1"
 commons-text = "1.14.0"
