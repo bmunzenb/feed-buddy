@@ -48,6 +48,11 @@ class SendEmailTest {
 
             """.trimIndent()
 
-        assertEquals(expected, message)
+        assertEquals(
+            normalizeLineEndings(expected),
+            normalizeLineEndings(message),
+        )
     }
 }
+
+private fun normalizeLineEndings(s: String) = s.replace("\r\n", "\n")
