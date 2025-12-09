@@ -67,21 +67,26 @@ class URLClient(
             if (responseCode in redirectCodes) {
                 val location = connection.getHeaderField("Location")
                 return when (val resolvedLocation: String? = LocationResolver(url).resolve(location)) {
-                    null ->
+                    null -> {
                         throw IOException("Redirect response $responseCode with no 'Location' in header: ${connection.headerFields}")
-                    else ->
-                        when {
-                            locations.contains(resolvedLocation) ->
-                                throw IOException("Infinite redirect detected: $resolvedLocation -> $locations")
+                    }
 
-                            locations.size >= maxRedirects ->
+                    else -> {
+                        when {
+                            locations.contains(resolvedLocation) -> {
+                                throw IOException("Infinite redirect detected: $resolvedLocation -> $locations")
+                            }
+
+                            locations.size >= maxRedirects -> {
                                 throw IOException("Server redirected too many times: ${locations.size}")
+                            }
 
                             else -> {
                                 connection.disconnect()
                                 connect(URI.create(resolvedLocation).toURL(), requestProperties, locations + resolvedLocation)
                             }
                         }
+                    }
                 }
             }
         }

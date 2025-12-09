@@ -33,18 +33,20 @@ class LoggingEventConsumer(
     @Suppress("LongMethod", "CyclomaticComplexMethod")
     override fun accept(event: FeedEvent) {
         when (event) {
-            is SystemEvent.OperatorStart ->
+            is SystemEvent.OperatorStart -> {
                 logger.formatln(
                     "Scheduling %,d %s from %s.",
                     event.feedCount,
                     "feed".pluralize(event.feedCount),
                     event.configProviderName,
                 )
+            }
 
-            is SystemEvent.OperatorConfigurationChange ->
+            is SystemEvent.OperatorConfigurationChange -> {
                 logger.println(
                     "Detected configuration change.",
                 )
+            }
 
             is SystemEvent.ProcessorFeedStart -> {
                 startTime = System.currentTimeMillis()
@@ -59,13 +61,14 @@ class LoggingEventConsumer(
                 )
             }
 
-            is SystemEvent.ProcessorFeedRead ->
+            is SystemEvent.ProcessorFeedRead -> {
                 logger.formatln(
                     "%s, %,d %s.",
                     event.feedTitle,
                     event.itemCount,
                     "item".pluralize(event.itemCount),
                 )
+            }
 
             is SystemEvent.ProcessorFeedFilter -> {
                 count = event.itemCount
@@ -87,22 +90,28 @@ class LoggingEventConsumer(
                 onError(event.error)
             }
 
-            is SystemEvent.ProcessorItemComplete -> Unit
+            is SystemEvent.ProcessorItemComplete -> {
+                Unit
+            }
 
-            is SystemEvent.ProcessorFeedError -> onError(event.error)
+            is SystemEvent.ProcessorFeedError -> {
+                onError(event.error)
+            }
 
             is SystemEvent.ProcessorFeedComplete -> {
                 val elapsed = System.currentTimeMillis() - startTime
                 if (count > 0) {
                     when (errors) {
-                        0 ->
+                        0 -> {
                             logger.formatln(
                                 "%,d %s processed in %s.",
                                 processed,
                                 "item".pluralize(processed),
                                 elapsed.formatAsTime(),
                             )
-                        else ->
+                        }
+
+                        else -> {
                             logger.formatln(
                                 "%,d %s processed successfully, %,d %s in %s.",
                                 processed - errors,
@@ -111,6 +120,7 @@ class LoggingEventConsumer(
                                 "failure".pluralize(errors),
                                 elapsed.formatAsTime(),
                             )
+                        }
                     }
                 }
             }
@@ -123,7 +133,9 @@ class LoggingEventConsumer(
                 }
             }
 
-            is ItemProcessorEvent.Error -> onError(event.error)
+            is ItemProcessorEvent.Error -> {
+                onError(event.error)
+            }
         }
     }
 

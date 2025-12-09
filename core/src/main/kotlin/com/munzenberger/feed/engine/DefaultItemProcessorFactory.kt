@@ -9,18 +9,21 @@ class DefaultItemProcessorFactory<T : ItemProcessor>(
 ) : ItemProcessorFactory<T> {
     override fun getInstance(config: ItemProcessorConfig): T =
         when {
-            config.ref != null ->
+            config.ref != null -> {
                 registry[config.ref] ?: throw IllegalArgumentException("Item processor with name '${config.ref}' not found.")
+            }
 
-            config.type != null ->
+            config.type != null -> {
                 newItemProcessor<T>(config).also {
                     if (config.name != null) {
                         registry[config.name] = it
                     }
                 }
+            }
 
-            else ->
+            else -> {
                 throw IllegalArgumentException("An item processor must define either a 'type' or a 'ref'.")
+            }
         }
 
     override fun reset() {
@@ -46,8 +49,11 @@ class DefaultItemProcessorFactory<T : ItemProcessor>(
                 val coercedValue: Any =
                     when {
                         value::class == propertyType -> value
+
                         value is String && propertyType == Int::class -> value.toInt()
+
                         value is String && propertyType == Boolean::class -> value.toBoolean()
+
                         else -> throw IllegalArgumentException(
                             "Incompatible types: $value (${value::class}) cannot be set for property \"$name\" of type $propertyType.",
                         )

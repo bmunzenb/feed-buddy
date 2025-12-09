@@ -163,6 +163,7 @@ internal object AtomXMLFeedParser : XMLFeedParser {
             when (content.type.lowercase()) {
                 // https://datatracker.ietf.org/doc/html/rfc4287#section-4.1.3
                 "xhtml" -> parseContentAsXhtml(eventReader)
+
                 else -> parseCharacterData(eventReader)
             }
     }

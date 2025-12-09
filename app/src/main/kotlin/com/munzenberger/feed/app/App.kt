@@ -99,19 +99,22 @@ class App : CliktCommand(name = "feed-buddy") {
                     }
                 }
 
-                else ->
+                else -> {
                     DefaultItemProcessorFactory()
+                }
             }
 
         val eventConsumer = LoggingEventConsumer(logger)
 
         val feedOperator: FeedOperator =
             when (mode) {
-                OperatingMode.POLL ->
+                OperatingMode.POLL -> {
                     PollingFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, eventConsumer)
+                }
 
-                OperatingMode.ONCE, OperatingMode.NOOP ->
+                OperatingMode.ONCE, OperatingMode.NOOP -> {
                     OnceFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, eventConsumer)
+                }
             }
 
         Runtime.getRuntime().addShutdownHook(

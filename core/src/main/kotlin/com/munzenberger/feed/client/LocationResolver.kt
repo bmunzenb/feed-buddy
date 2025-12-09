@@ -7,27 +7,31 @@ class LocationResolver(
 ) {
     fun resolve(location: String?): String? =
         when {
-            location == null ->
+            location == null -> {
                 null
+            }
 
             // absolute URL
-            location.startsWith("http://") || location.startsWith("https://") ->
+            location.startsWith("http://") || location.startsWith("https://") -> {
                 location
+            }
 
             // absolute path
-            location.startsWith("/") ->
+            location.startsWith("/") -> {
                 url.protocol +
                     "://" +
                     url.authority +
                     location
+            }
 
             // relative path
-            else ->
+            else -> {
                 url.protocol +
                     "://" +
                     url.authority +
                     url.path.substringBeforeLast('/') +
                     "/" +
                     location
+            }
         }
 }
