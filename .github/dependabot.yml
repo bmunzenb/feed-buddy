@@ -4,6 +4,15 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      # Group minor and patch updates together to reduce PR noise.
+      # Major updates will still be raised as individual PRs to highlight breaking changes.
+      non-breaking:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "/"
