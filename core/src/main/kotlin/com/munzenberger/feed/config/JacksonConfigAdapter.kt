@@ -39,7 +39,7 @@ object JsonConfigAdapter : JacksonConfigAdapter() {
     override val objectMapper: ObjectMapper =
         jacksonObjectMapper().apply {
             enable(SerializationFeature.INDENT_OUTPUT)
-            setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+            setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY)
         }
 }
 
@@ -61,7 +61,7 @@ object XmlConfigAdapter : JacksonConfigAdapter() {
 object YamlConfigAdapter : JacksonConfigAdapter() {
     override val objectMapper: ObjectMapper =
         ObjectMapper(YAMLFactory()).apply {
-            setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+            setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY)
             registerKotlinModule()
         }
 }
