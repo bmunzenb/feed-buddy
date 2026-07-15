@@ -8,11 +8,6 @@ kotlin {
     jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(21))
     }
-
-    compilerOptions {
-        // https://youtrack.jetbrains.com/issue/KT-73255
-        freeCompilerArgs.add("-Xannotation-default-target=param-property")
-    }
 }
 
 ktlint {

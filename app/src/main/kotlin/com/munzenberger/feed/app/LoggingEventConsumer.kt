@@ -90,9 +90,7 @@ class LoggingEventConsumer(
                 onError(event.error)
             }
 
-            is SystemEvent.ProcessorItemComplete -> {
-                Unit
-            }
+            is SystemEvent.ProcessorItemComplete -> {}
 
             is SystemEvent.ProcessorFeedError -> {
                 onError(event.error)
