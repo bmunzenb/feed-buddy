@@ -20,10 +20,12 @@ import java.io.InputStream
 import java.net.URI
 import java.net.URL
 import java.net.URLDecoder
+import java.net.URLEncoder
 import java.util.function.Consumer
 
 class DownloadEnclosures : ItemHandler {
     var targetDirectory: String = "."
+    var parameters: Map<String, String> = emptyMap()
 
     override fun execute(
         context: FeedContext,
@@ -33,7 +35,7 @@ class DownloadEnclosures : ItemHandler {
         item.enclosures.forEach { enclosure ->
             eventConsumer.print("Resolving enclosure source... ")
 
-            URLClient().connect(URI.create(enclosure.url).toURL()).run {
+            URLClient().connect(enclosure.url.withQueryParameters(parameters).toURL()).run {
                 eventConsumer.println(resolvedUrl)
 
                 executeForResponse(this, item, eventConsumer)
@@ -97,6 +99,19 @@ class DownloadEnclosures : ItemHandler {
 
         return targetFile
     }
+}
+
+internal fun String.withQueryParameters(parameters: Map<String, String>): URI {
+    if (parameters.isEmpty()) return URI.create(this)
+
+    val encoded =
+        parameters.entries.joinToString("&") { (k, v) ->
+            "${URLEncoder.encode(k, "UTF-8")}=${URLEncoder.encode(v, "UTF-8")}"
+        }
+
+    val separator = if (URI.create(this).rawQuery == null) "?" else "&"
+
+    return URI.create("$this$separator$encoded")
 }
 
 internal val Response.filename: String

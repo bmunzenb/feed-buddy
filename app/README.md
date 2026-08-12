@@ -229,9 +229,10 @@ The following example configurations in XML, JSON, and YAML are all equivalent:
 Use this handler to download enclosures present in a feed's item. Set the handler's `type` property to
 `com.munzenberger.feed.handler.DownloadEnclosures` and configure with the following properties:
 
-| Name              |  Type  | Required | Description                                   |
-|-------------------|:------:|:--------:|-----------------------------------------------|
-| `targetDirectory` | String |   Yes    | The target path to write downloaded files to. |
+| Name              |        Type         | Required | Description                                                                                          |
+|-------------------|:-------------------:|:--------:|------------------------------------------------------------------------------------------------------|
+| `targetDirectory` |    String           |   Yes    | The target path to write downloaded files to.                                                        |
+| `parameters`      | Map<String, String> |    No    | Additional name-value pairs appended as URL query string parameters when downloading each enclosure. |
 
 The following example configurations in XML, JSON, and YAML are all equivalent:
 
@@ -240,6 +241,9 @@ The following example configurations in XML, JSON, and YAML are all equivalent:
          type="com.munzenberger.feed.handler.DownloadEnclosures">
   <properties>
     <targetDirectory>C:\Downloads</targetDirectory>
+    <parameters>
+      <token>abc123</token>
+    </parameters>
   </properties>
 </handler>
 ```
@@ -249,7 +253,10 @@ The following example configurations in XML, JSON, and YAML are all equivalent:
   "name" : "Download Enclosures",
   "type" : "com.munzenberger.feed.handler.DownloadEnclosures",
   "properties" : {
-    "targetDirectory" : "C:\\Downloads"
+    "targetDirectory" : "C:\\Downloads",
+    "parameters" : {
+      "token" : "abc123"
+    }
   }
 }
 ```
@@ -259,6 +266,8 @@ The following example configurations in XML, JSON, and YAML are all equivalent:
   type: "com.munzenberger.feed.handler.DownloadEnclosures"
   properties:
     targetDirectory: "C:\\Downloads"
+    parameters:
+      token: "abc123"
 ```
 
 #### Supported Filters
@@ -352,5 +361,6 @@ are on the classpath when you start Feed Buddy.
 
 _Feed Buddy uses [Kotlin reflection](https://kotlinlang.org/docs/reference/reflection.html) to set the properties of
 handlers and filters.  Because of differences in configuration file format parsing, configuration property values may be
-coerced to conform to the property type in the class.  Currently only `String` to `Boolean` and `String` to `Int` are
-supported.  Use of other types will likely result in an exception at runtime when reading the configuration file._
+coerced to conform to the property type in the class.  Currently only `String` to `Boolean`, `String` to `Int`, and
+a nested map of name-value pairs to `Map<String, String>` are supported.  Use of other types will likely result in an
+exception at runtime when reading the configuration file._
