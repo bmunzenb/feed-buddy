@@ -54,6 +54,9 @@ class DefaultItemProcessorFactory<T : ItemProcessor>(
 
                         value is String && propertyType == Boolean::class -> value.toBoolean()
 
+                        propertyType == Map::class && value is Map<*, *> ->
+                            value.entries.associate { (k, v) -> k.toString() to v.toString() }
+
                         else -> throw IllegalArgumentException(
                             "Incompatible types: $value (${value::class}) cannot be set for property \"$name\" of type $propertyType.",
                         )

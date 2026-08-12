@@ -10,6 +10,7 @@ class DefaultItemProcessorFactoryTest {
         var stringProperty: String = "default"
         var booleanProperty: Boolean = false
         var integerProperty: Int = 0
+        var mapProperty: Map<String, String> = emptyMap()
     }
 
     @Test(expected = ClassNotFoundException::class)
@@ -71,6 +72,34 @@ class DefaultItemProcessorFactoryTest {
         assertEquals("testValue", handler.stringProperty)
         assertEquals(true, handler.booleanProperty)
         assertEquals(42, handler.integerProperty)
+    }
+
+    @Test
+    fun `it can construct a new item handler with a map property`() {
+        val config =
+            ItemProcessorConfig(
+                type = TestItemProcessor::class.java.name,
+                properties =
+                    mapOf(
+                        "mapProperty" to
+                            mapOf(
+                                "stringValue" to "testValue",
+                                "booleanValue" to true,
+                                "integerValue" to 42,
+                            ),
+                    ),
+            )
+
+        val handler = DefaultItemProcessorFactory.newItemProcessor<TestItemProcessor>(config)
+
+        assertEquals(
+            mapOf(
+                "stringValue" to "testValue",
+                "booleanValue" to "true",
+                "integerValue" to "42",
+            ),
+            handler.mapProperty,
+        )
     }
 
     @Test

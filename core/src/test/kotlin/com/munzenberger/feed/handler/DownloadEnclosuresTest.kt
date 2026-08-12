@@ -43,7 +43,6 @@ class DownloadEnclosuresTest {
         assertNotEquals(localFile.path, dupFile.path)
     }
 
-    @Suppress("ktlint:standard:max-line-length")
     @Test
     fun `it maps to a local file for encoded invalid characters`() {
         val localFile =
@@ -52,5 +51,33 @@ class DownloadEnclosuresTest {
             ).toURL().filename
 
         assertEquals("45841909-22050-1-24041a3ac9d8e.mp3", localFile)
+    }
+
+    @Test
+    fun `it returns the url unchanged when there are no parameters`() {
+        val uri = "http://www.example.com/foo/bar/file.ext".withQueryParameters(emptyMap())
+
+        assertEquals(URI("http://www.example.com/foo/bar/file.ext"), uri)
+    }
+
+    @Test
+    fun `it appends parameters as a new query string`() {
+        val uri = "http://www.example.com/foo/bar/file.ext".withQueryParameters(mapOf("token" to "abc123"))
+
+        assertEquals(URI("http://www.example.com/foo/bar/file.ext?token=abc123"), uri)
+    }
+
+    @Test
+    fun `it merges parameters into an existing query string`() {
+        val uri = "http://www.example.com/foo/bar/file.ext?abc=123".withQueryParameters(mapOf("token" to "abc123"))
+
+        assertEquals(URI("http://www.example.com/foo/bar/file.ext?abc=123&token=abc123"), uri)
+    }
+
+    @Test
+    fun `it percent encodes parameter names and values`() {
+        val uri = "http://www.example.com/foo/bar/file.ext".withQueryParameters(mapOf("a key" to "a&value"))
+
+        assertEquals(URI("http://www.example.com/foo/bar/file.ext?a+key=a%26value"), uri)
     }
 }
