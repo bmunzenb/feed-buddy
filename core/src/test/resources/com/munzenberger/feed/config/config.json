@@ -1,5 +1,6 @@
 {
   "period": 42,
+  "delay": 7,
   "handlers": [
     {
       "name": "global handler",
@@ -15,6 +16,7 @@
       "url": "http://www.example.com/feed.xml",
       "userAgent": "test user agent",
       "period": 86,
+      "delay": 15,
       "handlers": [
         {
           "type": "com.test.Handler",
