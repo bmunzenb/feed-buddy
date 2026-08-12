@@ -12,6 +12,7 @@ class JsonOperatorConfigAdapterTest {
         val expected =
             OperatorConfig(
                 period = 42,
+                delay = 7,
                 handlers =
                     listOf(
                         ItemProcessorConfig(
@@ -26,6 +27,7 @@ class JsonOperatorConfigAdapterTest {
                             url = "http://www.example.com/feed.xml",
                             userAgent = "test user agent",
                             period = 86,
+                            delay = 15,
                             handlers =
                                 listOf(
                                     ItemProcessorConfig(

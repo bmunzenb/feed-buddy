@@ -8,6 +8,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 data class OperatorConfig(
     @JacksonXmlProperty(isAttribute = true)
     val period: Int = 360, // default 3 hours
+    @JacksonXmlProperty(isAttribute = true)
+    val delay: Int = 0, // default no delay
     @JacksonXmlProperty(localName = "handler")
     val handlers: List<ItemProcessorConfig> = emptyList(),
     @JacksonXmlProperty(localName = "filter")
@@ -21,6 +23,8 @@ data class FeedConfig(
     val url: String,
     @JacksonXmlProperty(isAttribute = true)
     val period: Int? = null,
+    @JacksonXmlProperty(isAttribute = true)
+    val delay: Int? = null,
     @JacksonXmlProperty(isAttribute = true)
     val userAgent: String? = null,
     @JacksonXmlProperty(isAttribute = true)

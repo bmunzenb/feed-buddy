@@ -26,7 +26,7 @@ class PollingFeedOperator(
         config: OperatorConfig,
         processorFactory: FeedProcessorFactory,
     ) {
-        val tasks: List<Pair<TimerTask, Long>> =
+        val tasks: List<Triple<TimerTask, Long, Long>> =
             config.feeds.map {
                 val processor = processorFactory.getInstance(it)
 
@@ -37,9 +37,10 @@ class PollingFeedOperator(
                         }
                     }
 
+                val delay = (it.delay ?: config.delay).minutes
                 val period = (it.period ?: config.period).minutes
 
-                task to period.inWholeMilliseconds
+                Triple(task, delay.inWholeMilliseconds, period.inWholeMilliseconds)
             }
 
         val configurationChangeTask =
@@ -60,12 +61,12 @@ class PollingFeedOperator(
         timer =
             Timer().apply {
                 tasks.forEach {
-                    schedule(it.first, 0, it.second)
+                    schedule(it.first, it.second, it.third)
                 }
 
                 // check for configuration changes every 5 seconds
-                val delayAndPeriod = 5.seconds.inWholeMilliseconds
-                schedule(configurationChangeTask, delayAndPeriod, delayAndPeriod)
+                val configCheckIntervalMs = 5.seconds.inWholeMilliseconds
+                schedule(configurationChangeTask, configCheckIntervalMs, configCheckIntervalMs)
             }
     }
 
