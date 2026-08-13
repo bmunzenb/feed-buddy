@@ -21,7 +21,6 @@ class URLClient(
     private val maxRedirects: Int = URLClientDefaults.maxRedirects,
 ) {
     companion object {
-        @Suppress("ktlint:standard:discouraged-comment-location")
         private val redirectCodes =
             setOf(
                 HttpURLConnection.HTTP_MOVED_PERM,

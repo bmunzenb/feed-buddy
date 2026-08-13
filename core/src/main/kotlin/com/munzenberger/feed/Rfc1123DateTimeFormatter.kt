@@ -10,7 +10,6 @@ import java.time.temporal.ChronoField
 
 // Workaround for RFC_1123_DATE_TIME not supporting time zone strings other than GMT
 // https://stackoverflow.com/questions/45829799/java-time-format-datetimeformatter-rfc-1123-date-time-fails-to-parse-time-zone-n
-@Suppress("MagicNumber")
 internal fun rfc1123DateTimeFormatter(): DateTimeFormatter {
     // custom map for days of week
     val dow =

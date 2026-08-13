@@ -91,7 +91,6 @@ internal object RssXMLFeedParser : XMLFeedParser {
         }
     }
 
-    @Suppress("CyclomaticComplexMethod", "NestedBlockDepth")
     private fun parseItem(
         item: RssItem,
         eventReader: XMLEventReader,

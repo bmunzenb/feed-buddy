@@ -4,7 +4,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 
 @JacksonXmlRootElement(localName = "feeds")
-@Suppress("ktlint:standard:discouraged-comment-location")
 data class OperatorConfig(
     @JacksonXmlProperty(isAttribute = true)
     val period: Int = 180, // default 3 hours
