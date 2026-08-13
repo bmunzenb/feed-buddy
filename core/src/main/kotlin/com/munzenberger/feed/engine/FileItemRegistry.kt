@@ -43,14 +43,14 @@ class FileItemRegistry(
     override fun add(item: Item) {
         val identity = item.persistableIdentity
 
-        registry.add(identity)
-
         Files.write(
             path,
             listOf(identity),
             StandardOpenOption.CREATE,
             StandardOpenOption.APPEND,
         )
+
+        registry.add(identity)
     }
 }
 
