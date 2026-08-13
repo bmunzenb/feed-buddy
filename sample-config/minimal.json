@@ -1,5 +1,5 @@
 {
-  "period" : 360,
+  "period" : 180,
   "feeds" : [ {
     "url" : "http://www.example.com/feed.xml",
     "handlers" : [ {
