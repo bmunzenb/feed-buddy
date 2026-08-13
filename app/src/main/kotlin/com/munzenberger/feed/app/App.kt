@@ -60,7 +60,7 @@ class App : CliktCommand(name = "feed-buddy") {
 
     private val timeout: Int by option("-t", "--timeout", help = "Sets the read timeout in seconds")
         .int()
-        .default(value = 30_000, defaultForHelp = "30")
+        .default(value = 30, defaultForHelp = "30")
 
     private val output: Path? by option("-o", "--output", help = "Path to output file")
         .path(canBeDir = false)
