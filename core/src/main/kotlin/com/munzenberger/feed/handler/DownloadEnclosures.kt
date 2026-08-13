@@ -77,7 +77,8 @@ class DownloadEnclosures : ItemHandler {
     }
 
     internal fun targetFileFor(filename: String): Path {
-        var targetFile = Paths.get(targetDirectory, filename)
+        val targetDir = Paths.get(targetDirectory).toAbsolutePath().normalize()
+        var targetFile = targetDir.resolveWithinDir(filename)
 
         if (Files.exists(targetFile)) {
             // insert a timestamp into the filename to make it unique
@@ -93,7 +94,7 @@ class DownloadEnclosures : ItemHandler {
 
             val uniqueFilename = name + "-" + System.currentTimeMillis() + extension
 
-            targetFile = Paths.get(targetDirectory, uniqueFilename)
+            targetFile = targetDir.resolveWithinDir(uniqueFilename)
 
             if (Files.exists(targetFile)) {
                 throw IOException("Local file already exists: $targetFile")
@@ -102,6 +103,16 @@ class DownloadEnclosures : ItemHandler {
 
         return targetFile
     }
+}
+
+private fun Path.resolveWithinDir(filename: String): Path {
+    val resolved = resolve(filename).normalize()
+
+    if (resolved.parent != this) {
+        throw IOException("Filename resolves outside of the target directory: $filename")
+    }
+
+    return resolved
 }
 
 internal fun String.withQueryParameters(parameters: Map<String, String>): URI {
