@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     id("feed-buddy.kotlin-conventions")
     `java-library`
@@ -21,35 +19,6 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
-}
-
-tasks.register("createProperties") {
-    dependsOn(tasks.named("processResources"))
-
-    inputs.property("version", project.version.toString())
-
-    val outputFile =
-        layout.buildDirectory
-            .file("resources/main/version.properties")
-            .get()
-            .asFile
-    outputs.file(outputFile)
-
-    doLast {
-        outputFile.parentFile.mkdirs() // Ensure the directory exists
-
-        outputFile.writer().use { writer ->
-            val properties = Properties()
-            properties["version"] = inputs.properties["version"]
-            properties.store(writer, null)
-        }
-
-        println("Generated version.properties at ${outputFile.absolutePath}")
-    }
-}
-
-tasks.named("classes") {
-    dependsOn("createProperties")
 }
 
 tasks.jar {

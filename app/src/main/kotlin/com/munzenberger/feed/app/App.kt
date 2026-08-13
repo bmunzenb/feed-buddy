@@ -11,6 +11,7 @@ import com.github.ajalt.clikt.parameters.types.path
 import com.munzenberger.feed.FeedOperator
 import com.munzenberger.feed.OnceFeedOperator
 import com.munzenberger.feed.PollingFeedOperator
+import com.munzenberger.feed.Version
 import com.munzenberger.feed.client.URLClientDefaults
 import com.munzenberger.feed.config.FileConfigProvider
 import com.munzenberger.feed.config.ItemProcessorConfig
@@ -21,20 +22,11 @@ import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.Properties
 import kotlin.time.Duration.Companion.seconds
 
 fun main(args: Array<String>) {
-    val versionProperties =
-        Properties().apply {
-            val inStream = ClassLoader.getSystemResourceAsStream("version.properties")
-            load(inStream)
-        }
-
-    versionProperties["version"].let {
-        println("Feed Buddy version $it (https://github.com/bmunzenb/feed-buddy)")
-        URLClientDefaults.userAgent = "Feed-Buddy/$it (+https://github.com/bmunzenb/feed-buddy)"
-    }
+    println("Feed Buddy version ${Version.current} (https://github.com/bmunzenb/feed-buddy)")
+    URLClientDefaults.userAgent = "Feed-Buddy/${Version.current} (+https://github.com/bmunzenb/feed-buddy)"
 
     System.getProperties().let {
         val runtimeName = it["java.runtime.name"]
