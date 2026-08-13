@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 @Suppress("ktlint:standard:discouraged-comment-location")
 data class OperatorConfig(
     @JacksonXmlProperty(isAttribute = true)
-    val period: Int = 360, // default 3 hours
+    val period: Int = 180, // default 3 hours
     @JacksonXmlProperty(isAttribute = true)
     val delay: Int = 0, // default no delay
     @JacksonXmlProperty(localName = "handler")

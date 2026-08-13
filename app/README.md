@@ -53,7 +53,7 @@ properties are supported at the root level:
 
 | Name       |  Type  | Description                                                                                                 |
 |------------|:------:|-------------------------------------------------------------------------------------------------------------|
-| `period`   | Number | The default time in minutes between reads of a feed. Has a default value of `360` for 3 hours.              |
+| `period`   | Number | The default time in minutes between reads of a feed. Has a default value of `180` for 3 hours.              |
 | `delay`    | Number | The default time in minutes to wait before the first read of a feed. Has a default value of `0` (no delay). |
 | `handlers` |  List  | Defines global `handler`s that may be shared by feeds.                                                      |
 | `filters`  |  List  | Defines global `filter`s that may be shared by feeds.                                                       |
@@ -96,7 +96,7 @@ A `feed` block is used to define a feed source, using the following properties:
 | Name          |  Type  | Required | Description                                                                                                                                         |
 |---------------|:------:|:--------:|-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | `url`         | String |   Yes    | Source URL of the feed.                                                                                                                             |
-| `period`      | Number |    No    | The time in minutes between reads of the feed. If not specified, uses the globally defined period, which has a default value of `360` for 3 hours.  |
+| `period`      | Number |    No    | The time in minutes between reads of the feed. If not specified, uses the globally defined period, which has a default value of `180` for 3 hours.  |
 | `delay`       | Number |    No    | The time in minutes to wait before the first read of the feed. If not specified, uses the globally defined delay, which has a default value of `0`. |
 | `userAgent`   | String |    No    | The value to use in the "User-Agent" HTTP request header when reading the feed.                                                                     |
 | `registryKey` | String |    No    | Key for accessing the processed items registry for this feed.  If not specified, defaults to the value of `url`.                                    |
