@@ -31,7 +31,6 @@ class DefaultItemProcessorFactory<T : ItemProcessor>(
     }
 
     companion object {
-        @Suppress("UNCHECKED_CAST")
         internal fun <T> newItemProcessor(config: ItemProcessorConfig): T {
             val clazz = Class.forName(config.type)
             val process = clazz.getConstructor().newInstance()
@@ -72,6 +71,7 @@ class DefaultItemProcessorFactory<T : ItemProcessor>(
                 }
             }
 
+            @Suppress("UNCHECKED_CAST")
             return process as T
         }
     }

@@ -96,7 +96,6 @@ internal object AtomXMLFeedParser : XMLFeedParser {
         return feed.toFeed()
     }
 
-    @Suppress("CyclomaticComplexMethod", "NestedBlockDepth")
     private fun parseEntry(
         entry: AtomEntry,
         eventReader: XMLEventReader,
