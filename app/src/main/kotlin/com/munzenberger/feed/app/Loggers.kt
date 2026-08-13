@@ -1,8 +1,10 @@
 package com.munzenberger.feed.app
 
-import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardOpenOption
 
 interface Logger {
     fun print(obj: Any)
@@ -63,23 +65,27 @@ object ConsoleLogger : Logger {
 }
 
 class FileLogger(
-    private val file: File,
+    private val file: Path,
 ) : Logger {
     companion object {
         private val NEWLINE = System.lineSeparator()
     }
 
+    private fun appendText(text: String) {
+        Files.writeString(file, text, StandardOpenOption.CREATE, StandardOpenOption.APPEND)
+    }
+
     override fun print(obj: Any) {
-        file.appendText(obj.toString())
+        appendText(obj.toString())
     }
 
     override fun println(obj: Any) {
-        file.appendText(obj.toString() + NEWLINE)
+        appendText(obj.toString() + NEWLINE)
     }
 
     override fun printStackTrace(t: Throwable) {
         val sw = StringWriter()
         t.printStackTrace(PrintWriter(sw))
-        file.appendText(sw.toString() + NEWLINE)
+        appendText(sw.toString() + NEWLINE)
     }
 }

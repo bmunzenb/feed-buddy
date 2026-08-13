@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import java.net.URI
+import java.nio.file.Files
 
 class DownloadEnclosuresTest {
     @Test
@@ -34,13 +35,14 @@ class DownloadEnclosuresTest {
 
         val localFile = handler.targetFileFor(filename)
 
-        if (localFile.createNewFile()) {
-            localFile.deleteOnExit()
+        if (Files.notExists(localFile)) {
+            Files.createFile(localFile)
+            localFile.toFile().deleteOnExit()
         }
 
         val dupFile = handler.targetFileFor(filename)
 
-        assertNotEquals(localFile.path, dupFile.path)
+        assertNotEquals(localFile, dupFile)
     }
 
     @Test

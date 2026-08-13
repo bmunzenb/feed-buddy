@@ -14,13 +14,16 @@ import com.munzenberger.feed.println
 import okio.buffer
 import okio.sink
 import okio.source
-import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.net.URI
 import java.net.URL
 import java.net.URLDecoder
 import java.net.URLEncoder
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.nio.file.attribute.FileTime
 import java.util.function.Consumer
 
 class DownloadEnclosures : ItemHandler {
@@ -65,34 +68,34 @@ class DownloadEnclosures : ItemHandler {
         )
 
         item.timestampAsInstant?.let {
-            if (!target.setLastModified(it.toEpochMilli())) {
+            try {
+                Files.setLastModifiedTime(target, FileTime.fromMillis(it.toEpochMilli()))
+            } catch (e: IOException) {
                 eventConsumer.println("Could not set last modified time on file: $target")
             }
         }
     }
 
-    internal fun targetFileFor(filename: String): File {
-        var path = targetDirectory + File.separator + filename
+    internal fun targetFileFor(filename: String): Path {
+        var targetFile = Paths.get(targetDirectory, filename)
 
-        var targetFile = File(path)
-
-        if (targetFile.exists()) {
+        if (Files.exists(targetFile)) {
             // insert a timestamp into the filename to make it unique
 
-            var name = path
+            var name = filename
             var extension = ""
 
-            val i = path.lastIndexOf('.')
+            val i = filename.lastIndexOf('.')
             if (i > 0) {
-                name = path.substring(0, i)
-                extension = path.substring(i)
+                name = filename.substring(0, i)
+                extension = filename.substring(i)
             }
 
-            path = name + "-" + System.currentTimeMillis() + extension
+            val uniqueFilename = name + "-" + System.currentTimeMillis() + extension
 
-            targetFile = File(path)
+            targetFile = Paths.get(targetDirectory, uniqueFilename)
 
-            if (targetFile.exists()) {
+            if (Files.exists(targetFile)) {
                 throw IOException("Local file already exists: $targetFile")
             }
         }
@@ -131,7 +134,7 @@ private fun String.urlDecode(encoding: String = "UTF-8"): String {
 
 private fun download(
     inStream: InputStream,
-    target: File,
+    target: Path,
 ): Long {
     val inputSource = inStream.source().buffer()
     val outputSink = target.sink().buffer()

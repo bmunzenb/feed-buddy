@@ -20,6 +20,7 @@ import com.munzenberger.feed.engine.FileItemRegistryFactory
 import com.munzenberger.feed.engine.ItemProcessorFactory
 import com.munzenberger.feed.filter.ItemFilter
 import com.munzenberger.feed.handler.ItemHandler
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.time.Duration.Companion.seconds
@@ -70,15 +71,17 @@ class App : CliktCommand(name = "feed-buddy") {
         val logger =
             CompositeLogger().apply {
                 add(ConsoleLogger)
-                output?.toFile()?.let {
-                    it.createNewFile()
+                output?.let {
+                    if (Files.notExists(it)) {
+                        Files.createFile(it)
+                    }
                     add(FileLogger(it))
                 }
             }
 
         val registryFactory = FileItemRegistryFactory(registry)
 
-        val configProvider = FileConfigProvider(feeds.toFile())
+        val configProvider = FileConfigProvider(feeds)
 
         val filterFactory = DefaultItemProcessorFactory<ItemFilter>()
 
