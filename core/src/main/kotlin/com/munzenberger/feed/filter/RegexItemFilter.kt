@@ -7,8 +7,26 @@ import java.util.function.Consumer
 
 class RegexItemFilter : ItemFilter {
     var title: String? = null
+        set(value) {
+            field = value
+            titleRegex = value?.let(::Regex)
+        }
+
     var content: String? = null
+        set(value) {
+            field = value
+            contentRegex = value?.let(::Regex)
+        }
+
     var category: String? = null
+        set(value) {
+            field = value
+            categoryRegex = value?.let(::Regex)
+        }
+
+    private var titleRegex: Regex? = null
+    private var contentRegex: Regex? = null
+    private var categoryRegex: Regex? = null
 
     override fun evaluate(
         context: FeedContext,
@@ -17,9 +35,9 @@ class RegexItemFilter : ItemFilter {
     ): Boolean {
         val matchers =
             listOf(
-                title?.let { Regex(it).matches(item.title) } ?: true,
-                content?.let { Regex(it).matches(item.content) } ?: true,
-                category?.let { Regex(it).let { r -> item.categories.any { c -> r.matches(c) } } } ?: true,
+                titleRegex?.matches(item.title) ?: true,
+                contentRegex?.matches(item.content) ?: true,
+                categoryRegex?.let { r -> item.categories.any { c -> r.matches(c) } } ?: true,
             )
 
         return matchers.all { it }
