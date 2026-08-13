@@ -2,7 +2,9 @@ package com.munzenberger.feed.handler
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertThrows
 import org.junit.Test
+import java.io.IOException
 import java.net.URI
 import java.nio.file.Files
 
@@ -43,6 +45,24 @@ class DownloadEnclosuresTest {
         val dupFile = handler.targetFileFor(filename)
 
         assertNotEquals(localFile, dupFile)
+    }
+
+    @Test
+    fun `it rejects a filename that traverses to the parent directory`() {
+        val handler = DownloadEnclosures()
+
+        assertThrows(IOException::class.java) {
+            handler.targetFileFor("..")
+        }
+    }
+
+    @Test
+    fun `it rejects a filename that is the current directory`() {
+        val handler = DownloadEnclosures()
+
+        assertThrows(IOException::class.java) {
+            handler.targetFileFor(".")
+        }
     }
 
     @Test
