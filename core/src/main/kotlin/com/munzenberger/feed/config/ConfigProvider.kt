@@ -1,6 +1,7 @@
 package com.munzenberger.feed.config
 
-import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 
 interface ConfigProvider {
     val name: String
@@ -9,17 +10,17 @@ interface ConfigProvider {
 }
 
 class FileConfigProvider(
-    private val file: File,
+    private val file: Path,
 ) : ConfigProvider {
     override val name: String
-        get() = file.absolutePath
+        get() = file.toAbsolutePath().toString()
 
     private val adapter: JacksonConfigAdapter
         get() =
             when {
-                file.path.endsWith(".json", true) -> JsonConfigAdapter
-                file.path.endsWith(".yaml", true) -> YamlConfigAdapter
-                file.path.endsWith(".yml", true) -> YamlConfigAdapter
+                file.toString().endsWith(".json", true) -> JsonConfigAdapter
+                file.toString().endsWith(".yaml", true) -> YamlConfigAdapter
+                file.toString().endsWith(".yml", true) -> YamlConfigAdapter
                 else -> XmlConfigAdapter
             }
 
@@ -27,5 +28,5 @@ class FileConfigProvider(
         get() = adapter.read(file)
 
     override val timestamp: Long
-        get() = file.lastModified()
+        get() = Files.getLastModifiedTime(file).toMillis()
 }

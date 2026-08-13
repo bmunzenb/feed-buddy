@@ -17,17 +17,17 @@ private fun write(
     config: OperatorConfig,
     name: String,
 ) {
-    val jsonFile = Paths.get(".", "$name.json").toFile()
+    val jsonFile = Paths.get(".", "$name.json")
     print("Writing $name JSON config to $jsonFile ... ")
     JsonConfigAdapter.write(config, jsonFile)
     println("done.")
 
-    val xmlFile = Paths.get(".", "$name.xml").toFile()
+    val xmlFile = Paths.get(".", "$name.xml")
     print("Writing $name XML config to $jsonFile ... ")
     XmlConfigAdapter.write(config, xmlFile)
     println("done.")
 
-    val yamlFile = Paths.get(".", "$name.yaml").toFile()
+    val yamlFile = Paths.get(".", "$name.yaml")
     print("Writing $name YAML config to $jsonFile ... ")
     YamlConfigAdapter.write(config, yamlFile)
     println("done.")

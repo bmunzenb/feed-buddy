@@ -9,22 +9,23 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
+import java.nio.file.Files
+import java.nio.file.Path
 
 abstract class JacksonConfigAdapter : ConfigAdapter {
     protected abstract val objectMapper: ObjectMapper
 
-    override fun read(file: File): OperatorConfig = objectMapper.readValue(file)
+    override fun read(file: Path): OperatorConfig = Files.newInputStream(file).use { read(it) }
 
     override fun read(inStream: InputStream): OperatorConfig = inStream.use { objectMapper.readValue(it) }
 
     override fun write(
         config: OperatorConfig,
-        file: File,
+        file: Path,
     ) {
-        objectMapper.writeValue(file, config)
+        Files.newOutputStream(file).use { write(config, it) }
     }
 
     override fun write(
