@@ -29,11 +29,16 @@ data class ContentType(
     val value: String?,
 ) {
     val charset: String
-        // TODO: better to parse the 'charset' from the content-type
         get() =
-            when {
-                value == null -> "UTF-8"
-                value.contains("UTF-16", true) -> "UTF-16"
-                else -> "UTF-8"
-            }
+            value
+                ?.split(";")
+                ?.drop(1) // skip the "type/subtype" segment
+                ?.mapNotNull { param ->
+                    val (attribute, attrValue) = param.split("=", limit = 2)
+                        .takeIf { it.size == 2 } ?: return@mapNotNull null
+                    attribute.trim() to attrValue.trim().removeSurrounding("\"")
+                }
+                ?.firstOrNull { (attribute, _) -> attribute.equals("charset", ignoreCase = true) }
+                ?.second
+                ?: "UTF-8"
 }
