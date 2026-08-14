@@ -60,7 +60,7 @@ class FeedOperatorTest {
                 configProvider = configProvider,
                 filterFactory = itemFilterFactory,
                 handlerFactory = itemHandlerFactory,
-                statusConsumer = consumer,
+                eventConsumer = consumer,
             )
 
         operator.start()

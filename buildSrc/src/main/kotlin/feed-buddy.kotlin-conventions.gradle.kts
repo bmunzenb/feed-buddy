@@ -14,7 +14,7 @@ detekt {
 }
 
 group = "com.munzenberger"
-version = "2.5.0"
+version = "2.6.0"
 
 base {
     archivesName = "${rootProject.name}-${project.name}"

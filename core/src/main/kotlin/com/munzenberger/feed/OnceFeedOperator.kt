@@ -14,8 +14,8 @@ class OnceFeedOperator(
     configProvider: ConfigProvider,
     filterFactory: ItemProcessorFactory<ItemFilter>,
     handlerFactory: ItemProcessorFactory<ItemHandler>,
-    statusConsumer: Consumer<FeedEvent>,
-) : BaseFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, statusConsumer) {
+    eventConsumer: Consumer<FeedEvent>,
+) : BaseFeedOperator(registryFactory, configProvider, filterFactory, handlerFactory, eventConsumer) {
     override fun start(
         config: OperatorConfig,
         processorFactory: FeedProcessorFactory,

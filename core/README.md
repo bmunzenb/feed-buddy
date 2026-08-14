@@ -11,10 +11,10 @@ coordinating all other components that read and parse a feed, process feed items
 
 There are two implementations:
 
-| Class                 | Description                                                                                                                                                                  |
-|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `PollingFeedOperator` | Processes feeds by scheduling periodic polling of each feed source using a `Timer`. The `start()` function is asynchronous and clients must call `cancel()` to stop polling. |
-| `OnceFeedOperator`    | Processes all feeds once. In this case, the `start()` function is synchronous and will return after all feeds are processed.                                                 |
+| Class                 | Description                                                                                                                                                                                                                                                                           |
+|-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `PollingFeedOperator` | Processes feeds by scheduling periodic polling of each feed source using a `Timer`. The `start()` function is asynchronous and clients must call `cancel()` to stop polling. It also watches the configuration file for changes and automatically restarts polling if it is modified. |
+| `OnceFeedOperator`    | Processes all feeds once. In this case, the `start()` function is synchronous and will return after all feeds are processed.                                                                                                                                                          |
 
 When creating one of these implementations for use, you will need to supply parameters of the following types in the
 constructor:
@@ -57,7 +57,7 @@ val itemRegistryFactory = FileItemRegistryFactory(
 
 // Specify the configuration from a file
 val configProvider = FileConfigProvider(
-    File("/path/to/config/feeds.json")
+    Path.of("/path/to/config/feeds.json")
 )
 
 // Use the default filter and handler factories

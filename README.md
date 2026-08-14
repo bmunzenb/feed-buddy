@@ -13,7 +13,7 @@ The resulting `app/build/distributions` directory will contain the distribution 
 
 ## License
 ```
-Copyright 2025 Brian Munzenberger
+Copyright 2026 Brian Munzenberger
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
