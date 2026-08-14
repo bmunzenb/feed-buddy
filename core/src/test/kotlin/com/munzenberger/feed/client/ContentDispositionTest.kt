@@ -32,4 +32,35 @@ class ContentDispositionTest {
 
         assertEquals("foobar.txt", contentDisposition.filename)
     }
+
+    @Test
+    fun `content disposition preserves semicolons inside quoted filenames`() {
+        val contentDisposition = ContentDisposition("attachment; filename=\"foo;bar.txt\"")
+
+        assertEquals("foo;bar.txt", contentDisposition.filename)
+    }
+
+    @Test
+    fun `content disposition decodes an extended filename`() {
+        val contentDisposition = ContentDisposition("attachment; filename*=UTF-8''caf%C3%A9.txt")
+
+        assertEquals("café.txt", contentDisposition.filename)
+    }
+
+    @Test
+    fun `content disposition prefers the extended filename over the plain filename`() {
+        val contentDisposition =
+            ContentDisposition(
+                "attachment; filename=cafe.txt; filename*=UTF-8''caf%C3%A9.txt",
+            )
+
+        assertEquals("café.txt", contentDisposition.filename)
+    }
+
+    @Test
+    fun `content disposition falls back to the raw value for a malformed extended filename`() {
+        val contentDisposition = ContentDisposition("attachment; filename*=not-encoded")
+
+        assertEquals("not-encoded", contentDisposition.filename)
+    }
 }
