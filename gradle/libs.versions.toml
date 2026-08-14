@@ -10,7 +10,6 @@ clikt = "5.1.0"
 slf4j = "2.0.18"
 junit = "4.13.2"
 mockk = "1.14.11"
-versions = "0.61.0"
 detekt = "2.0.0-alpha.6"
 
 [libraries]
@@ -31,5 +30,3 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 kotlin-jvm-plugin = { module = "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }
 detekt-gradlePlugin = { module = "dev.detekt:dev.detekt.gradle.plugin", version.ref = "detekt" }
 
-[plugins]
-versions = { id = "io.github.ben-manes.versions", version.ref = "versions" }
