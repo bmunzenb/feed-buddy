@@ -1,7 +1,7 @@
 [versions]
 kotlin = "2.4.20"
 okio = "3.18.2"
-jackson = "2.22.2"
+jackson = "3.2.2"
 woodstox = "7.2.2"
 commons-text = "1.15.0"
 commons-email = "1.6.0"
@@ -18,10 +18,10 @@ okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 commons-text = { module = "org.apache.commons:commons-text", version.ref = "commons-text" }
 commons-email = { module = "org.apache.commons:commons-email", version.ref = "commons-email" }
 velocity = { module = "org.apache.velocity:velocity-engine-core", version.ref = "velocity" }
-jackson = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
-jackson-xml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml", version.ref = "jackson" }
-jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
-jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+jackson = { module = "tools.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-xml = { module = "tools.jackson.dataformat:jackson-dataformat-xml", version.ref = "jackson" }
+jackson-yaml = { module = "tools.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
+jackson-kotlin = { module = "tools.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 woodstox = { module = "com.fasterxml.woodstox:woodstox-core", version.ref = "woodstox" }
 slf4j-noop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }

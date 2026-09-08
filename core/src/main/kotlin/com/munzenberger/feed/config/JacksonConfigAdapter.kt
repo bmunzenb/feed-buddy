@@ -1,18 +1,20 @@
 package com.munzenberger.feed.config
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.databind.SerializationFeature
+import tools.jackson.dataformat.xml.XmlMapper
+import tools.jackson.dataformat.yaml.YAMLMapper
+import tools.jackson.module.kotlin.jacksonMapperBuilder
+import tools.jackson.module.kotlin.kotlinModule
+import tools.jackson.module.kotlin.readValue
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Files
 import java.nio.file.Path
+
+private val nonEmptyInclusion =
+    JsonInclude.Value.construct(JsonInclude.Include.NON_EMPTY, JsonInclude.Include.NON_EMPTY)
 
 abstract class JacksonConfigAdapter : ConfigAdapter {
     protected abstract val objectMapper: ObjectMapper
@@ -38,31 +40,25 @@ abstract class JacksonConfigAdapter : ConfigAdapter {
 
 object JsonConfigAdapter : JacksonConfigAdapter() {
     override val objectMapper: ObjectMapper =
-        jacksonObjectMapper().apply {
-            enable(SerializationFeature.INDENT_OUTPUT)
-            setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY)
-        }
+        jacksonMapperBuilder()
+            .enable(SerializationFeature.INDENT_OUTPUT)
+            .changeDefaultPropertyInclusion { nonEmptyInclusion }
+            .build()
 }
 
 object XmlConfigAdapter : JacksonConfigAdapter() {
-    override val objectMapper: ObjectMapper
-
-    init {
-        val module =
-            JacksonXmlModule().apply {
-                setDefaultUseWrapper(false)
-            }
-        objectMapper =
-            XmlMapper(module).registerKotlinModule().apply {
-                enable(SerializationFeature.INDENT_OUTPUT)
-            }
-    }
+    override val objectMapper: ObjectMapper =
+        XmlMapper.builder()
+            .defaultUseWrapper(false)
+            .enable(SerializationFeature.INDENT_OUTPUT)
+            .addModule(kotlinModule())
+            .build()
 }
 
 object YamlConfigAdapter : JacksonConfigAdapter() {
     override val objectMapper: ObjectMapper =
-        ObjectMapper(YAMLFactory()).apply {
-            setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY)
-            registerKotlinModule()
-        }
+        YAMLMapper.builder()
+            .changeDefaultPropertyInclusion { nonEmptyInclusion }
+            .addModule(kotlinModule())
+            .build()
 }
