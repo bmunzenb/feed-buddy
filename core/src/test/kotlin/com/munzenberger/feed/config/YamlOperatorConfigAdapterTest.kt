@@ -3,11 +3,11 @@ package com.munzenberger.feed.config
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class XmlOperatorConfigAdapterTest {
+class YamlOperatorConfigAdapterTest {
     @Test
     fun `it can parse a config file`() {
-        val source = javaClass.getResourceAsStream("config.xml")
-        val config = XmlConfigAdapter.read(source)
+        val source = javaClass.getResourceAsStream("config.yaml")
+        val config = YamlConfigAdapter.read(source)
 
         val expected =
             OperatorConfig(
@@ -18,7 +18,7 @@ class XmlOperatorConfigAdapterTest {
                         ItemProcessorConfig(
                             name = "global handler",
                             type = "com.test.Class",
-                            properties = mapOf("foo" to "bar", "fizz" to "32"),
+                            properties = mapOf("foo" to "bar", "fizz" to 32),
                         ),
                     ),
                 feeds =
@@ -32,7 +32,7 @@ class XmlOperatorConfigAdapterTest {
                                 listOf(
                                     ItemProcessorConfig(
                                         type = "com.test.Handler",
-                                        properties = mapOf("bar" to "foo", "boolean" to "true"),
+                                        properties = mapOf("bar" to "foo", "boolean" to true),
                                     ),
                                     ItemProcessorConfig(
                                         ref = "global handler",

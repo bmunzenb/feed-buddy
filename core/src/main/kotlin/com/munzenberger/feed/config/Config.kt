@@ -1,9 +1,9 @@
 package com.munzenberger.feed.config
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import com.fasterxml.jackson.annotation.JsonRootName
+import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty
 
-@JacksonXmlRootElement(localName = "feeds")
+@JsonRootName("feeds")
 data class OperatorConfig(
     @JacksonXmlProperty(isAttribute = true)
     val period: Int = 180, // default 3 hours
