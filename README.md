@@ -2,6 +2,9 @@
 _Feed Buddy_ is a simple RSS and Atom feed processor written in Kotlin. It can be used standalone as a [command-line
 application](./app), or as a [library](./core) for building a custom feed processor.
 
+## Requirements
+Java 21 or newer is required to run the command-line application and to use the core library.
+
 ## Building from Source
 This project uses [Gradle](https://gradle.org/) with the
 [Application Plugin](https://docs.gradle.org/current/userguide/application_plugin.html). You can build a distribution
