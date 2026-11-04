@@ -1,7 +1,7 @@
 [versions]
 kotlin = "2.4.21"
 okio = "3.18.2"
-jackson = "3.2.3"
+jackson = "3.2.4"
 woodstox = "7.3.0"
 commons-text = "1.15.0"
 commons-email = "1.6.0"
